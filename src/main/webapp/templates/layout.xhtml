@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <!--  <h:outputStylesheet name="css/default.css"/>
+          <h:outputStylesheet name="css/cssLayout.css"/>-->
+        <title>Mi Domiciliario</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous" />
+    </h:head>
+
+    <h:body>
+
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container-fluid">
+                <h:link value="Mi Sitio" outcome="/index.xhtml" styleClass="navbar-brand">
+                    <f:param name="faces-redirect" value="true"/>
+                </h:link>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item"><h:link value="---" outcome="" styleClass="nav-link"/></li>
+                        <li class="nav-item"><h:link value="---" outcome="" styleClass="nav-link"/></li>
+                        <li class="nav-item"><h:link value="---" outcome="" styleClass="nav-link"/></li>
+                        <li class="nav-item"><h:link value="---" outcome="" styleClass="nav-link"/></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container mt-4">
+            <ui:insert name="content">
+                <!-- Contenido por defecto (opcional) -->
+                <p>Bienvenido a mi sitio web.</p>
+            </ui:insert>
+        </div>
+
+        <footer class="bg-light text-center py-3 mt-5">
+            &copy; 2025 Mi Sitio. Todos los derechos reservados.
+        </footer>
+
+        <!-- Bootstrap JS Bundle -->
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+    </h:body>
+
+</html>
