@@ -35,12 +35,12 @@ import java.util.List;
 @Table(name = "ordenes_pago")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "OrdenesPago.findAll", query = "SELECT o FROM OrdenesPago o"),
-    @NamedQuery(name = "OrdenesPago.findByIdOrdenPago", query = "SELECT o FROM OrdenesPago o WHERE o.idOrdenPago = :idOrdenPago"),
-    @NamedQuery(name = "OrdenesPago.findByNroOrden", query = "SELECT o FROM OrdenesPago o WHERE o.nroOrden = :nroOrden"),
-    @NamedQuery(name = "OrdenesPago.findByFechaPago", query = "SELECT o FROM OrdenesPago o WHERE o.fechaPago = :fechaPago"),
-    @NamedQuery(name = "OrdenesPago.findByFormaPago", query = "SELECT o FROM OrdenesPago o WHERE o.formaPago = :formaPago"),
-    @NamedQuery(name = "OrdenesPago.findByMontoTotal", query = "SELECT o FROM OrdenesPago o WHERE o.montoTotal = :montoTotal")})
+    @NamedQuery(name = "OrdenPago.findAll", query = "SELECT o FROM OrdenPago o"),
+    @NamedQuery(name = "OrdenPago.findByIdOrdenPago", query = "SELECT o FROM OrdenPago o WHERE o.idOrdenPago = :idOrdenPago"),
+    @NamedQuery(name = "OrdenPago.findByNroOrden", query = "SELECT o FROM OrdenPago o WHERE o.nroOrden = :nroOrden"),
+    @NamedQuery(name = "OrdenPago.findByFechaPago", query = "SELECT o FROM OrdenPago o WHERE o.fechaPago = :fechaPago"),
+    @NamedQuery(name = "OrdenPago.findByFormaPago", query = "SELECT o FROM OrdenPago o WHERE o.formaPago = :formaPago"),
+    @NamedQuery(name = "OrdenPago.findByMontoTotal", query = "SELECT o FROM OrdenPago o WHERE o.montoTotal = :montoTotal")})
 public class OrdenPago implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -160,7 +160,7 @@ public class OrdenPago implements Serializable {
 
     @Override
     public String toString() {
-        return "entidades.OrdenesPago[ idOrdenPago=" + idOrdenPago + " ]";
+        return "entidades.OrdenPago[ idOrdenPago=" + idOrdenPago + " ]";
     }
     
 }

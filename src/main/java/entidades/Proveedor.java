@@ -31,15 +31,15 @@ import java.util.List;
     @UniqueConstraint(columnNames = {"CUIT"})})
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Proveedore.findAll", query = "SELECT p FROM Proveedore p"),
-    @NamedQuery(name = "Proveedore.findByIdProveedor", query = "SELECT p FROM Proveedore p WHERE p.idProveedor = :idProveedor"),
-    @NamedQuery(name = "Proveedore.findByRazonSocial", query = "SELECT p FROM Proveedore p WHERE p.razonSocial = :razonSocial"),
-    @NamedQuery(name = "Proveedore.findByCuit", query = "SELECT p FROM Proveedore p WHERE p.cuit = :cuit"),
-    @NamedQuery(name = "Proveedore.findByNombreComercial", query = "SELECT p FROM Proveedore p WHERE p.nombreComercial = :nombreComercial"),
-    @NamedQuery(name = "Proveedore.findByTelefono", query = "SELECT p FROM Proveedore p WHERE p.telefono = :telefono"),
-    @NamedQuery(name = "Proveedore.findByEmail", query = "SELECT p FROM Proveedore p WHERE p.email = :email"),
-    @NamedQuery(name = "Proveedore.findByEstado", query = "SELECT p FROM Proveedore p WHERE p.estado = :estado"),
-    @NamedQuery(name = "Proveedore.findByTipoIva", query = "SELECT p FROM Proveedore p WHERE p.tipoIva = :tipoIva")})
+    @NamedQuery(name = "Proveedor.findAll", query = "SELECT p FROM Proveedor p"),
+    @NamedQuery(name = "Proveedor.findByIdProveedor", query = "SELECT p FROM Proveedor p WHERE p.idProveedor = :idProveedor"),
+    @NamedQuery(name = "Proveedor.findByRazonSocial", query = "SELECT p FROM Proveedor p WHERE p.razonSocial = :razonSocial"),
+    @NamedQuery(name = "Proveedor.findByCuit", query = "SELECT p FROM Proveedor p WHERE p.cuit = :cuit"),
+    @NamedQuery(name = "Proveedor.findByNombreComercial", query = "SELECT p FROM Proveedor p WHERE p.nombreComercial = :nombreComercial"),
+    @NamedQuery(name = "Proveedor.findByTelefono", query = "SELECT p FROM Proveedor p WHERE p.telefono = :telefono"),
+    @NamedQuery(name = "Proveedor.findByEmail", query = "SELECT p FROM Proveedor p WHERE p.email = :email"),
+    @NamedQuery(name = "Proveedor.findByEstado", query = "SELECT p FROM Proveedor p WHERE p.estado = :estado"),
+    @NamedQuery(name = "Proveedor.findByTipoIva", query = "SELECT p FROM Proveedor p WHERE p.tipoIva = :tipoIva")})
 public class Proveedor implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -205,7 +205,7 @@ public class Proveedor implements Serializable {
 
     @Override
     public String toString() {
-        return "entidades.Proveedore[ idProveedor=" + idProveedor + " ]";
+        return "entidades.Proveedor[ idProveedor=" + idProveedor + " ]";
     }
     
 }

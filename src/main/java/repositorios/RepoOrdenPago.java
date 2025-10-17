@@ -29,12 +29,11 @@ public class RepoOrdenPago {
     }
 
     public Optional<OrdenPago> porId(Integer id) {
-        // El nombre de la entidad es OrdenesPago según el código que pasaste
         return Optional.ofNullable(em.find(OrdenPago.class, id));
     }
 
     public List<OrdenPago> listarTodas() {
-        return em.createQuery("SELECT o FROM OrdenesPago o", OrdenPago.class).getResultList();
+        return em.createQuery("SELECT o FROM OrdenPago o", OrdenPago.class).getResultList();
     }
     
     // --- Métodos de búsqueda específicos ---
@@ -46,7 +45,7 @@ public class RepoOrdenPago {
      */
     public Optional<OrdenPago> porNumeroOrden(String nroOrden) {
         try {
-            TypedQuery<OrdenPago> query = em.createQuery("SELECT o FROM OrdenesPago o WHERE o.nroOrden = :nroOrden", OrdenPago.class);
+            TypedQuery<OrdenPago> query = em.createQuery("SELECT o FROM OrdenPago o WHERE o.nroOrden = :nroOrden", OrdenPago.class);
             query.setParameter("nroOrden", nroOrden);
             return Optional.of(query.getSingleResult());
         } catch (NoResultException e) {
@@ -60,7 +59,7 @@ public class RepoOrdenPago {
      * @return Una lista de órdenes de pago.
      */
     public List<OrdenPago> porProveedor(Integer idProveedor) {
-        TypedQuery<OrdenPago> query = em.createQuery("SELECT o FROM OrdenesPago o WHERE o.idProveedor.idProveedor = :idProveedor", OrdenPago.class);
+        TypedQuery<OrdenPago> query = em.createQuery("SELECT o FROM OrdenPago o WHERE o.idProveedor.idProveedor = :idProveedor", OrdenPago.class);
         query.setParameter("idProveedor", idProveedor);
         return query.getResultList();
     }
@@ -72,7 +71,7 @@ public class RepoOrdenPago {
      * @return Una lista de órdenes de pago.
      */
     public List<OrdenPago> porRangoFechasPago(Date fechaInicio, Date fechaFin) {
-        TypedQuery<OrdenPago> query = em.createQuery("SELECT o FROM OrdenesPago o WHERE o.fechaPago BETWEEN :fechaInicio AND :fechaFin", OrdenPago.class);
+        TypedQuery<OrdenPago> query = em.createQuery("SELECT o FROM OrdenPago o WHERE o.fechaPago BETWEEN :fechaInicio AND :fechaFin", OrdenPago.class);
         query.setParameter("fechaInicio", fechaInicio);
         query.setParameter("fechaFin", fechaFin);
         return query.getResultList();

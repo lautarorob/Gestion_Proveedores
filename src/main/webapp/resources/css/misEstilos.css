@@ -1,0 +1,61 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this template
+*/
+/* 
+    Created on : 16 oct 2025, 09:13:38
+    Author     : roble
+*/
+
+
+[data-bs-theme="dark"] {
+
+    /* Fondo principal: Un azul oscuro y profundo */
+    --bs-body-bg: #1C2533;
+
+    /* Fondo para componentes: Un azul ligeramente más claro para el contraste */
+    --bs-tertiary-bg: #2A2D35;
+
+    /* Mantenemos los otros colores para texto y detalles */
+    --bs-body-color: #EAEAEA;
+    --bs-secondary-color: #A0A0A0;
+    --bs-warning: #F0B90B;
+    --bs-warning-text-emphasis: #F0B90B;
+
+    /* También es buena idea definir el color de los bordes para que combine */
+    --bs-border-color: #404a5d;
+}
+
+
+/* Estilos del Sidebar */
+.sidebar {
+    background-color: #020618;
+}
+
+/* Estilo base de los links - TEXTO AMARILLO */
+.sidebar .nav-item .nav-link {
+    color: #F0B90B; /* Amarillo para todos los items */
+    font-size: 1rem;
+    border-radius: .375rem;
+    margin-bottom: 0.25rem;
+    transition: all 0.3s ease;
+}
+
+/* Hover */
+.sidebar .nav-item .nav-link:hover {
+    color: #FFD700; /* Amarillo más brillante al pasar el mouse */
+    background-color: var(--bs-tertiary-bg);
+}
+
+/* Link activo */
+.sidebar .nav-item .nav-link.active {
+    color: #F0B90B; /* Color oscuro para contrastar con fondo amarillo */
+    font-weight: 600;
+}
+
+/* Iconos */
+.sidebar .nav-link .bi,
+.sidebar .nav-link .fa-solid {
+    margin-right: 15px;
+    width: 20px;
+}
