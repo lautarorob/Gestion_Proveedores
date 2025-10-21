@@ -4,6 +4,8 @@ import entidades.Usuario;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Model;
 import jakarta.enterprise.inject.Produces;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
 import jakarta.inject.Inject;
 import java.io.Serializable;
@@ -33,12 +35,12 @@ public class ControladorUsuario implements Serializable {
 
     public String guardar() {
         repoUsuario.guardar(usuario);
-        return "/usuarios/index.xhtml?faces-redirect=true";
+        return "/index.xhtml?faces-redirect=true";
     }
 
     public String eliminar(Integer id) {
         repoUsuario.eliminar(id);
-        return "/usuarios/index.xhtml?faces-redirect=true";
+        return "/index.xhtml?faces-redirect=true";
     }
 
     public List<Usuario> listarTodos() {
@@ -46,7 +48,6 @@ public class ControladorUsuario implements Serializable {
     }
 
     // --- Getters y Setters ---
-    
     public Usuario getUsuario() {
         if (usuario == null) {
             usuario();
@@ -65,4 +66,24 @@ public class ControladorUsuario implements Serializable {
     public void setId(Integer id) {
         this.id = id;
     }
+
+    public String loginVerificacion() {
+        String email = this.usuario.getEmail();
+        String password = this.usuario.getPassword();
+
+        Usuario usuarioEncontrado = repoUsuario.loginVerificacion(email, password);
+
+        if (usuarioEncontrado == null) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Email o contraseña incorrectos", "Error"));
+            FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+            return "/login.xhtml?faces-redirect=true";
+        }
+
+        FacesContext.getCurrentInstance().getExternalContext()
+                .getSessionMap().put("usuarioLogueado", usuarioEncontrado);
+
+        return "/index.xhtml?faces-redirect=true";
+    }
+
 }

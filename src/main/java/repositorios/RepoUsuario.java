@@ -5,6 +5,7 @@ import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
@@ -50,5 +51,22 @@ public class RepoUsuario {
         TypedQuery<Usuario> query = em.createQuery("SELECT u FROM Usuario u WHERE u.rol = :rol", Usuario.class);
         query.setParameter("rol", rol);
         return query.getResultList();
+    }
+
+    
+    public Usuario loginVerificacion(String email, String password) {
+        try {
+            
+            Query q = em.createQuery("SELECT u FROM Usuario u WHERE u.email = :email AND u.password = :password", Usuario.class);
+            q.setParameter("email", email);
+            q.setParameter("password", password);
+
+            
+            return (Usuario) q.getSingleResult();
+
+        } catch (jakarta.persistence.NoResultException e) {
+            
+            return null;
+        }
     }
 }

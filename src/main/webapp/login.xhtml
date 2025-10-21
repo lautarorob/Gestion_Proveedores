@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:pt="jakarta.faces.passthrough">
+
+    <h:head>
+        <title>Login Proveedores</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <h:outputStylesheet name="css/misEstilos.css" />
+        <h:outputScript name="js/misScript.js" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+              integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
+    </h:head>
+
+    <h:body class="bodyLogin">
+        <f:view>
+            <h:form class="formLogin">
+                <h3><strong>Bienvenido de nuevo</strong></h3>
+                <p class="letraChica">Inicie sesión para acceder a su portal de proveedores</p>
+
+                <div class="inputGroup">
+                    <h:inputText id="email" value="#{controladorUsuario.usuario().email}"
+                                 title="Email" required="true"
+                                 requiredMessage="El campo Email es obligatorio." 
+                                 pt:placeholder="Email"
+                                 styleClass="campoLogin"/>
+
+                    <h:inputSecret id="password" value="#{controladorUsuario.usuario().password}"
+                                   title="Password" required="true"
+                                   requiredMessage="El campo Password es obligatorio." 
+                                   pt:placeholder="Contraseña"
+                                   styleClass="campoLogin"/>
+                </div>
+
+                <h:commandButton value="Iniciar sesión"
+                                 action="#{controladorUsuario.loginVerificacion()}" 
+                                 styleClass="btnLogin"/>
+            </h:form>
+        </f:view>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+    </h:body>
+</html>
