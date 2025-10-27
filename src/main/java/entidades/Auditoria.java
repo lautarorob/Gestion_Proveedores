@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
@@ -31,8 +32,7 @@ import java.util.Date;
 @NamedQueries({
     @NamedQuery(name = "Auditoria.findAll", query = "SELECT a FROM Auditoria a"),
     @NamedQuery(name = "Auditoria.findByIdAuditoria", query = "SELECT a FROM Auditoria a WHERE a.idAuditoria = :idAuditoria"),
-    @NamedQuery(name = "Auditoria.findByFechaMovimiento", query = "SELECT a FROM Auditoria a WHERE a.fechaMovimiento = :fechaMovimiento"),
-    @NamedQuery(name = "Auditoria.findByDescripcion", query = "SELECT a FROM Auditoria a WHERE a.descripcion = :descripcion")})
+    @NamedQuery(name = "Auditoria.findByFechaMovimiento", query = "SELECT a FROM Auditoria a WHERE a.fechaMovimiento = :fechaMovimiento")})
 public class Auditoria implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -46,8 +46,9 @@ public class Auditoria implements Serializable {
     @Column(name = "fecha_movimiento", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaMovimiento;
-    @Size(max = 255)
-    @Column(length = 255)
+    @Lob
+    @Size(max = 65535)
+    @Column(length = 65535)
     private String descripcion;
     @JoinColumn(name = "id_usuarioUltimo", referencedColumnName = "id_usuario")
     @ManyToOne

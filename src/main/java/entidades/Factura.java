@@ -81,9 +81,7 @@ public class Factura implements Serializable {
     @Size(max = 50)
     @Column(name = "forma_pago", length = 50)
     private String formaPago;
-    @Size(max = 50)
-    @Column(length = 50)
-    private String estado;
+    private Boolean estado;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "factura")
     private List<FacturaProducto> facturaProductoList;
     @JoinColumn(name = "id_orden_pago", referencedColumnName = "id_orden_pago")
@@ -178,11 +176,11 @@ public class Factura implements Serializable {
         this.formaPago = formaPago;
     }
 
-    public String getEstado() {
+    public Boolean getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(Boolean estado) {
         this.estado = estado;
     }
 

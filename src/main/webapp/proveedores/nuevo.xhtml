@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                template="./../template/layout.xhtml"
+                xmlns:f="jakarta.faces.core"
+                xmlns:h="jakarta.faces.html"
+                xmlns:pt="jakarta.faces.passthrough">
+
+    <ui:define name="contenido">
+         <f:view>
+
+             <h:form id="formulario" onsubmit="return validarFormulario()">
+                <h2>Nuevo Proveedor</h2>
+                <p class="letraChica">Rellene los siguientes campos para registrar un nuevo proveedor</p>
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+                        <h:inputText id="razonSocial" 
+                                     value="#{controladorProveedor.proveedor.razonSocial}" 
+                                     required="true"
+                                     pt:placeholder="Razón Social" 
+                                     styleClass="form-control" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <h:inputText id="cuit" 
+                                     value="#{controladorProveedor.proveedor.cuit}" 
+                                     required="true" 
+                                     pt:placeholder="CUIT"
+                                     styleClass="form-control" />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <h:inputText id="nombreComercial" 
+                                     value="#{controladorProveedor.proveedor.nombreComercial}" 
+                                     pt:placeholder="Nombre Comercial"
+                                     styleClass="form-control" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <h:inputText id="telefono" 
+                                     value="#{controladorProveedor.proveedor.telefono}" 
+                                     pt:placeholder="Teléfono"
+                                     styleClass="form-control" />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <h:inputText id="email" 
+                                     value="#{controladorProveedor.proveedor.email}" 
+                                     pt:placeholder="Email"
+                                     styleClass="form-control" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <h:selectOneMenu id="tipoIva" value="#{controladorProveedor.proveedor.tipoIva}" styleClass="form-control select-con-icono">
+                            <f:selectItem itemLabel="--Tipo de IVA--" itemValue="" noSelectionOption="true"/>
+                            <f:selectItem itemLabel="Monotributo" itemValue="Monotributo"/>
+                            <f:selectItem itemLabel="Responsable Inscripto" itemValue="Responsable Inscripto"/>
+                            <f:selectItem itemLabel="Excento" itemValue="Excento"/>
+                        </h:selectOneMenu>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <h:inputHidden id="estado" 
+                                       value="#{controladorProveedor.proveedor.estado}" 
+                                       pt:placeholder="Estado"/>
+                    </div>
+                </div>
+                <h:commandButton value="Cancelar" action="/proveedores/index.xhtml" styleClass="btnGris"/>
+                <h:commandButton value="Guardar Proveedor" 
+                                 action="#{controladorProveedor.guardar}" 
+                                 styleClass="btnAmarillo" />
+            </h:form>
+        </f:view>
+    </ui:define>
+
+</ui:composition>

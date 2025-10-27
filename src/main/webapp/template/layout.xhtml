@@ -21,17 +21,19 @@
         <div class="container-fluid flex-grow-1">
             <div class="row h-100">
                 <aside class="col-md-3 col-lg-2 p-3 sidebar">
-                    <h3 class="mb-4">Opciones</h3>
+                    <h3 class="mb-4"><i class="bi bi-gear"></i> Opciones</h3>
 
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <h:link class="nav-link active" outcome="index.xhtml">
-                                <i class="bi bi-house"></i> Inicio
+                           <h:link outcome="/index.xhtml" class="nav-link #{view.viewId == '/index.xhtml' ? 'active' : ''}">
+                                <i class="bi bi-house"></i>
+                                <h:outputText value=" Inicio" />
                             </h:link>
                         </li>
                         <li class="nav-item">
-                            <h:link class="nav-link" outcome="index.xhtml">
-                                <i class="bi bi-truck"></i> Proveedores
+                            <h:link outcome="/proveedores/index.xhtml" class="nav-link #{view.viewId == '/proveedores/index.xhtml' ? 'active' : ''}">
+                                <i class="bi bi-truck"></i>
+                                <h:outputText value=" Proveedores" />
                             </h:link>
                         </li>
                         <li class="nav-item">

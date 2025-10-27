@@ -73,7 +73,7 @@ public class Proveedor implements Serializable {
     @Column(name = "tipo_iva", length = 50)
     private String tipoIva;
     @OneToMany(mappedBy = "idProveedor")
-    private List<OrdenPago> ordenesPagoList;
+    private List<OrdenPago> ordenPagoList;
     @OneToMany(mappedBy = "idProveedor")
     private List<Factura> facturaList;
     @OneToMany(mappedBy = "idProveedor")
@@ -157,12 +157,12 @@ public class Proveedor implements Serializable {
     }
 
     @XmlTransient
-    public List<OrdenPago> getOrdenesPagoList() {
-        return ordenesPagoList;
+    public List<OrdenPago> getOrdenPagoList() {
+        return ordenPagoList;
     }
 
-    public void setOrdenesPagoList(List<OrdenPago> ordenesPagoList) {
-        this.ordenesPagoList = ordenesPagoList;
+    public void setOrdenPagoList(List<OrdenPago> ordenPagoList) {
+        this.ordenPagoList = ordenPagoList;
     }
 
     @XmlTransient

@@ -74,7 +74,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this t
 
 .formLogin {
     color: white;
-    background-color: #1C2533; 
+    background-color: #1C2533;
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -130,3 +130,63 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this t
     background-color: #FFD700;
 }
 
+/*hover activo para se selecciona una opcions*/
+.nav-link.active {
+    color: #FFD700;
+    background-color: var(--bs-tertiary-bg);
+}
+
+.tablaProveedores th{
+    color: #F0B90B;
+    background-color: var(--bs-tertiary-bg);
+
+}
+
+.tablaProveedores th:first-child{
+    padding-left: 30px;
+}
+
+.tablaProveedores th:last-child{
+    padding-right: 30px;
+}
+
+.btnAmarillo{
+    font-size: 15px;
+    padding: 7px;
+    background-color: #F0B90B;
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    margin: 10px;
+    margin-bottom: 30px;
+}
+
+.divNewProv{
+    padding: 10px;
+}
+
+.btnGris{
+    font-size: 15px;
+    padding: 7px;
+    background-color: #1C2533;
+    color: gray;
+    border: 1px solid  #45556C;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    margin: 10px;
+    margin-bottom: 30px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+
+.editarAcciones{
+    color: white;
+}
+
+.eliminarAcciones{
+    color: #FB2C36;
+}

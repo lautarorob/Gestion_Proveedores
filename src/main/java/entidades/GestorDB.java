@@ -14,14 +14,14 @@ import jakarta.persistence.PersistenceContext;
  * @author roble
  */
 public class GestorDB {
-    @PersistenceContext(name = "com_GestionProveedores_war_1.0PU")
-    
+
+    @PersistenceContext(name = "com_GestProveedores_war_1.0PU")
     EntityManager em;
-    
+
     @RequestScoped
     @Produces
-    public EntityManager generarEM(){
+    public EntityManager generarEM() {
         return em;
     }
-    
+
 }

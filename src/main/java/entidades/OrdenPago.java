@@ -18,6 +18,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -32,7 +33,8 @@ import java.util.List;
  * @author roble
  */
 @Entity
-@Table(name = "ordenes_pago")
+@Table(name = "ordenes_pago", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"nro_orden"})})
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "OrdenPago.findAll", query = "SELECT o FROM OrdenPago o"),

@@ -1,4 +1,4 @@
-package com.gestionproveedores;
+package com.gestproveedores;
 
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;

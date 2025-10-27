@@ -4,6 +4,7 @@
  */
 package entidades;
 
+import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -12,6 +13,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -35,7 +37,10 @@ public class FacturaProducto implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected FacturaProductoPK facturaProductoPK;
-    private Integer cantidad;
+    @Basic(optional = false)
+    @NotNull
+    @Column(nullable = false)
+    private int cantidad;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "precio_unitario", precision = 10, scale = 2)
     private BigDecimal precioUnitario;
@@ -55,6 +60,11 @@ public class FacturaProducto implements Serializable {
         this.facturaProductoPK = facturaProductoPK;
     }
 
+    public FacturaProducto(FacturaProductoPK facturaProductoPK, int cantidad) {
+        this.facturaProductoPK = facturaProductoPK;
+        this.cantidad = cantidad;
+    }
+
     public FacturaProducto(int idFactura, int idProducto) {
         this.facturaProductoPK = new FacturaProductoPK(idFactura, idProducto);
     }
@@ -67,11 +77,11 @@ public class FacturaProducto implements Serializable {
         this.facturaProductoPK = facturaProductoPK;
     }
 
-    public Integer getCantidad() {
+    public int getCantidad() {
         return cantidad;
     }
 
-    public void setCantidad(Integer cantidad) {
+    public void setCantidad(int cantidad) {
         this.cantidad = cantidad;
     }
 

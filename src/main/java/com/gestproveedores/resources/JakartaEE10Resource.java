@@ -1,4 +1,4 @@
-package com.gestionproveedores.resources;
+package com.gestproveedores.resources;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;

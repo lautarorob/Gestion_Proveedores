@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                template="./../template/layout.xhtml"
+                xmlns:f="jakarta.faces.core"
+                xmlns:h="jakarta.faces.html">
+
+    <ui:define name="contenido">
+        <f:view>
+            <h:form>
+
+                <h3><strong>Proveedores</strong></h3>
+
+                <h:commandButton value=" + Dar de alta proveedor" action="/proveedores/nuevo.xhtml" styleClass="btnAmarillo"/>
+
+                <h:dataTable value="#{controladorProveedor.listar()}" var="item" styleClass="tablaProveedores">
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="RazonSocial" style="margin-right: 50px"/>
+                        </f:facet>
+                        <h:outputText value="#{item.razonSocial}" style="margin-right: 50px"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Cuit" style="margin-right: 50px"/>
+                        </f:facet>
+                        <h:outputText value="#{item.cuit}" style="margin-right: 50px"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="NombreComercial" style="margin-right: 50px"/>
+                        </f:facet>
+                        <h:outputText value="#{item.nombreComercial}" style="margin-right: 50px"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Telefono" style="margin-right: 50px"/>
+                        </f:facet>
+                        <h:outputText value="#{item.telefono}" style="margin-right: 50px"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Email" style="margin-right: 50px"/>
+                        </f:facet>
+                        <h:outputText value="#{item.email}" style="margin-right: 50px"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Estado" style="margin-right: 50px"/>
+                        </f:facet>
+                        <h:outputText value="#{item.estado}" style="margin-right: 50px"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="TipoIva" style="margin-right: 50px"/>
+                        </f:facet>
+                        <h:outputText value="#{item.tipoIva}" style="margin-right: 50px"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Acciones"/>
+                        </f:facet>
+                        <h:link class="editarAcciones" outcome="/proveedores/editar.xhtml" style="margin-right: 10px">
+                            <f:param name="id" value="#{item.idProveedor}"/>
+                            <i class="bi bi-pencil"></i>
+                        </h:link>
+                        <h:commandLink class="eliminarAcciones" action="#{controladorProveedor.eliminar(item.idProveedor)}" onclick="return confirm('¿Confirma que desea eliminar?')">
+                            <i class="bi bi-trash3"></i>
+                        </h:commandLink>
+                    </h:column>
+
+                </h:dataTable>
+            </h:form>
+        </f:view>
+    </ui:define>
+
+</ui:composition>
