@@ -29,6 +29,20 @@ public class repoProveedor {
         }
     }
 
+    public void BajaLogica(Integer id) {
+        porId(id).ifPresent(p -> {
+            p.setEstado(false);
+            em.merge(p);
+        });
+    }
+    
+    public void Reactivar(Integer id) {
+        porId(id).ifPresent(p -> {
+            p.setEstado(true);
+            em.merge(p);
+        });
+    }
+
     public void Eliminar(Integer id) {
         porId(id).ifPresent(p -> {
             em.remove(p);

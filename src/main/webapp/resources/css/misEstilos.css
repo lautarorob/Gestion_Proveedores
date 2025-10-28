@@ -139,7 +139,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this t
 .tablaProveedores th{
     color: #F0B90B;
     background-color: var(--bs-tertiary-bg);
+    text-align: center;
+}
 
+.tablaProveedores td{
+    text-align: center;
 }
 
 .tablaProveedores th:first-child{
@@ -182,11 +186,24 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this t
     padding-left: 10px;
 }
 
-
 .editarAcciones{
     color: white;
 }
 
 .eliminarAcciones{
     color: #FB2C36;
+}
+
+.reactivaAcciones{
+    display: flex; /* <-- Añade esto */
+    justify-content: center; /* Esto ahora centrará horizontalmente */
+    color: #03FC77;
+    width: 100%;
+}
+
+
+.botonesAcciones{
+    display: flex;
+    justify-content: center;
+    width: 100%;
 }

@@ -2,10 +2,87 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="jakarta.faces.facelets"
-                template="./../template/layout.xhtml">
+                template="./../template/layout.xhtml"
+                xmlns:f="jakarta.faces.core"
+                xmlns:h="jakarta.faces.html"
+                xmlns:pt="jakarta.faces.passthrough">
+
+    <f:metadata>
+        <f:viewParam name="id" value="#{controladorProveedor.id}"/>
+    </f:metadata>
 
     <ui:define name="contenido">
-        contenido
+        <f:view>
+
+            <h:form id="formulario" onsubmit="return validarFormulario()">
+                <h2>Editar Proveedor</h2>
+                <p class="letraChica">Actualice los datos del proveedor</p>
+                <div class="row">
+                    
+                    <div>
+                        <h:inputHidden value="#{controladorProveedor.proveedor.idProveedor}"/>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <h:inputText id="razonSocial" 
+                                     value="#{controladorProveedor.proveedor.razonSocial}" 
+                                     required="true"
+                                     pt:placeholder="Razón Social" 
+                                     styleClass="form-control" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <h:inputText id="cuit" 
+                                     value="#{controladorProveedor.proveedor.cuit}" 
+                                     required="true" 
+                                     pt:placeholder="CUIT"
+                                     styleClass="form-control" />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <h:inputText id="nombreComercial" 
+                                     value="#{controladorProveedor.proveedor.nombreComercial}" 
+                                     pt:placeholder="Nombre Comercial"
+                                     styleClass="form-control" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <h:inputText id="telefono" 
+                                     value="#{controladorProveedor.proveedor.telefono}" 
+                                     pt:placeholder="Teléfono"
+                                     styleClass="form-control" />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <h:inputText id="email" 
+                                     value="#{controladorProveedor.proveedor.email}" 
+                                     pt:placeholder="Email"
+                                     styleClass="form-control" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <h:selectOneMenu id="tipoIva" value="#{controladorProveedor.proveedor.tipoIva}" styleClass="form-control select-con-icono">
+                            <f:selectItem itemLabel="--Tipo de IVA--" itemValue="" noSelectionOption="true"/>
+                            <f:selectItem itemLabel="Monotributo" itemValue="Monotributo"/>
+                            <f:selectItem itemLabel="Responsable Inscripto" itemValue="Responsable Inscripto"/>
+                            <f:selectItem itemLabel="Excento" itemValue="Excento"/>
+                        </h:selectOneMenu>
+                    </div>
+                </div>
+
+                <div class="col-12 mb-3">
+                    <div class="form-check">
+                        <h:selectBooleanCheckbox id="estado" 
+                                                 value="#{controladorProveedor.proveedor.estado}" 
+                                                 styleClass="form-check-input" />
+                        <label class="form-check-label" for="formulario:estado">
+                            Activo
+                        </label>
+                    </div>
+                </div>
+                <h:commandButton value="Cancelar" action="/proveedores/index.xhtml" styleClass="btnGris"/>
+                <h:commandButton value="Guardar Proveedor" 
+                                 action="#{controladorProveedor.guardar}" 
+                                 styleClass="btnAmarillo" />
+            </h:form>
+        </f:view>
     </ui:define>
 
 </ui:composition>
