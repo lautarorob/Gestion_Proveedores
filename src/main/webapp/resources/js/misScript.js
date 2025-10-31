@@ -4,7 +4,7 @@
  */
 
 
-function validarFormulario() {
+function validarProveedor() {
     //objetos
     const razonSocialObj = document.getElementById("formulario:razonSocial");
     const cuitObj = document.getElementById("formulario:cuit");
@@ -72,5 +72,59 @@ function validarFormulario() {
     }
 
     return isValid;
+}
+
+function validarProducto(){
+    //objetos
+    const codProdObj = document.getElementById("formulario:codProd");
+    const descripcionObj = document.getElementById("formulario:descripcion");
+    const nombreObj = document.getElementById("formulario:nombre");
+    const precioReferenciaObj = document.getElementById("formulario:precioReferencia");
+    const unidadMedidaObj = document.getElementById("formulario:unidadMedida");
+    const idProveedorObj = document.getElementById("formulario:idProveedor");
+
+    const codProd = codProdObj.value.trim();
+    const descripcion = descripcionObj.value.trim();
+    const nombre = nombreObj.value.trim();
+    const precioReferencia = precioReferenciaObj.value.trim();
+    const unidadMedida = unidadMedidaObj.value.trim();
+    const idProveedor = idProveedorObj.value.trim();
+    
+    let isValid = true;
+
+
+    if (codProd === "") {
+        alert("Falta codProd");
+        isValid = false;
+    }
+
+    if (descripcion === "") {
+        alert("Falta descripcion");
+        isValid = false;
+    }
+
+    if (nombre === "") {
+        alert("Falta nombre");
+        isValid = false;
+    }
+
+    if (precioReferencia === "") {
+        alert("Falta precioReferencia");
+        isValid = false;
+    }
+
+    if (unidadMedida === "") {
+        alert("Falta unidadMedida");
+        isValid = false;
+    }
+    
+    if (idProveedor === "") {
+        alert("Falta idProveedor");
+        isValid = false;
+    }
+
+    return isValid;
+    
+    
 }
 

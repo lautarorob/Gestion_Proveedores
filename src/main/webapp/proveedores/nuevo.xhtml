@@ -8,14 +8,16 @@
                 xmlns:pt="jakarta.faces.passthrough">
 
     <ui:define name="contenido">
-         <f:view>
+        <f:view>
 
-             <h:form id="formulario" onsubmit="return validarFormulario()">
+            <h:form id="formulario">
                 <h2>Nuevo Proveedor</h2>
-                <p class="letraChica">Rellene los siguientes campos para registrar un nuevo proveedor</p>
+                <p style="font-size: 12px;
+                   color: #808080;">Rellene los siguientes campos para registrar un nuevo proveedor</p>
                 <div class="row">
 
                     <div class="col-md-6 mb-3">
+                        <label>Razon Social</label>
                         <h:inputText id="razonSocial" 
                                      value="#{controladorProveedor.proveedor.razonSocial}" 
                                      required="true"
@@ -23,33 +25,38 @@
                                      styleClass="form-control" />
                     </div>
                     <div class="col-md-6 mb-3">
+                        <label>CUIT</label>
                         <h:inputText id="cuit" 
                                      value="#{controladorProveedor.proveedor.cuit}" 
                                      required="true" 
-                                     pt:placeholder="CUIT"
+                                     pt:placeholder="XX-12345678-X"
                                      styleClass="form-control" />
                     </div>
 
                     <div class="col-md-6 mb-3">
+                        <label>Nombre Comercial</label>
                         <h:inputText id="nombreComercial" 
                                      value="#{controladorProveedor.proveedor.nombreComercial}" 
                                      pt:placeholder="Nombre Comercial"
                                      styleClass="form-control" />
                     </div>
                     <div class="col-md-6 mb-3">
+                        <label>Telefono/Fijo</label>
                         <h:inputText id="telefono" 
                                      value="#{controladorProveedor.proveedor.telefono}" 
-                                     pt:placeholder="Teléfono"
+                                     pt:placeholder="+543851234567"
                                      styleClass="form-control" />
                     </div>
 
                     <div class="col-md-6 mb-3">
+                        <label>Email</label>
                         <h:inputText id="email" 
                                      value="#{controladorProveedor.proveedor.email}" 
-                                     pt:placeholder="Email"
+                                     pt:placeholder="example@example.example"
                                      styleClass="form-control" />
                     </div>
                     <div class="col-md-6 mb-3">
+                        <label>IVA</label>
                         <h:selectOneMenu id="tipoIva" value="#{controladorProveedor.proveedor.tipoIva}" styleClass="form-control select-con-icono">
                             <f:selectItem itemLabel="--Tipo de IVA--" itemValue="" noSelectionOption="true"/>
                             <f:selectItem itemLabel="Monotributo" itemValue="Monotributo"/>
@@ -64,10 +71,13 @@
                                        pt:placeholder="Estado"/>
                     </div>
                 </div>
-                <h:commandButton value="Cancelar" action="/proveedores/index.xhtml" styleClass="btnGris"/>
+                <h:commandButton value="Cancelar" action="/proveedores/index.xhtml?faces-redirect=true"
+                                 styleClass="btnGris"
+                                 immediate="true"/>
                 <h:commandButton value="Guardar Proveedor" 
                                  action="#{controladorProveedor.guardar}" 
-                                 styleClass="btnAmarillo" />
+                                 styleClass="btnAmarillo"
+                                 onclick="return validarProveedor()"/>
             </h:form>
         </f:view>
     </ui:define>

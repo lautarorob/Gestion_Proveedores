@@ -2,10 +2,107 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="jakarta.faces.facelets"
-                template="./../template/layout.xhtml">
+                template="./../template/layout.xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:pt="jakarta.faces.passthrough"
+                xmlns:f="jakarta.faces.core">
+
+    <f:metadata>
+        <f:viewParam name="id" value="#{controladorProducto.id}"/>
+    </f:metadata>
 
     <ui:define name="contenido">
-        contenido
+        <f:view>
+            <h:form id="formulario">
+                <h2>Editar Producto</h2>
+                <p style="font-size: 12px;
+                   color: #808080;">Actualice los datos del producto</p>
+                <div class="row">
+
+                    <div>
+                        <h:inputHidden value="#{controladorProducto.producto.idProducto}"/>
+                    </div>
+
+                    <div>
+                        <h:inputHidden id="codProd" 
+                                       value="#{controladorProducto.producto.codProd}" 
+                                       />
+                    </div>
+                    <div></div>
+
+                    <div class="col-md-12 mb-3">
+                        <label>Descripcion</label>
+                        <h:inputTextarea id="descripcion"
+                                         value="#{controladorProducto.producto.descripcion}" 
+                                         pt:placeholder="Ingrese la descripcion"
+                                         styleClass="form-control" />
+                    </div>
+                    <div></div>
+
+                    <div class="col-md-6 mb-3">
+                        <label>Nombre</label>
+                        <h:inputText id="nombre" 
+                                     value="#{controladorProducto.producto.nombre}" 
+                                     required="true" 
+                                     pt:placeholder=" Ingrese el nombre comercial"
+                                     styleClass="form-control" />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label>PrecioReferencia</label>
+                        <h:inputText id="precioReferencia" 
+                                     value="#{controladorProducto.producto.precioReferencia}" 
+                                     pt:placeholder=" Ingrese el precio de referencia"
+                                     styleClass="form-control" />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label>Unidad de medida</label>
+                        <h:selectOneMenu id="unidadMedida" value="#{controladorProducto.producto.unidadMedida}" styleClass="form-control select-con-icono">
+                            <f:selectItem itemLabel="Unidad de medida" itemValue="" noSelectionOption="true"/>
+                            <f:selectItem itemLabel="MiliLitro" itemValue="MiliLitro"/>
+                            <f:selectItem itemLabel="Litro" itemValue="Litro"/>
+                            <f:selectItem itemLabel="Gramo" itemValue="Gramo"/>
+                            <f:selectItem itemLabel="Kilo" itemValue="Kilo"/>
+                        </h:selectOneMenu>
+                    </div>
+
+
+
+                    <div class="col-md-6 mb-3">
+                        <label>Proveedor Habitual</label>
+                        <h:selectOneMenu id="idProveedor"
+                                         value="#{controladorProducto.producto.idProveedor}"
+                                         converter="proveedorConverter"
+                                         styleClass="form-control select-con-icono">
+                            <f:selectItem itemLabel="Proveedor Habitual" itemValue="#{null}"/>
+                            <f:selectItems value="#{controladorProducto.listaProveedores}"
+                                           var="prov"
+                                           itemLabel="#{prov.razonSocial}"
+                                           itemValue="#{prov}" />
+                        </h:selectOneMenu>
+                    </div>
+
+                    <div class="col-12 mb-3">
+                        <div class="form-check">
+                            <h:selectBooleanCheckbox id="estado" 
+                                                     value="#{controladorProducto.producto.estado}" 
+                                                     styleClass="form-check-input" />
+                            <label class="form-check-label" for="formulario:estado">
+                                Activo
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <h:commandButton value="Cancelar" action="/productos/index.xhtml?faces-redirect=true"
+                                 styleClass="btnGris"
+                                 immediate="true"/>
+                <h:commandButton value="Guardar Producto" 
+                                 action="#{controladorProducto.guardar}" 
+                                 styleClass="btnAmarillo"
+                                 onclick="return validarProducto()"/>
+            </h:form>
+        </f:view>
     </ui:define>
 
 </ui:composition>

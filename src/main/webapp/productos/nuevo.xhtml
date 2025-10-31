@@ -11,46 +11,50 @@
 
         <f:view>
 
-            <h1><h:outputText value="Create/Edit"/></h1>
-
             <h:form id="formulario">
-                <h2>Nuevo Proveedor</h2>
-                <p class="letraChica">Rellene los siguientes campos para registrar un nuevo proveedor</p>
+                <h2>Nuevo Producto</h2>
+                <p style="font-size: 12px;
+                   color: #808080;">Rellene los siguientes campos para registrar un nuevo producto</p>
                 <div class="row">
 
                     <div class="col-md-6 mb-3">
+                        <label>Cod.Producto</label>
                         <h:inputText id="codProd" 
                                      value="#{controladorProducto.producto.codProd}" 
                                      required="true"
-                                     pt:placeholder="Cod.Producto" 
+                                     pt:placeholder="Ingrese el codigo" 
                                      styleClass="form-control" />
                     </div>
                     <div></div>
 
                     <div class="col-md-12 mb-3">
+                        <label>Descripcion</label>
                         <h:inputTextarea id="descripcion"
                                          value="#{controladorProducto.producto.descripcion}" 
-                                         pt:placeholder="Descripcion"
+                                         pt:placeholder="Ingrese la descripcion"
                                          styleClass="form-control" />
                     </div>
                     <div></div>
 
                     <div class="col-md-6 mb-3">
+                        <label>Nombre</label>
                         <h:inputText id="nombre" 
                                      value="#{controladorProducto.producto.nombre}" 
                                      required="true" 
-                                     pt:placeholder="Nombre"
+                                     pt:placeholder=" Ingrese el nombre comercial"
                                      styleClass="form-control" />
                     </div>
 
                     <div class="col-md-6 mb-3">
+                        <label>PrecioReferencia</label>
                         <h:inputText id="precioReferencia" 
                                      value="#{controladorProducto.producto.precioReferencia}" 
-                                     pt:placeholder="PrecioReferencia"
+                                     pt:placeholder=" Ingrese el precio de referencia"
                                      styleClass="form-control" />
                     </div>
 
                     <div class="col-md-6 mb-3">
+                        <label>Unidad de medida</label>
                         <h:selectOneMenu id="unidadMedida" value="#{controladorProducto.producto.unidadMedida}" styleClass="form-control select-con-icono">
                             <f:selectItem itemLabel="Unidad de medida" itemValue="" noSelectionOption="true"/>
                             <f:selectItem itemLabel="MiliLitro" itemValue="MiliLitro"/>
@@ -63,6 +67,7 @@
 
 
                     <div class="col-md-6 mb-3">
+                        <label>Proveedor Habitual</label>
                         <h:selectOneMenu id="idProveedor"
                                          value="#{controladorProducto.producto.idProveedor}"
                                          converter="proveedorConverter"
@@ -82,10 +87,13 @@
                                        pt:placeholder="Estado"/>
                     </div>
                 </div>
-                <h:commandButton value="Cancelar" action="/productos/index.xhtml" styleClass="btnGris"/>
+                <h:commandButton value="Cancelar" action="/productos/index.xhtml?faces-redirect=true"
+                                 styleClass="btnGris"
+                                 immediate="true"/>
                 <h:commandButton value="Guardar Producto" 
                                  action="#{controladorProducto.guardar}" 
-                                 styleClass="btnAmarillo" />
+                                 styleClass="btnAmarillo"
+                                 onclick="return validarProducto()"/>
             </h:form>
 
         </f:view>
