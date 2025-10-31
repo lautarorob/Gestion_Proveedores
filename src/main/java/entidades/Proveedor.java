@@ -68,7 +68,7 @@ public class Proveedor implements Serializable {
     @Size(max = 100)
     @Column(length = 100)
     private String email;
-    private Boolean estado;
+    private Boolean estado = true;
     @Size(max = 50)
     @Column(name = "tipo_iva", length = 50)
     private String tipoIva;

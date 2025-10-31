@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                template="./../template/layout.xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:pt="jakarta.faces.passthrough">
+
+    <ui:define name="contenido">
+
+        <f:view>
+
+            <h1><h:outputText value="Create/Edit"/></h1>
+
+            <h:form id="formulario">
+                <h2>Nuevo Proveedor</h2>
+                <p class="letraChica">Rellene los siguientes campos para registrar un nuevo proveedor</p>
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+                        <h:inputText id="codProd" 
+                                     value="#{controladorProducto.producto.codProd}" 
+                                     required="true"
+                                     pt:placeholder="Cod.Producto" 
+                                     styleClass="form-control" />
+                    </div>
+                    <div></div>
+
+                    <div class="col-md-12 mb-3">
+                        <h:inputTextarea id="descripcion"
+                                         value="#{controladorProducto.producto.descripcion}" 
+                                         pt:placeholder="Descripcion"
+                                         styleClass="form-control" />
+                    </div>
+                    <div></div>
+
+                    <div class="col-md-6 mb-3">
+                        <h:inputText id="nombre" 
+                                     value="#{controladorProducto.producto.nombre}" 
+                                     required="true" 
+                                     pt:placeholder="Nombre"
+                                     styleClass="form-control" />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <h:inputText id="precioReferencia" 
+                                     value="#{controladorProducto.producto.precioReferencia}" 
+                                     pt:placeholder="PrecioReferencia"
+                                     styleClass="form-control" />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <h:selectOneMenu id="unidadMedida" value="#{controladorProducto.producto.unidadMedida}" styleClass="form-control select-con-icono">
+                            <f:selectItem itemLabel="Unidad de medida" itemValue="" noSelectionOption="true"/>
+                            <f:selectItem itemLabel="MiliLitro" itemValue="MiliLitro"/>
+                            <f:selectItem itemLabel="Litro" itemValue="Litro"/>
+                            <f:selectItem itemLabel="Gramo" itemValue="Gramo"/>
+                            <f:selectItem itemLabel="Kilo" itemValue="Kilo"/>
+                        </h:selectOneMenu>
+                    </div>
+
+
+
+                    <div class="col-md-6 mb-3">
+                        <h:selectOneMenu id="idProveedor"
+                                         value="#{controladorProducto.producto.idProveedor}"
+                                         converter="proveedorConverter"
+                                         styleClass="form-control select-con-icono">
+                            <f:selectItem itemLabel="Proveedor Habitual" itemValue="#{null}"/>
+                            <f:selectItems value="#{controladorProducto.listaProveedores}"
+                                           var="prov"
+                                           itemLabel="#{prov.razonSocial}"
+                                           itemValue="#{prov}" />
+                        </h:selectOneMenu>
+                    </div>
+
+
+                    <div class="col-md-6 mb-3">
+                        <h:inputHidden id="estado" 
+                                       value="#{controladorProducto.producto.estado}" 
+                                       pt:placeholder="Estado"/>
+                    </div>
+                </div>
+                <h:commandButton value="Cancelar" action="/productos/index.xhtml" styleClass="btnGris"/>
+                <h:commandButton value="Guardar Producto" 
+                                 action="#{controladorProducto.guardar}" 
+                                 styleClass="btnAmarillo" />
+            </h:form>
+
+        </f:view>
+
+    </ui:define>
+
+</ui:composition>

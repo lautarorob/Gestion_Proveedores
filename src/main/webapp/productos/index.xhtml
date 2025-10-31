@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                template="./../template/layout.xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:pt="jakarta.faces.passthrough">
+
+    <ui:define name="contenido">
+
+        <f:view>
+
+            <h:form>
+
+                <h1><h:outputText value="Listado productos"/></h1>
+
+                <h:commandButton value="Nuevo" action="nuevo?faces-redirect=true" style="margin-left: 10px;"/>
+
+                <!-- BARRA DE BÚSQUEDA -->
+                <h:panelGrid columns="4" style="margin-bottom: 20px;">
+                    <h:inputText id="busqueda" 
+                                 value="#{controladorProducto.nombreBusqueda}"
+                                 size="30"
+                                 pt:placeholder="Buscar producto"
+                                 title="Nombre de producto"/>
+                    <h:selectOneMenu id="proveedor" value="#{controladorProducto.proveedorSeleccionado}">
+                        <f:selectItem itemLabel="-- Todos los proveedores --" itemValue="" />
+                        <f:selectItems value="#{controladorProducto.listaProveedores}"
+                                       var="prov"
+                                       itemLabel="#{prov.razonSocial}"
+                                       itemValue="#{prov.idProveedor}" />
+                    </h:selectOneMenu>
+                    <h:commandButton value="Buscar" 
+                                     action="#{controladorProducto.buscarProductos}"
+                                     style="margin-left: 10px;"/>
+                </h:panelGrid>
+
+                <!--LISTADO FLEXIBLE-->
+                <h:dataTable value="#{controladorProducto.listaProductos}"
+                             var="item" >
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="CodProd" style="margin-right: 50px;"/>
+                        </f:facet>
+                        <h:outputText value="#{item.codProd}" style="margin-right: 50px;"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Nombre" style="margin-right: 50px;"/>
+                        </f:facet>
+                        <h:outputText value="#{item.nombre}" style="margin-right: 50px;"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Descripcion" style="margin-right: 50px;"/>
+                        </f:facet>
+                        <h:outputText value="#{item.descripcion}" style="margin-right: 50px;"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="PrecioReferencia" style="margin-right: 50px;"/>
+                        </f:facet>
+                        <h:outputText value="#{item.precioReferencia}" style="margin-right: 50px;"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="UnidadMedida" style="margin-right: 50px;"/>
+                        </f:facet>
+                        <h:outputText value="#{item.unidadMedida}" style="margin-right: 50px;"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="IdProveedor" style="margin-right: 50px;"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idProveedor.idProveedor}" style="margin-right: 50px;"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Estado" style="margin-right: 50px;"/>
+                        </f:facet>
+                        <h:outputText value="#{item.estado ? 'Activo' : 'Inactivo'}" style="margin-right: 50px;"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Acciones" />
+                        </f:facet>
+                        <div class="botonesAcciones">
+                            <h:panelGroup rendered="#{item.estado}">
+                                <h:link class="editarAcciones" outcome="/productos/editar.xhtml" style="margin-right: 10px">
+                                    <f:param name="id" value="#{item.idProducto}" />
+                                    <i class="bi bi-pencil"></i>
+                                </h:link>
+                                <h:commandLink class="eliminarAcciones"
+                                               action="#{controladorProducto.bajaLogica(item.idProducto)}"
+                                               onclick="return confirm('¿Confirma la baja?')">
+                                    <i class="bi bi-trash3"></i>
+                                </h:commandLink>
+                            </h:panelGroup>
+                        </div>
+                        <h:commandLink  class="reactivaAcciones" rendered="#{!item.estado}"
+                                        action="#{controladorProducto.reactivar(item.idProducto)}"
+                                        onclick="return confirm('¿Confirma la reactivacion?')">
+                            <i class="bi bi-check2-circle"></i>
+                            Reactivar</h:commandLink>
+                    </h:column>
+
+                </h:dataTable>
+
+            </h:form>
+
+        </f:view>
+
+    </ui:define>
+
+</ui:composition>

@@ -41,7 +41,8 @@ import java.util.List;
     @NamedQuery(name = "Producto.findByNombre", query = "SELECT p FROM Producto p WHERE p.nombre = :nombre"),
     @NamedQuery(name = "Producto.findByDescripcion", query = "SELECT p FROM Producto p WHERE p.descripcion = :descripcion"),
     @NamedQuery(name = "Producto.findByPrecioReferencia", query = "SELECT p FROM Producto p WHERE p.precioReferencia = :precioReferencia"),
-    @NamedQuery(name = "Producto.findByUnidadMedida", query = "SELECT p FROM Producto p WHERE p.unidadMedida = :unidadMedida")})
+    @NamedQuery(name = "Producto.findByUnidadMedida", query = "SELECT p FROM Producto p WHERE p.unidadMedida = :unidadMedida"),
+    @NamedQuery(name = "Producto.findByEstado", query = "SELECT p FROM Producto p WHERE p.estado = :estado")})
 public class Producto implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -69,6 +70,7 @@ public class Producto implements Serializable {
     @Size(max = 50)
     @Column(name = "unidad_medida", length = 50)
     private String unidadMedida;
+    private Boolean estado = true;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "producto")
     private List<FacturaProducto> facturaProductoList;
     @JoinColumn(name = "id_proveedor", referencedColumnName = "id_proveedor")
@@ -177,5 +179,13 @@ public class Producto implements Serializable {
     public String toString() {
         return "entidades.Producto[ idProducto=" + idProducto + " ]";
     }
-    
+
+    public Boolean getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Boolean estado) {
+        this.estado = estado;
+    }
+
 }
