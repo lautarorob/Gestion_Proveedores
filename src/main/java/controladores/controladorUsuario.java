@@ -23,7 +23,7 @@ import repositorios.repoUsuario;
  */
 @Named(value = "controladorUsuario")
 @SessionScoped
-public class controladorUsuario implements Serializable{
+public class controladorUsuario implements Serializable {
 
     @Inject
     private repoUsuario repoUsuario;
@@ -38,7 +38,10 @@ public class controladorUsuario implements Serializable{
     @Model
     @Produces
     public Usuario usuario() {
-        System.out.println("id" + id);
+        if (usuario != null) {
+            return usuario; // Si ya hay un usuario en sesión, retornarlo
+        }
+
         if (id != null && id > 0) {
             repoUsuario.porId(id).ifPresent(u -> {
                 usuario = u;
@@ -92,10 +95,11 @@ public class controladorUsuario implements Serializable{
 
     public String login() {
         FacesContext context = FacesContext.getCurrentInstance();
-
         Usuario encontrado = repoUsuario.login(usuario.getUsername(), usuario.getPassword());
 
         if (encontrado != null) {
+            this.usuario = encontrado;
+
             context.addMessage(null, new FacesMessage(
                     FacesMessage.SEVERITY_INFO,
                     "Bienvenido",

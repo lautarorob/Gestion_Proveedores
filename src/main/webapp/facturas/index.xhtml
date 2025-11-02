@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                template="./../template/layout.xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core">
+
+    <ui:define name="contenido">
+        <f:view>
+
+            <h:form>
+
+                <h3><strong>Gestión de Facturas - Impagas</strong></h3>
+
+                <h:dataTable value="#{controladorFactura.listar()}" var="item">
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="FechaRegistro" style="margin-right: 50px"/>
+                        </f:facet>
+                        <h:outputText value="#{item.fechaRegistro}" style="margin-right: 50px">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="FechaComprobante" style="margin-right: 50px"/>
+                        </f:facet>
+                        <h:outputText value="#{item.fechaComprobante}" style="margin-right: 50px">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Tipo" style="margin-right: 50px"/>
+                        </f:facet>
+                        <h:outputText value="#{item.tipo}" style="margin-right: 50px"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="NroComprobante" style="margin-right: 50px"/>
+                        </f:facet>
+                        <h:outputText value="#{item.nroComprobante}" style="margin-right: 50px"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Subtotal" style="margin-right: 50px"/>
+                        </f:facet>
+                        <h:outputText value="#{item.subtotal}" style="margin-right: 50px"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Iva" style="margin-right: 50px"/>
+                        </f:facet>
+                        <h:outputText value="#{item.iva}" style="margin-right: 50px"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Total" style="margin-right: 50px"/>
+                        </f:facet>
+                        <h:outputText value="#{item.total}" style="margin-right: 50px"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="FormaPago" style="margin-right: 50px"/>
+                        </f:facet>
+                        <h:outputText value="#{item.formaPago}" style="margin-right: 50px"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Estado" style="margin-right: 50px"/>
+                        </f:facet>
+                        <h:outputText value="#{item.estado}" style="margin-right: 50px"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="IdOrdenPago" style="margin-right: 50px"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idOrdenPago}" style="margin-right: 50px"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="IdProveedor" style="margin-right: 50px"/>
+                        </f:facet>
+                        <h:outputText value="#{item.idProveedor}" style="margin-right: 50px"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Acciones" style="margin-right: 50px"/>
+                        </f:facet>
+                        <h:link class="editarAcciones" outcome="/facturas/editar.xhtml" style="margin-right: 10px">
+                            <f:param name="id" value="#{item.idFactura}" />
+                            <i class="bi bi-pencil"></i>
+                        </h:link>
+                    </h:column>
+
+                </h:dataTable>
+
+            </h:form>
+
+        </f:view>
+
+    </ui:define>
+
+</ui:composition>
