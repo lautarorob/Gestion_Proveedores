@@ -9,6 +9,7 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,7 +17,7 @@ import java.util.Optional;
  *
  * @author roble
  */
-public class repoUsuario {
+public class repoUsuario implements Serializable{
 
     @Inject
     EntityManager em;

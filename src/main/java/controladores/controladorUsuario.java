@@ -7,11 +7,13 @@ package controladores;
 import entidades.Usuario;
 import jakarta.inject.Named;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.SessionScoped;
 import jakarta.enterprise.inject.Model;
 import jakarta.enterprise.inject.Produces;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
+import java.io.Serializable;
 import java.util.List;
 import repositorios.repoUsuario;
 
@@ -20,8 +22,8 @@ import repositorios.repoUsuario;
  * @author roble
  */
 @Named(value = "controladorUsuario")
-@RequestScoped
-public class controladorUsuario {
+@SessionScoped
+public class controladorUsuario implements Serializable{
 
     @Inject
     private repoUsuario repoUsuario;
