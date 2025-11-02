@@ -13,6 +13,9 @@
 
                 <h3><strong>Gestión de Facturas - Impagas</strong></h3>
 
+                <h:commandButton value=" + Registrar Factura" action="/facturas/nuevo.xhtml"
+                                 styleClass="btnAmarillo" />
+
                 <h:dataTable value="#{controladorFactura.listar()}" var="item">
 
                     <h:column>

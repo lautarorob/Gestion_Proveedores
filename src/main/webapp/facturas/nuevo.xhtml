@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                template="./../template/layout.xhtml"
+                xmlns:f="jakarta.faces.core"
+                xmlns:h="jakarta.faces.html"
+                xmlns:pt="jakarta.faces.passthrough">
+
+    <ui:define name="contenido">
+
+        <f:view>
+            <h:form id="formulario">
+                <h3><strong>Nueva Facturas</strong></h3>
+
+                <p style="font-size: 12px;
+                   color: #808080;">Rellene los siguientes campos para registrar una nueva factura</p>
+                <div class="row">
+                    
+                    <div class="col-md-6 mb-3">
+                        <label>Proveedor</label>
+                        <h:selectOneMenu id="idProveedor"
+                                         value="#{controladorFactura.factura.idProveedor}"
+                                         converter="proveedorConverter"
+                                         styleClass="form-control select-con-icono">
+                            <f:selectItem itemLabel="Seleccione un proveedor" itemValue="#{null}"/>
+                            <f:selectItems value="#{controladorProducto.listaProveedores}"
+                                           var="prov"
+                                           itemLabel="#{prov.razonSocial}"
+                                           itemValue="#{prov}" />
+                        </h:selectOneMenu>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label>Fecha de Registro</label>
+                        <label>Razon Social</label>
+                        <h:inputText id="fechaRegsitro" 
+                                     value="#{controladorFactura.factura.fechaRegistro}" 
+                                     required="true"
+                                     pt:placeholder="" 
+                                     styleClass="form-control" />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label>Fecha de Comprobante</label>
+                        <h:inputText id="fechaComprobante" 
+                                     value="#{controladorFactura.factura.fechaComprobante}" 
+                                     required="true" 
+                                     pt:placeholder="XX/XX/XXXX"
+                                     styleClass="form-control" />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label>Tipo de Factura</label>
+                        <h:selectOneMenu id="tipo" value="#{controladorFactura.factura.tipo}" styleClass="form-control select-con-icono">
+                            <f:selectItem itemLabel="Seleccion tipo" itemValue="" noSelectionOption="true"/>
+                            <f:selectItem itemLabel="A" itemValue="A"/>
+                            <f:selectItem itemLabel="B" itemValue="B"/>
+                            <f:selectItem itemLabel="C" itemValue="C"/>
+                        </h:selectOneMenu>
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <label>Número de Comprobante</label>
+                        <h:inputText id="nroComprobante" 
+                                     value="#{controladorFactura.factura.nroComprobante}" 
+                                     pt:placeholder="XXXX-XXXXXXXX"
+                                     styleClass="form-control" />
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <label>Forma de Pago</label>
+                        <h:selectOneMenu id="formaPago" value="#{controladorFactura.factura.formaPago}" styleClass="form-control select-con-icono">
+                            <f:selectItem itemLabel="Forma de Pago" itemValue="" noSelectionOption="true"/>
+                            <f:selectItem itemLabel="Contado" itemValue="Contado"/>
+                            <f:selectItem itemLabel="Cuenta Corriente" itemValue="Cuenta Corriente"/>
+                        </h:selectOneMenu>
+                    </div>
+
+
+                    <div class="col-md-6 mb-3">
+                        <h:inputHidden id="estado" 
+                                       value="#{controladorFactura.factura.estado}" 
+                                       pt:placeholder="Estado"/>
+                    </div>
+                </div>
+                <h:commandButton value="Cancelar" action="/proveedores/index.xhtml?faces-redirect=true"
+                                 styleClass="btnGris"
+                                 immediate="true"/>
+                <h:commandButton value="Guardar Proveedor" 
+                                 action="#{controladorFactura.guardar}" 
+                                 styleClass="btnAmarillo"
+                                 onclick="return validarProveedor()"/>
+
+            </h:form>
+        </f:view>
+
+
+    </ui:define>
+
+</ui:composition>
