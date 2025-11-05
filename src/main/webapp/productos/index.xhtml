@@ -15,16 +15,18 @@
 
                 <h1><h:outputText value="Listado productos"/></h1>
 
-                <h:commandButton value="Nuevo" action="nuevo?faces-redirect=true" style="margin-left: 10px;"/>
+                <h:commandButton value="+ Dar de Alta Producto" action="nuevo?faces-redirect=true" style="margin-left: 10px;" styleClass="btnAmarillo"/>
 
                 <!-- BARRA DE BÚSQUEDA -->
                 <h:panelGrid columns="4" style="margin-bottom: 20px;">
                     <h:inputText id="busqueda" 
                                  value="#{controladorProducto.nombreBusqueda}"
                                  size="30"
+                                 styleClass="form-control"
                                  pt:placeholder="Buscar producto"
                                  title="Nombre de producto"/>
-                    <h:selectOneMenu id="proveedor" value="#{controladorProducto.proveedorSeleccionado}">
+                <!-- BARRA DE Filtrado -->      
+                    <h:selectOneMenu id="proveedor" value="#{controladorProducto.proveedorSeleccionado}" styleClass="form-select">
                         <f:selectItem itemLabel="-- Todos los proveedores --" itemValue="" />
                         <f:selectItems value="#{controladorProducto.listaProveedores}"
                                        var="prov"
@@ -38,7 +40,7 @@
 
                 <!--LISTADO FLEXIBLE-->
                 <h:dataTable value="#{controladorProducto.listaProductos}"
-                             var="item" >
+                             var="item" styleClass="tablaProveedores">
 
                     <h:column>
                         <f:facet name="header">

@@ -14,6 +14,7 @@ import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -31,7 +32,9 @@ import java.math.BigDecimal;
     @NamedQuery(name = "FacturaProducto.findByIdProducto", query = "SELECT f FROM FacturaProducto f WHERE f.facturaProductoPK.idProducto = :idProducto"),
     @NamedQuery(name = "FacturaProducto.findByCantidad", query = "SELECT f FROM FacturaProducto f WHERE f.cantidad = :cantidad"),
     @NamedQuery(name = "FacturaProducto.findByPrecioUnitario", query = "SELECT f FROM FacturaProducto f WHERE f.precioUnitario = :precioUnitario"),
+    @NamedQuery(name = "FacturaProducto.findByDescripcion", query = "SELECT p FROM FacturaProducto p WHERE p.descripcion = :descripcion"),
     @NamedQuery(name = "FacturaProducto.findBySubtotal", query = "SELECT f FROM FacturaProducto f WHERE f.subtotal = :subtotal")})
+
 public class FacturaProducto implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -49,6 +52,9 @@ public class FacturaProducto implements Serializable {
     @JoinColumn(name = "id_factura", referencedColumnName = "id_factura", nullable = false, insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Factura factura;
+    @Size(max = 255)
+    @Column(length = 255)
+    private String descripcion;
     @JoinColumn(name = "id_producto", referencedColumnName = "id_producto", nullable = false, insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Producto producto;
@@ -67,6 +73,14 @@ public class FacturaProducto implements Serializable {
 
     public FacturaProducto(int idFactura, int idProducto) {
         this.facturaProductoPK = new FacturaProductoPK(idFactura, idProducto);
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
     public FacturaProductoPK getFacturaProductoPK() {
@@ -141,5 +155,5 @@ public class FacturaProducto implements Serializable {
     public String toString() {
         return "entidades.FacturaProducto[ facturaProductoPK=" + facturaProductoPK + " ]";
     }
-    
+
 }

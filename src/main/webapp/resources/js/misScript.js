@@ -53,7 +53,7 @@ function validarProveedor() {
     if (telefono === "") {
         alert("Falta telefono");
         isValid = false;
-    }else if (!regexTelefono.test(telefono)) {
+    } else if (!regexTelefono.test(telefono)) {
         alert("Telefono Invalido");
         isValid = false;
     }
@@ -65,7 +65,7 @@ function validarProveedor() {
         alert("Email Invalido");
         isValid = false;
     }
-    
+
     if (tipoIVA === "") {
         alert("Falta tipoIVA");
         isValid = false;
@@ -74,7 +74,7 @@ function validarProveedor() {
     return isValid;
 }
 
-function validarProducto(){
+function validarProducto() {
     //objetos
     const codProdObj = document.getElementById("formulario:codProd");
     const descripcionObj = document.getElementById("formulario:descripcion");
@@ -89,7 +89,7 @@ function validarProducto(){
     const precioReferencia = precioReferenciaObj.value.trim();
     const unidadMedida = unidadMedidaObj.value.trim();
     const idProveedor = idProveedorObj.value.trim();
-    
+
     let isValid = true;
 
 
@@ -117,14 +117,129 @@ function validarProducto(){
         alert("Falta unidadMedida");
         isValid = false;
     }
-    
+
     if (idProveedor === "") {
         alert("Falta idProveedor");
         isValid = false;
     }
 
     return isValid;
-    
-    
+
+
 }
 
+// facturaProducto.js
+
+// Mapa para almacenar los productos
+var productosMap = {};
+
+// Función para inicializar el mapa de productos
+function initProductosMap(productos) {
+    productosMap = {};
+    productos.forEach(function (prod) {
+        productosMap[prod.id] = {
+            descripcion: prod.descripcion,
+            precioReferencia: prod.precioReferencia
+        };
+    });
+    console.log('Productos cargados:', productosMap);
+}
+
+// FUNCIÓN usando data attributes
+function actualizarDescripcionDirecta(selectElement) {
+    console.log('=== actualizarDescripcionDirecta llamado ===');
+    
+    var inputDescripcion = document.getElementById('formulario:descripcion');
+    var inputPrecio = document.getElementById('formulario:precioUnitario');
+
+    if (selectElement && selectElement.selectedIndex > 0) {
+        var optionSeleccionada = selectElement.options[selectElement.selectedIndex];
+        
+        // Intentar obtener del atributo title (itemDescription)
+        var descripcionData = optionSeleccionada.title || optionSeleccionada.getAttribute('title');
+        
+        console.log('Option seleccionada:', optionSeleccionada);
+        console.log('Title/Description:', descripcionData);
+        console.log('Todos los atributos:', {
+            value: optionSeleccionada.value,
+            text: optionSeleccionada.text,
+            title: optionSeleccionada.title,
+            label: optionSeleccionada.label
+        });
+        
+        if (descripcionData && descripcionData.includes('|')) {
+            var partes = descripcionData.split('|');
+            if (inputDescripcion) {
+                inputDescripcion.value = partes[0] || '';
+                console.log('Descripción actualizada:', partes[0]);
+            }
+            if (inputPrecio) {
+                inputPrecio.value = partes[1] || '0';
+                console.log('Precio actualizado:', partes[1]);
+            }
+        } else {
+            console.log('No se encontró descripción en formato esperado');
+            // Intentar con el mapa como fallback
+            var valorSeleccionado = optionSeleccionada.value;
+            if (productosMap[valorSeleccionado]) {
+                var datos = productosMap[valorSeleccionado];
+                if (inputDescripcion) {
+                    inputDescripcion.value = datos.descripcion || '';
+                }
+                if (inputPrecio) {
+                    inputPrecio.value = datos.precioReferencia || '0';
+                }
+            }
+        }
+    } else {
+        console.log('No hay selección válida');
+        // Limpiar campos
+        if (inputDescripcion) inputDescripcion.value = '';
+        if (inputPrecio) inputPrecio.value = '';
+    }
+}
+
+// Ejecutar al cargar la página
+document.addEventListener('DOMContentLoaded', function () {
+    console.log('DOM cargado, inicializando...');
+
+    var selectProducto = document.getElementById('formulario:producto');
+    if (selectProducto) {
+        console.log('Select de producto encontrado');
+        actualizarDescripcion(selectProducto);
+    } else {
+        console.log('No se encontró el select de producto');
+    }
+});
+
+function validarProductoFactura() {
+    const productoObj = document.getElementById("formulario:producto");
+    const cantidadObj = document.getElementById("formulario:cantidad");
+
+    if (!productoObj || !cantidadObj) {
+        return false;
+    }
+
+    const producto = productoObj.value.trim();
+    const cantidad = cantidadObj.value.trim();
+
+    let isValid = true;
+
+    if (producto === "" || producto === "null") {
+        alert("Debe seleccionar un producto");
+        isValid = false;
+    }
+
+    if (cantidad === "") {
+        alert("Debe ingresar una cantidad");
+        isValid = false;
+    } else {
+        const cantidadNum = parseInt(cantidad);
+        if (isNaN(cantidadNum) || cantidadNum <= 0) {
+            alert("La cantidad debe ser un número mayor a cero");
+            isValid = false;
+        }
+    }
+
+    return isValid;
+}
