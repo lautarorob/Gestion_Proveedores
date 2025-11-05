@@ -17,17 +17,19 @@ import java.util.Optional;
  */
 @Stateless
 public class repoFactura {
+
     @Inject
     EntityManager em;
-    
-     public void Guardar(Factura f) {
+
+    public void Guardar(Factura f) {
         if (f.getIdFactura() != null && f.getIdFactura() > 0) {
             em.merge(f);
         } else {
             em.persist(f);
         }
     }
-/*
+
+    /*
     public void BajaLogica(Integer id) {
         porId(id).ifPresent(f -> {
             f.setEstado(false);
@@ -41,7 +43,7 @@ public class repoFactura {
             em.merge(f);
         });
     }
-*/
+     */
     public void Eliminar(Integer id) {
         porId(id).ifPresent(p -> {
             em.remove(p);
@@ -55,5 +57,20 @@ public class repoFactura {
     public List<Factura> Listar() {
         return em.createQuery("SELECT f FROM Factura f", Factura.class).getResultList();
     }
-    
+
+    public String obtenerUltimoComprobante() {
+        try {
+            String jpql = "SELECT f FROM Factura f WHERE f.nroComprobante = :nroComprobante DESC";
+            List<String> resultados = em.createQuery(jpql, String.class).setMaxResults(1).getResultList();
+            
+            if (resultados != null && !resultados.isEmpty()) {
+                return resultados.get(0);
+            }
+            return null; //no hay facturas previas
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }
