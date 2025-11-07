@@ -69,23 +69,23 @@
                             <h:outputText value="Acciones" />
                         </f:facet>
                         <div class="botonesAcciones">
-                        <h:panelGroup rendered="#{item.estado}">
-                            <h:link class="editarAcciones" outcome="/proveedores/editar.xhtml" style="margin-right: 10px">
-                                <f:param name="id" value="#{item.idProveedor}" />
-                                <i class="bi bi-pencil"></i>
-                            </h:link>
-                            <h:commandLink class="eliminarAcciones"
-                                           action="#{controladorProveedor.bajaLogica(item.idProveedor)}"
-                                           onclick="return confirm('¿Confirma la baja?')">
-                                <i class="bi bi-trash3"></i>
-                            </h:commandLink>
-                        </h:panelGroup>
+                            <h:panelGroup rendered="#{item.estado}">
+                                <h:link class="editarAcciones" outcome="/proveedores/editar.xhtml" style="margin-right: 10px">
+                                    <f:param name="id" value="#{item.idProveedor}" />
+                                    <i class="bi bi-pencil"></i>
+                                </h:link>
+                                <h:commandLink class="eliminarAcciones"
+                                               action="#{controladorProveedor.bajaLogica(item.idProveedor)}"
+                                               onclick="return confirm('¿Confirma la baja?')">
+                                    <i class="bi bi-trash3"></i>
+                                </h:commandLink>
+                            </h:panelGroup>
                         </div>
                         <h:commandLink  class="reactivaAcciones" rendered="#{!item.estado}"
-                                       action="#{controladorProveedor.reactivar(item.idProveedor)}"
-                                       onclick="return confirm('¿Confirma la reactivacion?')">
+                                        action="#{controladorProveedor.reactivar(item.idProveedor)}"
+                                        onclick="return confirm('¿Confirma la reactivacion?')">
                             <i class="bi bi-check2-circle"></i>
-                        Reactivar</h:commandLink>
+                            Reactivar</h:commandLink>
                     </h:column>
 
                 </h:dataTable>

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSF/JSFManagedBean.java to edit this template
- */
 package controladores;
 
 import entidades.Factura;
@@ -20,42 +16,37 @@ import java.util.List;
 import repositorios.repoFactura;
 import repositorios.repoFacturaProducto;
 
-/**
- *
- * @author roble
- */
 @Named(value = "controladorFactura")
 @ViewScoped
 public class controladorFactura implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Inject
     private repoFactura repoFactura;
-    
+
     @Inject
     private repoFacturaProducto repoFacturaProducto;
 
     private Integer id;
-
     private Factura factura;
-    
+
     // Lista temporal de productos (no persistidos aún)
     private List<FacturaProducto> productosTemporales;
-    
+
+    // Índice para eliminar (usado por f:setPropertyActionListener)
+    private Integer indiceEliminar;
+
     // Constante para IVA (21% típico en Argentina)
     private static final BigDecimal IVA_PORCENTAJE = new BigDecimal("0.21");
 
-    /**
-     * Creates a new instance of controladorFactura
-     */
     public controladorFactura() {
     }
-    
+
     @PostConstruct
     public void init() {
         productosTemporales = new ArrayList<>();
-        
+
         if (factura == null) {
             if (id != null && id > 0) {
                 factura = repoFactura.porId(id).orElse(new Factura());
@@ -65,9 +56,7 @@ public class controladorFactura implements Serializable {
                 }
             } else {
                 factura = new Factura();
-                // Establece la fecha SOLO si es una factura nueva
                 factura.setFechaRegistro(new Date());
-                // Establece el número de comprobante SOLO si es una factura nueva
                 factura.setNroComprobante(generarNumeroComprobante());
             }
         }
@@ -78,23 +67,18 @@ public class controladorFactura implements Serializable {
         String ultimoNumero = repoFactura.obtenerUltimoComprobante();
 
         if (ultimoNumero == null || ultimoNumero.isEmpty()) {
-            return "0001-00001000"; //primera factura
+            return "0001-00001000";
         }
 
         try {
-            // Separacion de partes: "0001-00000123" -> ["0001", "00000123"]
             String[] partes = ultimoNumero.split("-");
             String prefijo = partes[0];
-            int numero = Integer.parseInt(partes[1]); //se pasa entero para poder incrementarlo
-
+            int numero = Integer.parseInt(partes[1]);
             numero++;
-
-            // Formateo con ceros a la izquierda
             String nuevoNumero = String.format("%08d", numero);
-
             return prefijo + "-" + nuevoNumero;
         } catch (Exception e) {
-            return "0001-00001000"; //por defecto
+            return "0001-00001000";
         }
     }
 
@@ -106,174 +90,136 @@ public class controladorFactura implements Serializable {
      * Agrega un producto a la lista temporal
      */
     public void agregarProducto(FacturaProducto facturaProducto) {
-        if (facturaProducto != null && facturaProducto.getProducto() != null 
-            && facturaProducto.getCantidad() > 0) {
-            
+        if (facturaProducto != null && facturaProducto.getProducto() != null
+                && facturaProducto.getCantidad() > 0) {
+
             // Calcular subtotal del producto
             if (facturaProducto.getPrecioUnitario() != null) {
                 BigDecimal subtotal = facturaProducto.getPrecioUnitario()
-                    .multiply(new BigDecimal(facturaProducto.getCantidad()))
-                    .setScale(2, RoundingMode.HALF_UP);
+                        .multiply(new BigDecimal(facturaProducto.getCantidad()))
+                        .setScale(2, RoundingMode.HALF_UP);
                 facturaProducto.setSubtotal(subtotal);
             }
-            
+
             // Establecer la factura (aunque aún no tenga ID)
             facturaProducto.setFactura(factura);
-            
+
             // Agregar a la lista temporal
             productosTemporales.add(facturaProducto);
-            
+
             // Recalcular totales
             calcularTotales();
+
+            System.out.println("=== PRODUCTO AGREGADO ===");
+            System.out.println("Total productos en lista: " + productosTemporales.size());
         }
     }
-    
+
     /**
-     * Elimina un producto de la lista temporal
-     */
-    public void eliminarProducto(int index) {
-        if (index >= 0 && index < productosTemporales.size()) {
-            productosTemporales.remove(index);
-            calcularTotales();
-        }
-    }
-    
-    /**
-     * Elimina un producto por índice desde parámetro (para JSF)
-     */
-    public void eliminarProductoPorIndice() {
-        jakarta.faces.context.FacesContext facesContext = jakarta.faces.context.FacesContext.getCurrentInstance();
-        
-        // Obtener el parámetro "indice" de diferentes formas
-        String indiceStr = null;
-        
-        // Intentar obtener del parámetro de la petición
-        indiceStr = facesContext.getExternalContext().getRequestParameterMap().get("indice");
-        
-        // Si no está ahí, intentar obtener del formulario
-        if (indiceStr == null || indiceStr.isEmpty()) {
-            jakarta.faces.component.UIComponent form = facesContext.getViewRoot().findComponent("formulario");
-            if (form != null) {
-                jakarta.faces.component.UIInput input = (jakarta.faces.component.UIInput) 
-                    form.findComponent("indice");
-                if (input != null) {
-                    indiceStr = (String) input.getValue();
-                }
-            }
-        }
-        
-        // También intentar obtener del mapa de parámetros con el nombre completo del formulario
-        if (indiceStr == null || indiceStr.isEmpty()) {
-            indiceStr = facesContext.getExternalContext().getRequestParameterMap().get("formulario:indice");
-        }
-        
-        System.out.println("=== ELIMINAR PRODUCTO ===");
-        System.out.println("Parámetro indice recibido: " + indiceStr);
-        System.out.println("Todos los parámetros: " + facesContext.getExternalContext().getRequestParameterMap());
-        
-        if (indiceStr != null && !indiceStr.isEmpty()) {
-            try {
-                int index = Integer.parseInt(indiceStr);
-                System.out.println("Índice parseado: " + index);
-                System.out.println("Tamaño de lista antes: " + productosTemporales.size());
-                
-                if (index >= 0 && index < productosTemporales.size()) {
-                    productosTemporales.remove(index);
-                    calcularTotales();
-                    System.out.println("Producto eliminado. Tamaño de lista después: " + productosTemporales.size());
-                } else {
-                    System.out.println("Índice fuera de rango: " + index + " (tamaño: " + productosTemporales.size() + ")");
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Error al parsear índice: " + indiceStr);
-                e.printStackTrace();
-            }
-        } else {
-            System.out.println("ERROR: No se recibió el parámetro 'indice'");
-        }
-    }
-    
-    /**
-     * Método alternativo que recibe el índice directamente
+     * MÉTODO ÚNICO PARA ELIMINAR - Recibe el índice directamente desde JSF
      */
     public void eliminarProductoPorIndice(int index) {
-        System.out.println("=== ELIMINAR PRODUCTO (método directo) ===");
+        System.out.println("=== ELIMINAR PRODUCTO ===");
         System.out.println("Índice recibido: " + index);
-        System.out.println("Tamaño de lista antes: " + productosTemporales.size());
-        
-        if (index >= 0 && index < productosTemporales.size()) {
-            productosTemporales.remove(index);
+        System.out.println("Tamaño de lista ANTES: " + productosTemporales.size());
+
+        if (productosTemporales != null && index >= 0 && index < productosTemporales.size()) {
+            FacturaProducto productoEliminado = productosTemporales.remove(index);
             calcularTotales();
-            System.out.println("Producto eliminado. Tamaño de lista después: " + productosTemporales.size());
+
+            System.out.println("Producto eliminado: " + productoEliminado.getDescripcion());
+            System.out.println("Tamaño de lista DESPUÉS: " + productosTemporales.size());
+        } else {
+            System.out.println("ERROR: Índice fuera de rango o lista nula");
+            System.out.println("Lista es null: " + (productosTemporales == null));
+            if (productosTemporales != null) {
+                System.out.println("Tamaño lista: " + productosTemporales.size());
+            }
         }
     }
-    
+
     /**
      * Calcula subtotal, IVA y total de la factura
-     * El IVA solo se aplica a facturas de tipo A
      */
     public void calcularTotales() {
         BigDecimal subtotal = BigDecimal.ZERO;
-        
+
         // Calcular subtotal sumando todos los productos
         for (FacturaProducto fp : productosTemporales) {
             // Asegurar que cada producto tenga su subtotal calculado
             if (fp.getSubtotal() == null && fp.getPrecioUnitario() != null) {
                 BigDecimal productoSubtotal = fp.getPrecioUnitario()
-                    .multiply(new BigDecimal(fp.getCantidad()))
-                    .setScale(2, RoundingMode.HALF_UP);
+                        .multiply(new BigDecimal(fp.getCantidad()))
+                        .setScale(2, RoundingMode.HALF_UP);
                 fp.setSubtotal(productoSubtotal);
             }
-            
+
             if (fp.getSubtotal() != null) {
                 subtotal = subtotal.add(fp.getSubtotal());
             }
         }
-        
+
         subtotal = subtotal.setScale(2, RoundingMode.HALF_UP);
-        factura.setSubtotal(subtotal != null ? subtotal : BigDecimal.ZERO);
-        
+        factura.setSubtotal(subtotal);
+
         // Calcular IVA (21%) solo si el tipo de factura es "A"
         BigDecimal iva = BigDecimal.ZERO;
         if ("A".equalsIgnoreCase(factura.getTipo())) {
             iva = subtotal.multiply(IVA_PORCENTAJE)
-                .setScale(2, RoundingMode.HALF_UP);
+                    .setScale(2, RoundingMode.HALF_UP);
         }
         factura.setIva(iva);
-        
+
         // Calcular total (subtotal + IVA)
         BigDecimal total = subtotal.add(iva)
-            .setScale(2, RoundingMode.HALF_UP);
+                .setScale(2, RoundingMode.HALF_UP);
         factura.setTotal(total);
+
+        System.out.println("=== TOTALES CALCULADOS ===");
+        System.out.println("Subtotal: " + subtotal);
+        System.out.println("IVA: " + iva);
+        System.out.println("Total: " + total);
     }
-    
+
     /**
      * Guarda la factura y todos sus productos
      */
     public String guardar() {
+        // Validar que haya productos
+        if (productosTemporales == null || productosTemporales.isEmpty()) {
+            System.out.println("ERROR: No hay productos para guardar");
+            return null;
+        }
+
         // Primero guardar la factura para obtener el ID
         repoFactura.Guardar(factura);
-        
+
+        System.out.println("=== GUARDANDO FACTURA ===");
+        System.out.println("ID Factura: " + factura.getIdFactura());
+        System.out.println("Total productos a guardar: " + productosTemporales.size());
+
         // Guardar cada producto de la lista temporal
         for (FacturaProducto fp : productosTemporales) {
             // Establecer la clave compuesta con el ID de la factura
             if (fp.getFacturaProductoPK() == null) {
                 FacturaProductoPK pk = new FacturaProductoPK(
-                    factura.getIdFactura(),
-                    fp.getProducto().getIdProducto()
+                        factura.getIdFactura(),
+                        fp.getProducto().getIdProducto()
                 );
                 fp.setFacturaProductoPK(pk);
             }
             // Asegurar que la factura esté asignada
             fp.setFactura(factura);
-            
+
             // Guardar el producto
             repoFacturaProducto.Guardar(fp);
+            System.out.println("Guardado: " + fp.getDescripcion());
         }
-        
+
         return "/facturas/index.xhtml?faces-redirect=true";
     }
 
+    // GETTERS Y SETTERS
     public repoFactura getRepoFactura() {
         return repoFactura;
     }
@@ -304,11 +250,13 @@ public class controladorFactura implements Serializable {
     }
 
     public List<FacturaProducto> getProductosTemporales() {
+        if (productosTemporales == null) {
+            productosTemporales = new ArrayList<>();
+        }
         return productosTemporales;
     }
 
     public void setProductosTemporales(List<FacturaProducto> productosTemporales) {
         this.productosTemporales = productosTemporales;
     }
-
 }

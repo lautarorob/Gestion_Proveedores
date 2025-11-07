@@ -14,7 +14,7 @@
     <ui:define name="contenido">
         <f:view>
 
-            <h:form id="formulario" onsubmit="return validarFormulario()">
+            <h:form id="formulario">
                 <h2>Editar Proveedor</h2>
                 <p class="letraChica">Actualice los datos del proveedor</p>
                 <div class="row">
@@ -29,13 +29,16 @@
                                      required="true"
                                      pt:placeholder="Razón Social" 
                                      styleClass="form-control" />
+                        <span id="formulario:errorRazonSoc" class="error"></span>
                     </div>
+                    
                     <div class="col-md-6 mb-3">
                         <h:inputText id="cuit" 
                                      value="#{controladorProveedor.proveedor.cuit}" 
                                      required="true" 
                                      pt:placeholder="CUIT"
                                      styleClass="form-control" />
+                        <span id="formulario:errorCuit" class="error"></span>
                     </div>
 
                     <div class="col-md-6 mb-3">
@@ -43,12 +46,15 @@
                                      value="#{controladorProveedor.proveedor.nombreComercial}" 
                                      pt:placeholder="Nombre Comercial"
                                      styleClass="form-control" />
+                        <span id="formulario:errorNombreCom" class="error"></span>
                     </div>
+                    
                     <div class="col-md-6 mb-3">
                         <h:inputText id="telefono" 
                                      value="#{controladorProveedor.proveedor.telefono}" 
                                      pt:placeholder="Teléfono"
                                      styleClass="form-control" />
+                        <span id="formulario:errorTel" class="error"></span>
                     </div>
 
                     <div class="col-md-6 mb-3">
@@ -56,7 +62,9 @@
                                      value="#{controladorProveedor.proveedor.email}" 
                                      pt:placeholder="Email"
                                      styleClass="form-control" />
+                        <span id="formulario:errorEmail" class="error"></span>
                     </div>
+                    
                     <div class="col-md-6 mb-3">
                         <h:selectOneMenu id="tipoIva" value="#{controladorProveedor.proveedor.tipoIva}" styleClass="form-control select-con-icono">
                             <f:selectItem itemLabel="--Tipo de IVA--" itemValue="" noSelectionOption="true"/>
@@ -64,6 +72,7 @@
                             <f:selectItem itemLabel="Responsable Inscripto" itemValue="Responsable Inscripto"/>
                             <f:selectItem itemLabel="Excento" itemValue="Excento"/>
                         </h:selectOneMenu>
+                        <span id="formulario:errorTipoIVA" class="error"></span>
                     </div>
                 </div>
 
@@ -80,7 +89,8 @@
                 <h:commandButton value="Cancelar" action="/proveedores/index.xhtml" styleClass="btnGris"/>
                 <h:commandButton value="Guardar Proveedor" 
                                  action="#{controladorProveedor.guardar}" 
-                                 styleClass="btnAmarillo" />
+                                 styleClass="btnAmarillo" 
+                                 onclick="return validarProveedor()"/>
             </h:form>
         </f:view>
     </ui:define>

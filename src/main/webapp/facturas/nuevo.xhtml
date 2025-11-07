@@ -13,10 +13,9 @@
             <h:form id="formulario">
                 <h3><strong>Nueva Factura</strong></h3>
 
-                <p style="font-size: 12px;
-                   color: #808080;">Rellene los siguientes campos para registrar una nueva factura</p>
-                <div class="row">
+                <p style="font-size: 12px; color: #808080;">Rellene los siguientes campos para registrar una nueva factura</p>
 
+                <div class="row">
                     <div class="col-md-6 mb-3">
                         <label>Proveedor(*)</label>
                         <h:selectOneMenu id="idProveedor" value="#{controladorFactura.factura.idProveedor}"
@@ -35,7 +34,6 @@
                                                timeZone="America/Argentina/Buenos_Aires" />
                         </h:inputText>
                     </div>
-
 
                     <div class="col-md-6 mb-3">
                         <label>Fecha de Comprobante(*)</label>
@@ -72,18 +70,18 @@
                         </h:selectOneMenu>
                     </div>
 
-
                     <div class="col-md-6 mb-3">
                         <h:inputHidden id="estado" value="#{controladorFactura.factura.estado}"
                                        pt:placeholder="Estado" />
                     </div>
                 </div>
 
-
+                
+                
                 <h5><strong>Detalle de Productos</strong></h5>
 
                 <div class="row">
-
+                    
                     <div class="col-md-3 mb-3">
                         <label>Producto(*)</label>
                         <h:selectOneMenu id="producto" value="#{controladorFacturaProducto.facturaProducto.producto}"
@@ -116,9 +114,8 @@
                         <h:inputText id="cantidad" value="#{controladorFacturaProducto.facturaProducto.cantidad}"
                                      required="true" styleClass="form-control" />
                     </div>
-
                 </div>
-                
+
                 <div class="row mb-3">
                     <div class="col-md-12">
                         <h:commandButton value="Agregar Producto" 
@@ -163,17 +160,22 @@
                                             </h:outputText>
                                         </td>
                                         <td>
-                                            <h:commandButton value="Eliminar" styleClass="btn btn-danger btn-sm"
-                                                             action="#{controladorFactura.eliminarProductoPorIndice(status.index)}">
-                                                <f:ajax execute="@this" render="tablaProductos totalesFactura" />
-                                            </h:commandButton>
+                                            <!-- SOLUCIÓN: Usar commandLink con setPropertyActionListener -->
+                                            <h:commandLink styleClass="btn btn-danger btn-sm" value="Eliminar">
+                                                <f:setPropertyActionListener 
+                                                    target="#{controladorFactura.indiceEliminar}" 
+                                                    value="#{status.index}" />
+                                                <f:ajax listener="#{controladorFactura.eliminarProducto()}" 
+                                                        render="tablaProductos totalesFactura" 
+                                                        execute="@this" />
+                                            </h:commandLink>
                                         </td>
                                     </tr>
                                 </ui:repeat>
                             </tbody>
                         </table>
                     </h:panelGroup>
-                    
+
                     <h:panelGroup rendered="#{empty controladorFactura.productosTemporales}">
                         <p style="color: #808080; font-style: italic;">No hay productos agregados aún.</p>
                     </h:panelGroup>

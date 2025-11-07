@@ -137,3 +137,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this t
     justify-content: center;
     width: 100%;
 }
+
+.error{
+    color: red;
+}

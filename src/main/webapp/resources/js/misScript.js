@@ -5,6 +5,15 @@
 
 
 function validarProveedor() {
+
+    const errorRZ = document.getElementById("formulario:errorRazonSoc");
+    const errorCuit = document.getElementById("formulario:errorCuit");
+    const errorNC = document.getElementById("formulario:errorNombreCom");
+    const errorTel = document.getElementById("formulario:errorTel");
+    const errorEmail = document.getElementById("formulario:errorEmail");
+    const errorIVA = document.getElementById("formulario:errorTipoIVA");
+
+
     //objetos
     const razonSocialObj = document.getElementById("formulario:razonSocial");
     const cuitObj = document.getElementById("formulario:cuit");
@@ -33,41 +42,41 @@ function validarProveedor() {
 
 
     if (razonSocial === "") {
-        alert("Falta razon social");
+        errorRZ.textContent = "Campo Obligatorio";
         isValid = false;
     }
 
     if (cuit === "") {
-        alert("Falta cuit");
+        errorCuit.textContent = "Campo Obligatorio";
         isValid = false;
     } else if (!regexCuit.test(cuit)) {
-        alert("Cuit Invalido");
+        errorCuit.textContent = "Fomato Ivalido";
         isValid = false;
     }
 
     if (nombreComercial === "") {
-        alert("Falta nombre Comercial");
+        errorNC.textContent = "Campo Obligatorio";
         isValid = false;
     }
 
     if (telefono === "") {
-        alert("Falta telefono");
+        errorTel.textContent = "Campo Obligatorio";
         isValid = false;
     } else if (!regexTelefono.test(telefono)) {
-        alert("Telefono Invalido");
+        errorTel.textContent = "Fomato Ivalido";
         isValid = false;
     }
 
     if (email === "") {
-        alert("Falta email");
+        errorEmail.textContent = "Campo Obligatorio";
         isValid = false;
     } else if (!regexEmail.test(email)) {
-        alert("Email Invalido");
+        errorEmail.textContent = "Fomato Ivalido";
         isValid = false;
     }
 
     if (tipoIVA === "") {
-        alert("Falta tipoIVA");
+        errorIVA.textContent = "Campo Obligatorio";
         isValid = false;
     }
 
@@ -146,18 +155,18 @@ function initProductosMap(productos) {
 }
 
 // FUNCIÓN usando data attributes
-function actualizarDescripcionDirecta(selectElement) {
+function actualizarDescripcion(selectElement) {
     console.log('=== actualizarDescripcionDirecta llamado ===');
-    
+
     var inputDescripcion = document.getElementById('formulario:descripcion');
     var inputPrecio = document.getElementById('formulario:precioUnitario');
 
     if (selectElement && selectElement.selectedIndex > 0) {
         var optionSeleccionada = selectElement.options[selectElement.selectedIndex];
-        
+
         // Intentar obtener del atributo title (itemDescription)
         var descripcionData = optionSeleccionada.title || optionSeleccionada.getAttribute('title');
-        
+
         console.log('Option seleccionada:', optionSeleccionada);
         console.log('Title/Description:', descripcionData);
         console.log('Todos los atributos:', {
@@ -166,7 +175,7 @@ function actualizarDescripcionDirecta(selectElement) {
             title: optionSeleccionada.title,
             label: optionSeleccionada.label
         });
-        
+
         if (descripcionData && descripcionData.includes('|')) {
             var partes = descripcionData.split('|');
             if (inputDescripcion) {
@@ -194,8 +203,10 @@ function actualizarDescripcionDirecta(selectElement) {
     } else {
         console.log('No hay selección válida');
         // Limpiar campos
-        if (inputDescripcion) inputDescripcion.value = '';
-        if (inputPrecio) inputPrecio.value = '';
+        if (inputDescripcion)
+            inputDescripcion.value = '';
+        if (inputPrecio)
+            inputPrecio.value = '';
     }
 }
 
