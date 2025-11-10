@@ -58,19 +58,43 @@ public class repoFactura {
         return em.createQuery("SELECT f FROM Factura f", Factura.class).getResultList();
     }
 
+   
     public String obtenerUltimoComprobante() {
-        try {
-            String jpql = "SELECT f FROM Factura f WHERE f.nroComprobante = :nroComprobante DESC";
-            List<String> resultados = em.createQuery(jpql, String.class).setMaxResults(1).getResultList();
-            
-            if (resultados != null && !resultados.isEmpty()) {
-                return resultados.get(0);
-            }
-            return null; //no hay facturas previas
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+    try {
+        String jpql = "SELECT f.nroComprobante FROM Factura f ORDER BY f.idFactura DESC";
+        List<String> resultados = em.createQuery(jpql, String.class)
+                                   .setMaxResults(1)
+                                   .getResultList();
+
+        if (resultados != null && !resultados.isEmpty()) {
+            return resultados.get(0);
         }
+        return null; // No hay facturas previas
+    } catch (Exception e) {
+        e.printStackTrace();
+        return null;
     }
+}
+
+   public Optional<Factura> obtenerFacturaConProductos(Integer id) {
+    try {
+        List<Factura> resultados = em.createQuery(
+            "SELECT f FROM Factura f LEFT JOIN FETCH f.facturaProductoList fp LEFT JOIN FETCH fp.producto WHERE f.idFactura = :id",
+            Factura.class)
+            .setParameter("id", id)
+            .getResultList(); // no usar getSingleResult
+
+        if (!resultados.isEmpty()) {
+            return Optional.of(resultados.get(0));
+        } else {
+            return Optional.empty();
+        }
+    } catch (Exception e) {
+        System.out.println("Error cargando factura con productos: " + e.getMessage());
+        return Optional.empty();
+    }
+}
+
+
 
 }
