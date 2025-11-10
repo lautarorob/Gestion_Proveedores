@@ -23,11 +23,11 @@ public class controladorFacturaProducto implements Serializable {
     
     private FacturaProducto facturaProducto;
     private FacturaProductoPK idCompuesta;
-    private List<Producto> listaProductos;
+   // private List<Producto> listaProductos;
 
     public controladorFacturaProducto() {
     }
-    
+    /*
     @PostConstruct
     public void init() {
         listaProductos = repoFacturaProducto.listarActivos();
@@ -73,7 +73,7 @@ public class controladorFacturaProducto implements Serializable {
     /**
      * Agrega el producto actual a la lista temporal y limpia el formulario
      * Obtiene el controladorFactura desde el contexto de JSF
-     */
+     *//*
     public void agregarProductoALista() {
         if (facturaProducto == null) {
             facturaProducto = new FacturaProducto();
@@ -123,7 +123,7 @@ public class controladorFacturaProducto implements Serializable {
                 limpiarFormulario();
             }
         }
-    }
+    }*/
     
     /**
      * Limpia el formulario de producto
@@ -140,7 +140,7 @@ public class controladorFacturaProducto implements Serializable {
         repoFacturaProducto.Guardar(facturaProducto);
         return "/facturas/index.xhtml?faces-redirect=true";
     }
-
+/*
     // GETTERS Y SETTERS
     public List<Producto> getListaProductos() {
         return listaProductos;
@@ -148,7 +148,7 @@ public class controladorFacturaProducto implements Serializable {
 
     public void setListaProductos(List<Producto> listaProductos) {
         this.listaProductos = listaProductos;
-    }
+    }*/
 
     public repoFacturaProducto getRepoFacturaProducto() {
         return repoFacturaProducto;

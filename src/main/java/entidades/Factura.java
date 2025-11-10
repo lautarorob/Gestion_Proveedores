@@ -8,6 +8,7 @@ import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -83,7 +84,7 @@ public class Factura implements Serializable {
     private String formaPago;
     @Column(name = "estado", length = 50)
     private String estado;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "factura")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "factura" ,fetch = FetchType.EAGER)
     private List<FacturaProducto> facturaProductoList;
     @JoinColumn(name = "id_orden_pago", referencedColumnName = "id_orden_pago")
     @ManyToOne

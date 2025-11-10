@@ -20,7 +20,7 @@
 
                     <h:column>
                         <f:facet name="header">
-                            <h:outputText value="FechaRegistro" style="margin-right: 50px"/>
+                            <h:outputText value="Fecha de Registro" style="margin-right: 50px"/>
                         </f:facet>
                         <h:outputText value="#{item.fechaRegistro}" style="margin-right: 50px">
                             <f:convertDateTime pattern="MM/dd/yyyy" />
@@ -29,7 +29,7 @@
 
                     <h:column>
                         <f:facet name="header">
-                            <h:outputText value="FechaComprobante" style="margin-right: 50px"/>
+                            <h:outputText value="Fecha de Comprobante" style="margin-right: 50px"/>
                         </f:facet>
                         <h:outputText value="#{item.fechaComprobante}" style="margin-right: 50px">
                             <f:convertDateTime pattern="MM/dd/yyyy" />
@@ -45,7 +45,7 @@
 
                     <h:column>
                         <f:facet name="header">
-                            <h:outputText value="NroComprobante" style="margin-right: 50px"/>
+                            <h:outputText value="N° Comprobante" style="margin-right: 50px"/>
                         </f:facet>
                         <h:outputText value="#{item.nroComprobante}" style="margin-right: 50px"/>
                     </h:column>
@@ -73,7 +73,7 @@
 
                     <h:column>
                         <f:facet name="header">
-                            <h:outputText value="FormaPago" style="margin-right: 50px"/>
+                            <h:outputText value="Forma de Pago" style="margin-right: 50px"/>
                         </f:facet>
                         <h:outputText value="#{item.formaPago}" style="margin-right: 50px"/>
                     </h:column>
@@ -85,19 +85,7 @@
                         <h:outputText value="#{item.estado}" style="margin-right: 50px"/>
                     </h:column>
 
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="IdOrdenPago" style="margin-right: 50px"/>
-                        </f:facet>
-                        <h:outputText value="#{item.idOrdenPago}" style="margin-right: 50px"/>
-                    </h:column>
-
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="IdProveedor" style="margin-right: 50px"/>
-                        </f:facet>
-                        <h:outputText value="#{item.idProveedor}" style="margin-right: 50px"/>
-                    </h:column>
+                  
 
                     <h:column>
                         <f:facet name="header">
@@ -110,6 +98,8 @@
                     </h:column>
 
                 </h:dataTable>
+                <h:commandButton value=" Crear orden de pago" action="/pagos/nuevo.xhtml"
+                                 styleClass="btnAmarillo" />
 
             </h:form>
 

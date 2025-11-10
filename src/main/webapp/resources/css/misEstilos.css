@@ -79,8 +79,14 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this t
 .tablaProveedores th:first-child{
     padding-left: 30px;
 }
+.tablaProveedores td:first-child{
+    padding-left: 30px;
+}
 
 .tablaProveedores th:last-child{
+    padding-right: 30px;
+}
+.tablaProveedores td:last-child{
     padding-right: 30px;
 }
 
