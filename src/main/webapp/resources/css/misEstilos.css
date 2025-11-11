@@ -66,6 +66,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this t
     background-color: var(--bs-tertiary-bg);
 }
 
+.tablaProveedores{
+    background-color: #020618;
+    width:100%;
+    border-collapse: collapse;
+}
 .tablaProveedores th{
     color: #F0B90B;
     background-color: var(--bs-tertiary-bg);
@@ -74,6 +79,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this t
 
 .tablaProveedores td{
     text-align: center;
+    border: 2px solid #ddd;
+    border-collapse: collapse;
 }
 
 .tablaProveedores th:first-child{
@@ -100,7 +107,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this t
     font-weight: 600;
     cursor: pointer;
     margin: 10px;
-    margin-bottom: 30px;
 }
 
 .divNewProv{

@@ -35,12 +35,12 @@
                     </h:selectOneMenu>
                     <h:commandButton value="Buscar" 
                                      action="#{controladorProducto.buscarProductos}"
-                                     style="margin-left: 10px;"/>
+                                     style="margin-left: 10px;" class="btnAmarillo"/>
                 </h:panelGrid>
 
                 <!--LISTADO FLEXIBLE-->
                 <h:dataTable value="#{controladorProducto.listaProductos}"
-                             var="item" styleClass="tablaProveedores">
+                             var="item" styleClass="tablaProveedores" cellpadding="6">
 
                     <h:column>
                         <f:facet name="header">
