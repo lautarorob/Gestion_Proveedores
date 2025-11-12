@@ -111,7 +111,6 @@ public class repoFactura {
         }
     }
 
-    
     public BigDecimal getSaldoPendiente(Integer idProveedor) {
         TypedQuery<BigDecimal> query = em.createQuery(
                 "SELECT SUM(f.total) FROM Factura f WHERE f.idProveedor.idProveedor = :id AND f.estado = 'Pendiente'",
@@ -120,6 +119,22 @@ public class repoFactura {
         query.setParameter("id", idProveedor);
         BigDecimal saldo = query.getSingleResult();
         return (saldo != null) ? saldo : BigDecimal.ZERO;
+    }
+
+    public List<Factura> listarImpagasPorProveedor(Integer idProveedor) {
+        try {
+            List<Factura> lista = em.createQuery(
+                    "SELECT f FROM Factura f WHERE f.idProveedor.idProveedor = :prov AND (f.estado IS NULL OR f.estado <> 'PAGADA')",
+                    Factura.class)
+                    .setParameter("prov", idProveedor)
+                    .getResultList();
+
+            System.out.println("RepoFactura: cargadas " + lista.size() + " facturas para proveedor ID " + idProveedor);
+            return lista;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
     }
 
 }
