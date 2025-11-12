@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                template="./../template/layout.xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:pt="jakarta.faces.passthrough">
+
+    <ui:define name="contenido">
+        <h:form id="formOrdenPago">
+
+            <h3>Filtrar por proveedor:</h3>
+            <h:selectOneMenu value="#{controladorOrdenPago.proveedorSeleccionadoId}">
+                <f:selectItem itemLabel="Seleccione" itemValue="" />
+                <f:selectItems value="#{controladorOrdenPago.listaProveedores}" var="p"
+                               itemLabel="#{p.razonSocial}" itemValue="#{p.idProveedor}" />
+                <f:ajax listener="#{controladorOrdenPago.filtrarFacturasPorProveedor}" 
+                        render="facturas detalle totales" />
+            </h:selectOneMenu>
+
+            <h3>Facturas impagas</h3>
+            <h:dataTable id="facturas" value="#{controladorOrdenPago.facturasImpagas}" var="f">
+                <h:column>
+                    <f:facet name="header">Fecha Registro</f:facet>
+                        #{f.fechaRegistro}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Razón Social</f:facet>
+                        #{f.idProveedor.razonSocial}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Importe Total</f:facet>
+                        #{f.total}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Seleccionar</f:facet>
+                    <h:selectBooleanCheckbox value="#{f.seleccionada}">
+                        <!-- Refresca todo el formulario para actualizar totales y detalle -->
+                        <f:ajax listener="#{controladorOrdenPago.seleccionarFactura(f)}" render="@form" />
+                    </h:selectBooleanCheckbox>
+                </h:column>
+            </h:dataTable>
+
+
+            <h3>Detalle de orden de pago</h3>
+            <h:dataTable id="detalle" value="#{controladorOrdenPago.facturasSeleccionadas}" var="sel" border="1">
+                <h:column><f:facet name="header">Nro Comprobante</f:facet>#{sel.nroComprobante}</h:column>
+                <h:column><f:facet name="header">Razón Social</f:facet>#{sel.idProveedor.razonSocial}</h:column>
+                <h:column><f:facet name="header">Subtotal</f:facet>#{sel.subtotal}</h:column>
+                <h:column><f:facet name="header">IVA</f:facet>#{sel.iva}</h:column>
+                <h:column><f:facet name="header">Total</f:facet>#{sel.total}</h:column>
+            </h:dataTable>
+
+            <h:panelGrid id="totales" columns="2">
+                <h:outputText value="Suma Subtotales:" />
+                <h:outputText value="#{controladorOrdenPago.totalSubtotal}" />
+                <h:outputText value="Suma IVA:" />
+                <h:outputText value="#{controladorOrdenPago.totalIva}" />
+                <h:outputText value="Total Orden de Pago:" />
+                <h:outputText value="#{controladorOrdenPago.totalOrden}" />
+            </h:panelGrid>
+
+
+            <h:panelGrid columns="2" style="margin-top:10px;">
+                <h:outputLabel value="Fecha de pago:"/>
+                <h:inputText id="fechaRegistro"
+                             value="#{controladorOrdenPago.ordenPago.fechaPago}"
+                             required="true"
+                             pt:type="date"
+                             styleClass="form-control">
+                    <f:convertDateTime pattern="yyyy-MM-dd" timeZone="America/Argentina/Buenos_Aires" />
+                </h:inputText>
+
+                <h:outputLabel value="Forma de pago:"/>
+                <h:selectOneMenu value="#{controladorOrdenPago.formaPago}">
+                    <f:selectItem itemLabel="Seleccione" itemValue="" />
+                    <f:selectItem itemLabel="Cheque" itemValue="Cheque" />
+                    <f:selectItem itemLabel="Efectivo" itemValue="Efectivo" />
+                    <f:selectItem itemLabel="Transferencia" itemValue="Transferencia" />
+                </h:selectOneMenu>
+            </h:panelGrid>
+
+            <h:commandButton value="Confirmar pago" action="#{controladorOrdenPago.confirmarPago}"  styleClass="btnAmarillo">
+                <f:ajax execute="@form" render="@form" />
+            </h:commandButton>
+
+        </h:form>
+
+    </ui:define>
+</ui:composition>

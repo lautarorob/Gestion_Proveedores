@@ -4,7 +4,6 @@ import entidades.OrdenPago;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -15,11 +14,11 @@ public class repoOrdenPago {
     @Inject
     private EntityManager em;
 
-    public void Guardar(OrdenPago ordenPago) {
-        if (ordenPago.getIdOrdenPago() == null) {
-            em.persist(ordenPago);
+    public void Guardar(OrdenPago op) {
+        if (op.getIdOrdenPago() != null && op.getIdOrdenPago() > 0) {
+            em.merge(op);
         } else {
-            em.merge(ordenPago);
+            em.persist(op);
         }
     }
 
@@ -32,10 +31,22 @@ public class repoOrdenPago {
                 .getResultList();
     }
 
+    public String obtenerUltimoNumeroOrden() {
+        try {
+            String jpql = "SELECT o.nroOrden FROM OrdenPago o ORDER BY o.idOrdenPago DESC";
+            List<String> resultados = em.createQuery(jpql, String.class)
+                    .setMaxResults(1)
+                    .getResultList();
+            return resultados.isEmpty() ? null : resultados.get(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
     public List<OrdenPago> listarPorProveedor(Integer idProveedor) {
         try {
             return em.createQuery(
-                "SELECT o FROM OrdenPago o WHERE o.idProveedor.idProveedor = :idProv ORDER BY o.fechaPago", 
+               "SELECT o FROM OrdenPago o WHERE o.idProveedor.idProveedor = :idProv ORDER BY o.fechaPago", 
                 OrdenPago.class)
                 .setParameter("idProv", idProveedor)
                 .getResultList();

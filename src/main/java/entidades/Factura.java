@@ -20,6 +20,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -84,7 +85,7 @@ public class Factura implements Serializable {
     private String formaPago;
     @Column(name = "estado", length = 50)
     private String estado;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "factura" ,fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "factura", fetch = FetchType.EAGER)
     private List<FacturaProducto> facturaProductoList;
     @JoinColumn(name = "id_orden_pago", referencedColumnName = "id_orden_pago")
     @ManyToOne
@@ -92,6 +93,8 @@ public class Factura implements Serializable {
     @JoinColumn(name = "id_proveedor", referencedColumnName = "id_proveedor")
     @ManyToOne
     private Proveedor idProveedor;
+    @Transient
+    private boolean seleccionada;
 
     public Factura() {
     }
@@ -104,6 +107,14 @@ public class Factura implements Serializable {
         this.idFactura = idFactura;
         this.fechaComprobante = fechaComprobante;
         this.nroComprobante = nroComprobante;
+    }
+
+    public boolean isSeleccionada() {
+        return seleccionada;
+    }
+
+    public void setSeleccionada(boolean seleccionada) {
+        this.seleccionada = seleccionada;
     }
 
     public Integer getIdFactura() {
