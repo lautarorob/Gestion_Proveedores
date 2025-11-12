@@ -11,10 +11,14 @@ import jakarta.enterprise.context.SessionScoped;
 import jakarta.enterprise.inject.Model;
 import jakarta.enterprise.inject.Produces;
 import jakarta.faces.application.FacesMessage;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIInput;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.validator.ValidatorException;
 import jakarta.inject.Inject;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 import repositorios.repoUsuario;
 
 /**
@@ -31,6 +35,12 @@ public class controladorUsuario implements Serializable {
     private Usuario usuario;
 
     private Integer id;
+
+    private String confirmPassword;// Propiedad para guardar el valor de "Repetir Contraseña"
+
+    // permite "capturar" el componente de la primera contraseña
+    // para poder leer su valor desde el validador.
+    private UIInput passwordComponent;
 
     public controladorUsuario() {
     }
@@ -52,18 +62,66 @@ public class controladorUsuario implements Serializable {
         return usuario;
     }
 
+    /**
+     * Este método es llamado por el atributo 'validator' del campo
+     * confirmPassword. Compara los dos campos de contraseña.
+     */
+    public void validatePasswordConfirm(FacesContext context, UIComponent component, Object value) {
+        if (value == null) {
+            return; // Valor vacío
+        }
+
+        String confirmPasswordValue = (String) value;
+
+        //valor del *primer* campo de contraseña
+        String passwordValue = (String) passwordComponent.getValue();
+
+        if (passwordValue == null) {
+            passwordValue = ""; // Evitar error si está vacío
+        }
+
+        // La validación
+        if (!passwordValue.equals(confirmPasswordValue)) {
+            // Si no coinciden, lanza una excepción. JSF la mostrará en el h:message
+            throw new ValidatorException(new FacesMessage("Las contraseñas no coinciden."));
+        }
+    }
+
     public List<Usuario> listar() {
         return repoUsuario.Listar();
     }
 
     public String guardar() {
+
+        // 1. Buscamos si el nombre de usuario ya existe
+        Optional<Usuario> usuarioExistente = repoUsuario.findByUsername(usuario.getUsername());
+
+        if (usuarioExistente.isPresent()) {
+            // 2. Si existe, PERO no es el mismo usuario que estamos editando
+            //    (comparamos los IDs), entonces es un duplicado.
+
+            boolean esUnNuevoUsuario = (usuario.getIdUsuario() == null);
+            boolean esUnUsuarioDiferente = !usuarioExistente.get().getIdUsuario().equals(usuario.getIdUsuario());
+
+            if (esUnNuevoUsuario || esUnUsuarioDiferente) {
+
+                // Si es un usuario nuevo (id == null) O es un usuario diferente, mostramos error
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+                        FacesMessage.SEVERITY_ERROR,
+                        "El nombre de usuario '" + usuario.getUsername()+ "' ya está en uso.",
+                        "Error al guardar"));
+
+                return null;
+            }
+        }
+
         repoUsuario.Guardar(usuario);
-        return "/index.xhtml?faces-redirect=true";
+        return "/usuarios/index.xhtml?faces-redirect=true";
     }
 
     public String eliminar(Integer id) {
         repoUsuario.Eliminar(id);
-        return "/index.xhtml?faces-redirect=true";
+        return "/usuarios/index.xhtml?faces-redirect=true";
     }
 
     public repoUsuario getRepoUsuario() {
@@ -112,6 +170,23 @@ public class controladorUsuario implements Serializable {
                     "Error"));
             return null;
         }
+    }
+
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
+
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
+    }
+
+    // Getter y Setter para el bindeo
+    public UIInput getPasswordComponent() {
+        return passwordComponent;
+    }
+
+    public void setPasswordComponent(UIInput passwordComponent) {
+        this.passwordComponent = passwordComponent;
     }
 
 }

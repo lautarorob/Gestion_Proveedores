@@ -5,6 +5,7 @@
 package repositorios;
 
 import entidades.Usuario;
+import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -17,6 +18,7 @@ import java.util.Optional;
  *
  * @author roble
  */
+@Stateless
 public class repoUsuario implements Serializable{
 
     @Inject
@@ -45,12 +47,12 @@ public class repoUsuario implements Serializable{
     }
     
     
-    public Usuario login(String userName, String password){
+    public Usuario login(String username, String password){
         try {
             TypedQuery<Usuario> query = em.createQuery(
                 "SELECT u FROM Usuario u WHERE u.username = :username AND u.password = :password", 
                 Usuario.class);
-            query.setParameter("username", userName);
+            query.setParameter("nombre_completo", username);
             query.setParameter("password", password);
             return query.getSingleResult();
         } catch (NoResultException e) {
@@ -58,5 +60,21 @@ public class repoUsuario implements Serializable{
         }
         
     }
+
+
+
+public Optional<Usuario> findByUsername(String username) {
+    try {
+        TypedQuery<Usuario> query = em.createQuery(
+            "SELECT u FROM Usuario u WHERE u.username = :username", 
+            Usuario.class);
+        query.setParameter("nombre_completo", username);
+        // Usamos Optional.of para envolver el resultado
+        return Optional.of(query.getSingleResult()); 
+    } catch (NoResultException e) {
+        // Si no lo encuentra, devuelve un Optional vacío
+        return Optional.empty(); 
+    }
+}
 
 }

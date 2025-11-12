@@ -56,13 +56,20 @@
                                 <i class="bi bi-bank"></i> Cuentas Corrientes
                             </h:link>
                         </li>
-                        <ui:fragment rendered="#{controladorUsuario.usuario.rol == 'admin'}">
+                        <ui:fragment rendered="#{controladorUsuario.usuario.rol == 'gerente'}">
                             <li class="nav-item">
                                 <h:link class="nav-link" outcome="index.xhtml">
                                     <i class="bi-clipboard-check"></i> Auditoria
                                 </h:link>
                             </li>
                         </ui:fragment>
+                      <!--  <ui:fragment rendered="#{controladorUsuario.usuario.rol == 'gerente'}">-->
+                            <li class="nav-item">
+                                <h:link outcome="/usuarios/index.xhtml" class="nav-link #{view.viewId == '/usuarios/index.xhtml' ? 'active' : ''}">
+                                    <i class="bi bi-person"></i> Usuarios
+                                </h:link>
+                            </li>
+                        <!--</ui:fragment>-->
                     </ul>
                 </aside>
 
