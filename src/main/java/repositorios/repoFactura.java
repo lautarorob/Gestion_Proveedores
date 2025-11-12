@@ -9,6 +9,8 @@ import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -107,6 +109,17 @@ public class repoFactura {
             System.out.println("Error al listar facturas por proveedor: " + e.getMessage());
             return new ArrayList<>();
         }
+    }
+
+    
+    public BigDecimal getSaldoPendiente(Integer idProveedor) {
+        TypedQuery<BigDecimal> query = em.createQuery(
+                "SELECT SUM(f.total) FROM Factura f WHERE f.idProveedor.idProveedor = :id AND f.estado = 'Pendiente'",
+                BigDecimal.class
+        );
+        query.setParameter("id", idProveedor);
+        BigDecimal saldo = query.getSingleResult();
+        return (saldo != null) ? saldo : BigDecimal.ZERO;
     }
 
 }
