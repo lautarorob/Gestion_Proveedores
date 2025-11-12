@@ -85,16 +85,22 @@
                         <h:outputText value="#{item.estado}" style="margin-right: 50px"/>
                     </h:column>
 
-                  
+
 
                     <h:column>
                         <f:facet name="header">
                             <h:outputText value="Acciones" style="margin-right: 50px"/>
                         </f:facet>
-                        <h:link class="editarAcciones" outcome="/facturas/editar.xhtml" style="margin-right: 10px">
-                            <f:param name="id" value="#{item.idFactura}" />
-                            <i class="bi bi-pencil"></i>
-                        </h:link>
+
+                        <h:panelGroup rendered="#{item.estado == 'Pendiente'}">
+                            <h:link class="editarAcciones" outcome="/facturas/editar.xhtml" style="margin-right: 10px">
+                                <f:param name="id" value="#{item.idFactura}" />
+                                <i class="bi bi-pencil"></i>
+                            </h:link>
+                        </h:panelGroup>
+
+                        <h:outputText value="-" style="margin-right: 50px" rendered="#{item.estado != 'Pendiente'}"/>
+
                     </h:column>
 
                 </h:dataTable>

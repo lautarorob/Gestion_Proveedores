@@ -12,27 +12,37 @@
 
             <h:form id="formulario">
                 <h2>Nuevo Usuario</h2>
-                <p style="font-size: 12px;
-                   color: #808080;">Rellene los siguientes campos para registrar un nuevo usuario</p>
+                <p style="font-size: 12px; color: #808080;">Rellene los siguientes campos para registrar un nuevo usuario</p>
                 <div class="row">
+
                     <div class="col-md-6 mb-3">
-                        <label>Nombre(*)</label>
-                        <h:inputText id="nombre" 
+                        <label>Nombre de usuario(*)</label>
+                        <h:inputText id="username" 
                                      value="#{controladorUsuario.usuario.username}" 
                                      styleClass="form-control" />
-                    <!--msj del servidor -->
-                    <h:messages globalOnly="true" 
-                                class="text-danger"
-                                layout="table"/>
+                        
+                        <h:message for="username" style="color: #dc3545; font-size: 12px;" />
                     </div>
+
                     <div class="col-md-6 mb-3">
                         <label>Rol(*)</label>
-                        <h:selectOneMenu id="tipoIva" value="#{controladorUsuario.usuario.rol}" styleClass="form-control select-con-icono">
+                        <h:selectOneMenu id="rol" value="#{controladorUsuario.usuario.rol}" styleClass="form-control select-con-icono">
                             <f:selectItem itemLabel="--Rol del usuario--" itemValue="" noSelectionOption="true"/>
                             <f:selectItem itemLabel="Gerente" itemValue="gerente"/>
                             <f:selectItem itemLabel="Supervisor" itemValue="supervisor"/>
                             <f:selectItem itemLabel="Operador" itemValue="operador"/>
                         </h:selectOneMenu>
+                        
+                        <h:message for="rol" style="color: #dc3545; font-size: 12px;" />
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <label>Nombre Completo(*)</label>
+                        <h:inputText id="nombreCompleto" 
+                                     value="#{controladorUsuario.usuario.nombreCompleto}" 
+                                     styleClass="form-control" />
+                        
+                        <h:message for="nombreCompleto" style="color: #dc3545; font-size: 12px;" />
                     </div>
 
                     <div class="col-md-6 mb-3">
@@ -40,7 +50,8 @@
                         <h:inputSecret id="password" 
                                        value="#{controladorUsuario.usuario.password}" 
                                        styleClass="form-control"
-                                       binding="#{controladorUsuario.passwordComponent}"> <f:ajax event="keyup" render="msgConfirmPassword" />
+                                       binding="#{controladorUsuario.passwordComponent}"> 
+                            <f:ajax event="keyup" render="msgConfirmPassword" />
                         </h:inputSecret>
                     </div>
 
@@ -49,7 +60,8 @@
                         <h:inputSecret id="confirmPassword" 
                                        value="#{controladorUsuario.confirmPassword}" 
                                        styleClass="form-control"
-                                       validator="#{controladorUsuario.validatePasswordConfirm}"> <f:ajax event="keyup" render="msgConfirmPassword" />
+                                       validator="#{controladorUsuario.validatePasswordConfirm}"> 
+                            <f:ajax event="keyup" render="msgConfirmPassword" />
                         </h:inputSecret>
 
                         <h:message id="msgConfirmPassword" for="confirmPassword" style="color: #dc3545; font-size: 12px;" />
@@ -65,5 +77,4 @@
             </h:form>
         </f:view>
     </ui:define>
-
 </ui:composition>

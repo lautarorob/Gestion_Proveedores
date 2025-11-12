@@ -33,6 +33,7 @@ import java.util.List;
 @NamedQueries({
     @NamedQuery(name = "Usuario.findAll", query = "SELECT u FROM Usuario u"),
     @NamedQuery(name = "Usuario.findByIdUsuario", query = "SELECT u FROM Usuario u WHERE u.idUsuario = :idUsuario"),
+    @NamedQuery(name = "Usuario.findByNombreCompleto", query = "SELECT u FROM Usuario u WHERE u.nombreCompleto = :nombreCompleto"),
     @NamedQuery(name = "Usuario.findByusername", query = "SELECT u FROM Usuario u WHERE u.username = :username"),
     @NamedQuery(name = "Usuario.findByPassword", query = "SELECT u FROM Usuario u WHERE u.password = :password"),
     @NamedQuery(name = "Usuario.findByRol", query = "SELECT u FROM Usuario u WHERE u.rol = :rol")})
@@ -57,6 +58,11 @@ public class Usuario implements Serializable {
     @Size(max = 50)
     @Column(length = 50)
     private String rol;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 100)
+    @Column(name = "nombre_completo", nullable = false, length = 100)
+    private String nombreCompleto;
     @OneToMany(mappedBy = "idusuarioUltimo")
     private List<Auditoria> auditoriaList;
 
@@ -67,8 +73,9 @@ public class Usuario implements Serializable {
         this.idUsuario = idUsuario;
     }
 
-    public Usuario(Integer idUsuario, String username, String password) {
+    public Usuario(Integer idUsuario, String nombreCompleto, String username, String password) {
         this.idUsuario = idUsuario;
+        this.nombreCompleto = nombreCompleto;
         this.username = username;
         this.password = password;
     }
@@ -79,6 +86,14 @@ public class Usuario implements Serializable {
 
     public void setIdUsuario(Integer idUsuario) {
         this.idUsuario = idUsuario;
+    }
+
+    public String getNombreCompleto() {
+        return nombreCompleto;
+    }
+
+    public void setNombreCompleto(String nombreCompleto) {
+        this.nombreCompleto = nombreCompleto;
     }
 
     public String getUsername() {
@@ -138,5 +153,5 @@ public class Usuario implements Serializable {
     public String toString() {
         return "entidades.Usuario[ idUsuario=" + idUsuario + " ]";
     }
-    
+
 }

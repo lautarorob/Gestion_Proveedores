@@ -19,7 +19,7 @@ import java.util.Optional;
  * @author roble
  */
 @Stateless
-public class repoUsuario implements Serializable{
+public class repoUsuario implements Serializable {
 
     @Inject
     EntityManager em;
@@ -45,36 +45,49 @@ public class repoUsuario implements Serializable{
     public List<Usuario> Listar() {
         return em.createQuery("SELECT u FROM Usuario u", Usuario.class).getResultList();
     }
-    
-    
-    public Usuario login(String username, String password){
+
+    public Usuario login(String username, String password) {
         try {
             TypedQuery<Usuario> query = em.createQuery(
-                "SELECT u FROM Usuario u WHERE u.username = :username AND u.password = :password", 
-                Usuario.class);
-            query.setParameter("nombre_completo", username);
+                    "SELECT u FROM Usuario u WHERE u.username = :username AND u.password = :password",
+                    Usuario.class);
+            query.setParameter("username", username);
             query.setParameter("password", password);
             return query.getSingleResult();
         } catch (NoResultException e) {
             return null;
         }
-        
+
     }
 
-
-
-public Optional<Usuario> findByUsername(String username) {
-    try {
-        TypedQuery<Usuario> query = em.createQuery(
-            "SELECT u FROM Usuario u WHERE u.username = :username", 
-            Usuario.class);
-        query.setParameter("nombre_completo", username);
-        // Usamos Optional.of para envolver el resultado
-        return Optional.of(query.getSingleResult()); 
-    } catch (NoResultException e) {
-        // Si no lo encuentra, devuelve un Optional vacío
-        return Optional.empty(); 
+    public Optional<Usuario> findByUsername(String username) {
+        try {
+            TypedQuery<Usuario> query = em.createQuery(
+                    "SELECT u FROM Usuario u WHERE u.username = :username",
+                    Usuario.class);
+            
+            
+            query.setParameter("username", username);
+            
+            return Optional.of(query.getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
     }
-}
+    
+    
+    
+    public Optional<Usuario> findByNombreAndRol(String nombreCompleto, String rol) {
+        try {
+            TypedQuery<Usuario> query = em.createQuery(
+                "SELECT u FROM Usuario u WHERE u.nombreCompleto = :nombreCompleto AND u.rol = :rol", 
+                Usuario.class);
+            query.setParameter("nombreCompleto", nombreCompleto);
+            query.setParameter("rol", rol);
+            return Optional.of(query.getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
+    }
 
 }

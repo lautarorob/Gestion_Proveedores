@@ -1,12 +1,9 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE composition
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:ui="jakarta.faces.facelets"
-                xmlns:h="jakarta.faces.html"
-                xmlns:f="jakarta.faces.core"
-                template="./../template/layout.xhtml">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="jakarta.faces.facelets" xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core" template="./../template/layout.xhtml">
 
     <ui:define name="contenido">
 
@@ -21,20 +18,17 @@
                     <!-- Selector de proveedor -->
                     <h:panelGrid columns="3" columnClasses="label,value" style="margin-bottom:20px">
 
-                        <h:selectOneMenu id="proveedor"
-                                         value="#{controladorCuentaCorriente.idProveedorSeleccionado}" styleClass="form-control" style="background-color: #020618">
-                            <f:selectItem itemLabel="-- Seleccione un proveedor --" itemValue="#{null}"/>
-                            <f:selectItems value="#{controladorCuentaCorriente.listaProveedores}"
-                                           var="prov"
-                                           itemValue="#{prov.idProveedor}"
-                                           itemLabel="#{prov.nombreComercial}"/>
+                        <h:selectOneMenu id="proveedor" value="#{controladorCuentaCorriente.idProveedorSeleccionado}"
+                                         styleClass="form-control" style="background-color: #020618">
+                            <f:selectItem itemLabel="-- Seleccione un proveedor --" itemValue="#{null}" />
+                            <f:selectItems value="#{controladorCuentaCorriente.listaProveedores}" var="prov"
+                                           itemValue="#{prov.idProveedor}" itemLabel="#{prov.nombreComercial}" />
                         </h:selectOneMenu>
 
                         <!-- Botón Buscar para cargar movimientos -->
-                        <h:commandButton id="btnBuscar"
-                                         value="Buscar"
-                                         action="#{controladorCuentaCorriente.cargarMovimientos}"
-                                         style="margin-left:10px" class="btnAmarillo"/>
+                        <h:commandButton id="btnBuscar" value="Buscar"
+                                         action="#{controladorCuentaCorriente.cargarMovimientos}" style="margin-left:10px"
+                                         class="btnAmarillo" />
 
                     </h:panelGrid>
 
@@ -42,87 +36,85 @@
                     <h:panelGroup id="panelMovimientos"
                                   rendered="#{controladorCuentaCorriente.proveedorSeleccionado != null}">
 
-                        <div style="border:1px solid #ddd; padding:10px; border-radius:6px; margin-bottom:20px; background-color: #020618">
+                        <div
+                            style="border:1px solid #ddd; padding:10px; border-radius:6px; margin-bottom:20px; background-color: #020618">
                             <h3>Resumen de Cuenta Corriente</h3>
 
                             <h:panelGrid columns="2" cellpadding="10">
 
-                                <h:outputText value="Proveedor:" style="font-weight:bold"/>
-                                <h:outputText value="#{controladorCuentaCorriente.proveedorSeleccionado.nombreComercial}"/>
+                                <h:outputText value="Proveedor:" style="font-weight:bold" />
+                                <h:outputText
+                                    value="#{controladorCuentaCorriente.proveedorSeleccionado.nombreComercial}" />
 
-                                <h:outputText value="Saldo Actual:" style="font-weight:bold"/>
-                                <h:outputText value="#{controladorCuentaCorriente.saldoActual}"
-                                              style="font-weight:bold; font-size:20px;
+                                <h:outputText value="Saldo Actual:" style="font-weight:bold" />
+                                <h:outputText value="#{controladorCuentaCorriente.saldoActual}" style="font-weight:bold; font-size:20px;
                                               color: #{controladorCuentaCorriente.saldoActual > 0 ? 'red' : 'green'}">
-                                    <f:convertNumber type="currency" currencySymbol="$" maxFractionDigits="2"/>
+                                    <f:convertNumber type="currency" currencySymbol="$" maxFractionDigits="2" />
                                 </h:outputText>
 
                             </h:panelGrid>
                         </div>
 
                         <!-- TABLA DE MOVIMIENTOS -->
-                        <h:dataTable value="#{controladorCuentaCorriente.movimientos}" var="mov"
-                                     cellpadding="6"
+                        <h:dataTable value="#{controladorCuentaCorriente.movimientos}" var="mov" cellpadding="6"
                                      styleClass="tablaProveedores">
 
                             <h:column>
                                 <f:facet name="header">Fecha</f:facet>
                                 <h:outputText value="#{mov.fecha}">
-                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                    <f:convertDateTime pattern="dd/MM/yyyy" />
                                 </h:outputText>
                             </h:column>
 
                             <h:column>
                                 <f:facet name="header">Tipo</f:facet>
-                                <h:outputText value="#{mov.tipo}"/>
+                                <h:outputText value="#{mov.tipo}" />
                             </h:column>
 
                             <h:column>
                                 <f:facet name="header">Comprobante / Orden</f:facet>
-                                <h:outputText value="#{mov.comprobante}"/>
+                                <h:outputText value="#{mov.comprobante}" />
                             </h:column>
 
                             <h:column>
                                 <f:facet name="header">Descripción</f:facet>
-                                <h:outputText value="#{mov.descripcion}"/>
+                                <h:outputText value="#{mov.descripcion}" />
                             </h:column>
 
                             <h:column>
                                 <f:facet name="header">Debe</f:facet>
 
-                                <h:outputText value="#{mov.debe}"
-                                              rendered="#{mov.debe > 0}"
+                                <h:outputText value="#{mov.debe}" rendered="#{mov.debe > 0}"
                                               style="color:red; font-weight:500">
-                                    <f:convertNumber type="currency" currencySymbol="$" maxFractionDigits="2"/>
+                                    <f:convertNumber type="currency" currencySymbol="$" maxFractionDigits="2" />
                                 </h:outputText>
 
-                                <h:outputText value="-" rendered="#{mov.debe == 0}"/>
+                                <h:outputText value="-" rendered="#{mov.debe == 0}" />
                             </h:column>
 
                             <h:column>
                                 <f:facet name="header">Haber</f:facet>
 
-                                <h:outputText value="#{mov.haber}"
-                                              rendered="#{mov.haber > 0}"
+                                <h:outputText value="#{mov.haber}" rendered="#{mov.haber > 0}"
                                               style="color:green; font-weight:500">
-                                    <f:convertNumber type="currency" currencySymbol="$" maxFractionDigits="2"/>
+                                    <f:convertNumber type="currency" currencySymbol="$" maxFractionDigits="2" />
                                 </h:outputText>
 
-                                <h:outputText value="-" rendered="#{mov.haber == 0}"/>
+                                <h:outputText value="-" rendered="#{mov.haber == 0}" />
                             </h:column>
 
                             <h:column>
                                 <f:facet name="header">Saldo Parcial</f:facet>
-                                <h:outputText value="#{mov.saldoParcial}"
-                                              style="font-weight:bold;
+                                <h:outputText value="#{mov.saldoParcial}" style="font-weight:bold;
                                               color: #{mov.saldoParcial > 0 ? 'red' : 'green'}">
-                                    <f:convertNumber type="currency" currencySymbol="$" maxFractionDigits="2"/>
+                                    <f:convertNumber type="currency" currencySymbol="$" maxFractionDigits="2" />
                                 </h:outputText>
                             </h:column>
 
                             <h:column>
                                 <f:facet name="header">Estado</f:facet>
-                                <h:outputText value="#{mov.estado}"/>
+                                <h:outputText value="#{mov.estado}"
+                                              style="font-weight:bold; color: #{mov.estado == 'Pendiente' ? 'orange' : 'green'}" />
                             </h:column>
 
                         </h:dataTable>

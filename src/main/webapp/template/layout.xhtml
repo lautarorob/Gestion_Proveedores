@@ -63,13 +63,13 @@
                                 </h:link>
                             </li>
                         </ui:fragment>
-                      <!--  <ui:fragment rendered="#{controladorUsuario.usuario.rol == 'gerente'}">-->
+                        <ui:fragment rendered="#{controladorUsuario.usuario.rol == 'admin'}">
                             <li class="nav-item">
                                 <h:link outcome="/usuarios/index.xhtml" class="nav-link #{view.viewId == '/usuarios/index.xhtml' ? 'active' : ''}">
                                     <i class="bi bi-person"></i> Usuarios
                                 </h:link>
                             </li>
-                        <!--</ui:fragment>-->
+                        </ui:fragment>
                     </ul>
                 </aside>
 

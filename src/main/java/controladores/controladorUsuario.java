@@ -91,30 +91,48 @@ public class controladorUsuario implements Serializable {
         return repoUsuario.Listar();
     }
 
+    
     public String guardar() {
 
-        // 1. Buscamos si el nombre de usuario ya existe
-        Optional<Usuario> usuarioExistente = repoUsuario.findByUsername(usuario.getUsername());
+        // --- 1: Validar USERNAME (Login único) ---
+        Optional<Usuario> userByUsername = repoUsuario.findByUsername(usuario.getUsername());
+        if (userByUsername.isPresent()) {
+            boolean esNuevo = (usuario.getIdUsuario() == null);
+            boolean esOtroUsuario = !userByUsername.get().getIdUsuario().equals(usuario.getIdUsuario());
 
-        if (usuarioExistente.isPresent()) {
-            // 2. Si existe, PERO no es el mismo usuario que estamos editando
-            //    (comparamos los IDs), entonces es un duplicado.
+            if (esNuevo || esOtroUsuario) {
+                // Mensaje de error para el campo 'username'
+                FacesContext.getCurrentInstance().addMessage("formulario:username",
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                "El nombre de usuario (login) '" + usuario.getUsername() + "' ya está en uso.",
+                                "Login duplicado")
+                );
+                return null; // Nos quedamos en la página
+            }
+        }
 
-            boolean esUnNuevoUsuario = (usuario.getIdUsuario() == null);
-            boolean esUnUsuarioDiferente = !usuarioExistente.get().getIdUsuario().equals(usuario.getIdUsuario());
+        // --- 2: Validar NOMBRE + ROL ---
+        Optional<Usuario> userByNombreRol = repoUsuario.findByNombreAndRol(
+                usuario.getNombreCompleto(),
+                usuario.getRol()
+        );
 
-            if (esUnNuevoUsuario || esUnUsuarioDiferente) {
+        if (userByNombreRol.isPresent()) {
+            boolean esNuevo = (usuario.getIdUsuario() == null);
+            boolean esOtroUsuario = !userByNombreRol.get().getIdUsuario().equals(usuario.getIdUsuario());
 
-                // Si es un usuario nuevo (id == null) O es un usuario diferente, mostramos error
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
-                        FacesMessage.SEVERITY_ERROR,
-                        "El nombre de usuario '" + usuario.getUsername()+ "' ya está en uso.",
-                        "Error al guardar"));
-
+            if (esNuevo || esOtroUsuario) {
+                // Mensaje de error para el campo 'nombreCompleto'
+                FacesContext.getCurrentInstance().addMessage("formulario:nombreCompleto", 
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                "Ya existe un usuario con el nombre '" + usuario.getNombreCompleto() + "' y el rol '" + usuario.getRol() + "'.",
+                                "Duplicado por Nombre y Rol")
+                );
                 return null;
             }
         }
 
+        
         repoUsuario.Guardar(usuario);
         return "/usuarios/index.xhtml?faces-redirect=true";
     }

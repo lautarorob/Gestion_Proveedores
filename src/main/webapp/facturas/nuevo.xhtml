@@ -25,7 +25,7 @@
                                            itemLabel="#{prov.razonSocial}" itemValue="#{prov}" />
                         </h:selectOneMenu>
                     </div>
-                    
+
                     <div class="col-md-6 mb-3">
                         <label>Fecha de Registro(*)</label>
                         <h:inputText id="fechaRegistro"
@@ -37,7 +37,7 @@
                             <f:convertDateTime pattern="yyyy-MM-dd" timeZone="America/Argentina/Buenos_Aires" />
                         </h:inputText>
                     </div>
-                    
+
                     <div class="col-md-6 mb-3">
                         <label>Fecha de Comprobante</label>
                         <h:inputText id="fechaComprobante" value="#{controladorFactura.factura.fechaComprobante}"
@@ -124,9 +124,9 @@
                                      value="#{controladorFactura.facturaProducto.cantidad}"
                                      required="true"
                                      styleClass="form-control" />
+                        <h:message for="cantidad" style="color: #dc3545; font-size: 12px;"/>
                     </div>
                 </div>
-
 
 
                 <div class="row mb-3">
@@ -136,11 +136,9 @@
                                          styleClass="btnAmarillo">
                             <f:ajax execute="producto descripcion precioUnitario cantidad"
                                     render=":formulario:tablaProductos :formulario:totalesFactura :formulario:guardarBtn" />
-
                         </h:commandButton>
                     </div>
                 </div>
-
 
 
                 <!-- Tabla de productos agregados -->
@@ -180,11 +178,7 @@
                                         </td>
                                         <td>
                                             <h:commandLink styleClass="btn btn-danger btn-sm" value="Eliminar">
-                                                <!-- Pasamos el índice a eliminar -->
-                                                <f:setPropertyActionListener target="#{controladorFactura.indiceEliminar}"
-                                                                             value="#{status.index}" />
-                                                <!-- Llamamos al método del bean -->
-                                                <f:ajax listener="#{controladorFactura.eliminarProducto}"
+                                                <f:ajax listener="#{controladorFactura.eliminarProducto(status.index)}"
                                                         render=":formulario:tablaProductos :formulario:totalesFactura"
                                                         execute="@this" />
                                             </h:commandLink>

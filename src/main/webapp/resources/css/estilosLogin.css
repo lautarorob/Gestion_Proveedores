@@ -12,7 +12,7 @@ body{
     background-repeat: no-repeat; /* Evita que la imagen se repita */
     background-attachment: fixed; /* Fija la imagen durante el scroll */
     background-position: center;  /* Centra la imagen */
-    
+
     display: flex;
     justify-content: center;
     align-items: center;
@@ -126,11 +126,11 @@ body{
     .login-form {
         padding: 2rem 1.5rem;
     }
-    
+
     .login-title {
         font-size: 1.5rem;
     }
-    
+
     .login-subtitle {
         font-size: 0.85rem;
     }

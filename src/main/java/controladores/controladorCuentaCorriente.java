@@ -111,8 +111,10 @@ public class controladorCuentaCorriente implements Serializable {
         // 3. Ordenar cronológicamente
         Collections.sort(movimientos);
 
+        calcularSaldosParciales(); // Renombramos el método
+
         // 4. Calcular saldo acumulado
-        calcularSaldos();
+        saldoActual = (BigDecimal) repoFactura.getSaldoPendiente(idProveedorSeleccionado);
 
         System.out.println("=== MOVIMIENTOS CARGADOS ===");
         System.out.println("Proveedor: " + proveedorSeleccionado.getNombreComercial());
@@ -123,7 +125,7 @@ public class controladorCuentaCorriente implements Serializable {
     /**
      * Calcula el saldo parcial de cada movimiento y el saldo final
      */
-    private void calcularSaldos() {
+    private void calcularSaldosParciales() { // Nombre cambiado
         BigDecimal saldo = BigDecimal.ZERO;
 
         for (MovimientosDTO mov : movimientos) {
@@ -131,8 +133,8 @@ public class controladorCuentaCorriente implements Serializable {
             saldo = saldo.add(mov.getDebe()).subtract(mov.getHaber());
             mov.setSaldoParcial(saldo);
         }
-
-        saldoActual = saldo;
+        
+        // ¡Ya NO asignamos saldoActual = saldo; aquí!
     }
 
     // ===== GETTERS Y SETTERS =====

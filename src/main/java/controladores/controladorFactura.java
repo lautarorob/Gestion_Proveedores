@@ -5,6 +5,7 @@ import entidades.FacturaProducto;
 import entidades.FacturaProductoPK;
 import entidades.Producto;
 import jakarta.annotation.PostConstruct;
+import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
 import jakarta.faces.view.ViewScoped;
@@ -51,18 +52,17 @@ public class controladorFactura implements Serializable {
     public controladorFactura() {
     }
 
-    public void eliminarProducto() {
-        if (indiceEliminar != null && productosTemporales != null && !productosTemporales.isEmpty()) {
-            int index = indiceEliminar;
+    public void eliminarProducto(int index) {
+        if (productosTemporales != null && !productosTemporales.isEmpty()) {
             if (index >= 0 && index < productosTemporales.size()) {
                 FacturaProducto eliminado = productosTemporales.remove(index);
-                calcularTotales();
+                calcularTotales(); // Asegúrate de que esto actualiza subtotal, iva y total
                 System.out.println("Producto eliminado: " + eliminado.getDescripcion());
             } else {
                 System.out.println("Índice fuera de rango: " + index);
             }
         } else {
-            System.out.println("No hay productos o índice nulo");
+            System.out.println("No hay productos");
         }
     }
 
@@ -155,6 +155,15 @@ public class controladorFactura implements Serializable {
                         .multiply(BigDecimal.valueOf(nuevo.getCantidad()))
                         .setScale(2, RoundingMode.HALF_UP);
                 nuevo.setSubtotal(subtotal);
+            }
+
+            if (nuevo.getCantidad() <= 0) {
+                FacesContext.getCurrentInstance().addMessage("formulario:cantidad",
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                "Cantidad inválida",
+                                "La cantidad debe ser mayor a 0.")
+                );
+                return; // Detener la ejecución
             }
 
             // Asociar la factura
