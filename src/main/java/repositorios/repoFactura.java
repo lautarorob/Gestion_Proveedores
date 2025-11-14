@@ -124,12 +124,25 @@ public class repoFactura {
     public List<Factura> listarImpagasPorProveedor(Integer idProveedor) {
         try {
             List<Factura> lista = em.createQuery(
-                    "SELECT f FROM Factura f WHERE f.idProveedor.idProveedor = :prov AND (f.estado IS NULL OR f.estado <> 'PAGADA')",
+                    "SELECT f FROM Factura f WHERE f.idProveedor.idProveedor = :prov AND (f.estado IS NULL OR f.estado <> 'Pagada')",
                     Factura.class)
                     .setParameter("prov", idProveedor)
                     .getResultList();
 
             System.out.println("RepoFactura: cargadas " + lista.size() + " facturas para proveedor ID " + idProveedor);
+            return lista;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    public List<Factura> listarImpagas() {
+        try {
+            List<Factura> lista = em.createQuery(
+                    "SELECT f FROM Factura f WHERE f.estado <> 'Pagada'",
+                    Factura.class)
+                    .getResultList();
             return lista;
         } catch (Exception e) {
             e.printStackTrace();
