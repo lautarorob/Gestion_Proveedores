@@ -19,38 +19,44 @@
                     <div class="col-md-6 mb-3">
                         <label>Proveedor(*)</label>
                         <h:selectOneMenu id="idProveedor" value="#{controladorFactura.factura.idProveedor}"
-                                         converter="proveedorConverter" styleClass="form-control select-con-icono">
+                                         converter="proveedorConverter" styleClass="form-control select-con-icono" required="true" requiredMessage="Campo Obligatorio">
                             <f:selectItem itemLabel="Seleccione un proveedor" itemValue="#{null}" />
                             <f:selectItems value="#{controladorProducto.listaProveedores}" var="prov"
                                            itemLabel="#{prov.razonSocial}" itemValue="#{prov}" />
                         </h:selectOneMenu>
+                        <h:message for="idProveedor" style="color: red;"></h:message>
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label>Fecha de Registro(*)</label>
+                        <label>Fecha de Registro</label>
                         <h:inputText id="fechaRegistro"
                                      value="#{controladorFactura.factura.fechaRegistro}"
                                      required="true"
-                                     pt:type="date"
                                      styleClass="form-control">
                             <!-- Conversor compatible con el formato que envía el navegador -->
                             <f:convertDateTime pattern="yyyy-MM-dd" timeZone="America/Argentina/Buenos_Aires" />
                         </h:inputText>
+
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label>Fecha de Comprobante</label>
+                        <label>Fecha de Comprobante(*)</label>
                         <h:inputText id="fechaComprobante" value="#{controladorFactura.factura.fechaComprobante}"
-                                     styleClass="form-control" readonly="true">
-                            <f:convertDateTime pattern="dd/MM/yyyy" type="date"
+                                     styleClass="form-control"
+                                     pt:type="date"
+                                     required="true"
+                                     requiredMessage="Campo Obligatorio">
+                            <f:convertDateTime pattern="yyyy-MM-dd" type="date"
                                                timeZone="America/Argentina/Buenos_Aires" />
                         </h:inputText>
+                        <h:message for="fechaComprobante" style="color: red;"></h:message>
                     </div>
 
                     <div class="col-md-6 mb-3">
                         <label>Tipo de Factura(*)</label>
                         <h:selectOneMenu id="tipo" value="#{controladorFactura.factura.tipo}"
-                                         styleClass="form-control select-con-icono">
+                                         styleClass="form-control select-con-icono"
+                                         required="true" requiredMessage="Campo Obligatorio">
                             <f:selectItem itemLabel="Seleccion tipo" itemValue="" noSelectionOption="true" />
                             <f:selectItem itemLabel="A" itemValue="A" />
                             <f:selectItem itemLabel="B" itemValue="B" />
@@ -58,22 +64,26 @@
                             <f:ajax event="change" listener="#{controladorFactura.calcularTotales}" 
                                     render="totalesFactura" />
                         </h:selectOneMenu>
+                        <h:message for="tipo" style="color: red;"></h:message>
                     </div>
 
                     <div class="col-md-12 mb-3">
                         <label>Número de Comprobante</label>
                         <h:inputText id="nroComprobante" value="#{controladorFactura.factura.nroComprobante}"
-                                     styleClass="form-control" readonly="true" />
+                                     styleClass="form-control" onblur="validarComprobante(this)" 
+                                     pt:placeholder="1234-12345678"/>
+                        <h:outputText id="errorComprobante" style="color:red; font-size:small"/>
                     </div>
 
                     <div class="col-md-12 mb-3">
                         <label>Forma de Pago(*)</label>
                         <h:selectOneMenu id="formaPago" value="#{controladorFactura.factura.formaPago}"
-                                         styleClass="form-control select-con-icono">
+                                         styleClass="form-control select-con-icono" required="true" requiredMessage="Campo Obligatorio">
                             <f:selectItem itemLabel="Forma de Pago" itemValue="" noSelectionOption="true" />
                             <f:selectItem itemLabel="Contado" itemValue="Contado" />
                             <f:selectItem itemLabel="Cuenta Corriente" itemValue="Cuenta Corriente" />
                         </h:selectOneMenu>
+                        <h:message for="formaPago" style="color: red;"></h:message>
                     </div>
 
                     <div class="col-md-6 mb-3">
@@ -99,6 +109,7 @@
                                     listener="#{controladorFactura.actualizarCamposProducto}"
                                     render="descripcion precioUnitario" />
                         </h:selectOneMenu>
+                        <h:message id="mensajeProducto" for="producto" style="color: #dc3545; font-size: 12px;"/>
                     </div>
 
                     <div class="col-md-3 mb-3">
@@ -109,10 +120,10 @@
                     </div>
 
                     <div class="col-md-3 mb-3">
-                        <label>Precio Unitario</label>
+                        <label>Precio Unitario(?)</label>
                         <h:inputText id="precioUnitario"
                                      value="#{controladorFactura.facturaProducto.precioUnitario}"
-                                     styleClass="form-control" readonly="true">
+                                     styleClass="form-control">
                             <f:convertNumber type="currency" currencySymbol="$"
                                              minFractionDigits="2" maxFractionDigits="2" />
                         </h:inputText>
@@ -124,7 +135,7 @@
                                      value="#{controladorFactura.facturaProducto.cantidad}"
                                      required="true"
                                      styleClass="form-control" />
-                        <h:message for="cantidad" style="color: #dc3545; font-size: 12px;"/>
+                        <h:message id="mensajeCantidad" for="cantidad" style="color: #dc3545; font-size: 12px;"/>
                     </div>
                 </div>
 
@@ -135,7 +146,7 @@
                                          action="#{controladorFactura.agregarProducto(controladorFactura.facturaProducto)}"
                                          styleClass="btnAmarillo">
                             <f:ajax execute="producto descripcion precioUnitario cantidad"
-                                    render=":formulario:tablaProductos :formulario:totalesFactura :formulario:guardarBtn" />
+                                    render=":formulario:producto :formulario:mensajeProducto :formulario:descripcion :formulario:precioUnitario :formulario:cantidad :formulario:mensajeCantidad :formulario:tablaProductos :formulario:totalesFactura :formulario:guardarBtn" />
                         </h:commandButton>
                     </div>
                 </div>
@@ -240,12 +251,13 @@
                                          styleClass="btnGris"
                                          immediate="true" />
 
-                        <!-- 🔹 Botón de guardar dentro de panel -->
+                        <!--  Botón de guardar dentro de panel -->
                         <h:panelGroup id="guardarBtn">
                             <h:commandButton value="Guardar Factura"
                                              action="#{controladorFactura.guardar}"
                                              styleClass="btnAmarillo"
-                                             rendered="#{not empty controladorFactura.productosTemporales}" />
+                                             rendered="#{not empty controladorFactura.productosTemporales}"
+                                             onclick="return validarComprobante(document.getElementById('formulario:nroComprobante'))"/>
                         </h:panelGroup>
                     </div>
                 </div>

@@ -17,6 +17,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import repositorios.repoFactura;
 import repositorios.repoOrdenPago;
 import repositorios.repoProveedor;
@@ -51,6 +52,7 @@ public class controladorCuentaCorriente implements Serializable {
     private List<Proveedor> listaProveedores;
     private List<MovimientosDTO> movimientos;
     private BigDecimal saldoActual;
+    private String estadoPago;
 
     @PostConstruct
     public void init() {
@@ -70,7 +72,7 @@ public class controladorCuentaCorriente implements Serializable {
             return;
         }
 
-        // Cargar proveedor seleccionado
+        // Cargar proveedor seleccionado 
         proveedorSeleccionado = repoProveedor.porId(idProveedorSeleccionado)
                 .orElse(null);
 
@@ -81,7 +83,7 @@ public class controladorCuentaCorriente implements Serializable {
 
         movimientos = new ArrayList<>();
 
-        // 1. Cargar FACTURAS del proveedor
+        // 1. Cargar FACTURAS del proveedor 
         List<Factura> facturas = repoFactura.listarPorProveedor(idProveedorSeleccionado);
         for (Factura f : facturas) {
             MovimientosDTO dto = MovimientosDTO.fromFactura(
@@ -95,7 +97,7 @@ public class controladorCuentaCorriente implements Serializable {
             movimientos.add(dto);
         }
 
-        // 2. Cargar ÓRDENES DE PAGO del proveedor
+        // 2. Cargar ÓRDENES DE PAGO del proveedor (igual que antes)
         List<OrdenPago> pagos = repoOrdenPago.listarPorProveedor(idProveedorSeleccionado);
         for (OrdenPago op : pagos) {
             MovimientosDTO dto = MovimientosDTO.fromOrdenPago(
@@ -104,22 +106,51 @@ public class controladorCuentaCorriente implements Serializable {
                     op.getFormaPago(),
                     op.getMontoTotal(),
                     op.getIdProveedor().getIdProveedor()
+            
             );
             movimientos.add(dto);
         }
 
-        // 3. Ordenar cronológicamente
+        // --- 3. NUEVO: FILTRAR LA LISTA EN MEMORIA ---
+        // Verificamos si el filtro 'estadoPago' tiene un valor
+        if (estadoPago != null && !estadoPago.trim().isEmpty()) {
+
+            final String filtroEstado = estadoPago; // Variable final para usar en lambda
+
+            movimientos = movimientos.stream()
+                    .filter(mov -> {
+                        String estadoMovimiento = mov.getEstado(); // "Pendiente", "Pagado" o null
+
+                        // Lógica del filtro:
+                        if ("Impaga".equals(filtroEstado)) {
+                            // Si el filtro es "Impago", solo mustra movimientos
+                            // cuyo estado sea "Pendiente"
+                            return "Pendiente".equals(estadoMovimiento);
+                        }
+
+                        if ("Pagada".equals(filtroEstado)) {
+                            // Si el filtro es "Pagado", muestra facturas "Pagado"
+                            // Y también las Órdenes de Pago 
+                            return "Pagada".equals(estadoMovimiento) || estadoMovimiento == null;
+                        }
+
+                        return false; // Caso inesperado
+                    })
+                    .collect(Collectors.toList()); // Creamos una nueva lista filtrada
+        }
+        // Si 'estadoPago' es null, este bloque se salta y se usan todos los movimientos
+
+        // 4. Ordenar cronológicamente
         Collections.sort(movimientos);
 
-        calcularSaldosParciales(); // Renombramos el método
+        calcularSaldosParciales();
 
-        // 4. Calcular saldo acumulado
+        // 5. Calcular saldo acumulado 
+        // NOTA: Este saldo es el saldo TOTAL del proveedor, no el saldo de la lista filtrada.
         saldoActual = (BigDecimal) repoFactura.getSaldoPendiente(idProveedorSeleccionado);
 
         System.out.println("=== MOVIMIENTOS CARGADOS ===");
-        System.out.println("Proveedor: " + proveedorSeleccionado.getNombreComercial());
-        System.out.println("Total movimientos: " + movimientos.size());
-        System.out.println("Saldo actual: $" + saldoActual);
+        
     }
 
     /**
@@ -133,8 +164,7 @@ public class controladorCuentaCorriente implements Serializable {
             saldo = saldo.add(mov.getDebe()).subtract(mov.getHaber());
             mov.setSaldoParcial(saldo);
         }
-        
-        // ¡Ya NO asignamos saldoActual = saldo; aquí!
+
     }
 
     // ===== GETTERS Y SETTERS =====
@@ -160,6 +190,38 @@ public class controladorCuentaCorriente implements Serializable {
 
     public BigDecimal getSaldoActual() {
         return saldoActual;
+    }
+
+    public repoFactura getRepoFactura() {
+        return repoFactura;
+    }
+
+    public void setRepoFactura(repoFactura repoFactura) {
+        this.repoFactura = repoFactura;
+    }
+
+    public repoOrdenPago getRepoOrdenPago() {
+        return repoOrdenPago;
+    }
+
+    public void setRepoOrdenPago(repoOrdenPago repoOrdenPago) {
+        this.repoOrdenPago = repoOrdenPago;
+    }
+
+    public repoProveedor getRepoProveedor() {
+        return repoProveedor;
+    }
+
+    public void setRepoProveedor(repoProveedor repoProveedor) {
+        this.repoProveedor = repoProveedor;
+    }
+
+    public String getEstadoPago() {
+        return estadoPago;
+    }
+
+    public void setEstadoPago(String estadoPago) {
+        this.estadoPago = estadoPago;
     }
 
 }

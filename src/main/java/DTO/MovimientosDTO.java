@@ -58,7 +58,7 @@ public class MovimientosDTO implements Comparable<MovimientosDTO> {
         dto.setDescripcion("Pago " + formaPago);
         dto.setDebe(BigDecimal.ZERO);
         dto.setHaber(montoTotal); // Los pagos van al HABER
-        dto.setEstado("Pagado");
+        dto.setEstado("Pagada");
         dto.setIdProveedor(idProveedor);
         return dto;
     }

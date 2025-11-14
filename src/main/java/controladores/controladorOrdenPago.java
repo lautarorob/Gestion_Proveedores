@@ -5,6 +5,8 @@ import entidades.Factura;
 import entidades.OrdenPago;
 import entidades.Proveedor;
 import jakarta.annotation.PostConstruct;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -12,8 +14,12 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import repositorios.repoFactura;
 import repositorios.repoOrdenPago;
 import repositorios.repoProveedor;
@@ -180,19 +186,22 @@ public class controladorOrdenPago implements Serializable {
     // ============================
     private String generarNumeroOrden() {
         String ultimo = repoOrdenPago.obtenerUltimoNumeroOrden();
-        if (ultimo == null) {
-            return "0001-00000001";
-        }
+        String prefijo = "OP-" + java.time.LocalDate.now().getYear();
 
+        if (ultimo == null) {
+            return prefijo + "-000001";
+        }
         try {
             String[] partes = ultimo.split("-");
-            String prefijo = partes[0];
-            int num = Integer.parseInt(partes[1]);
+            int num = Integer.parseInt(partes[2]);
             num++;
-            return prefijo + "-" + String.format("%08d", num);
+            return prefijo + "-" + String.format("%06d", num);
+
         } catch (Exception e) {
-            return "0001-00000001";
+            return prefijo + "-000001";
+
         }
+
     }
 
     // ============================
@@ -213,7 +222,7 @@ public class controladorOrdenPago implements Serializable {
         repoOrdenPago.Guardar(ordenPago);
 
         for (Factura f : facturasSeleccionadas) {
-            f.setEstado("PAGADA");
+            f.setEstado("Pagada");
             f.setIdOrdenPago(ordenPago);
             repoFactura.Guardar(f);
         }
@@ -235,35 +244,52 @@ public class controladorOrdenPago implements Serializable {
     }
 
     public void generarListadoPagos() {
-//        listadoPagos = new ArrayList<>();
-//
-//        // Traer todas las órdenes de pago del período
-//        List<OrdenPago> ordenes = repoOrdenPago.findByFechaPagoBetween(fechaInicio, fechaFin);
-//
-//        // Map para agrupar por proveedor + forma de pago + fecha
-//        Map<String, PagoListadoDTO> map = new HashMap<>();
-//
-//        for (OrdenPago op : ordenes) {
-//            String key = op.getIdProveedor().getRazonSocial()+ "|" + op.getFormaPago() + "|" + op.getFechaPago();
-//            if (map.containsKey(key)) {
-//                // Sumar al total existente
-//                PagoListadoDTO dto = map.get(key);
-//                dto.setTotalPagado(dto.getTotalPagado().add(op.getMontoTotal()));
-//            } else {
-//                map.put(key, new PagoListadoDTO(
-//                        op.getIdProveedor().getRazonSocial(),
-//                        op.getFormaPago(),
-//                        op.getFechaPago(),
-//                        op.getMontoTotal()
-//                ));
-//            }
-//        }
-//
-//        listadoPagos.addAll(map.values());
-//        // Opcional: ordenar por proveedor, forma de pago, fecha
-//        listadoPagos.sort(Comparator.comparing(PagoListadoDTO::getProveedor)
-//                .thenComparing(PagoListadoDTO::getFormaPago)
-//                .thenComparing(PagoListadoDTO::getFechaPago));
+        try {
+            listadoPagos = new ArrayList<>();
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(fechaFin);
+            cal.add(Calendar.DAY_OF_MONTH, 1);
+            Date fechaFinInclusive = cal.getTime();
+
+            List<OrdenPago> ordenes = repoOrdenPago.findByFechaPagoBetween(fechaInicio, fechaFinInclusive);
+            System.out.println("Cant ordenes: " + ordenes.size());
+
+            Map<String, PagoListadoDTO> map = new HashMap<>();
+
+            for (OrdenPago op : ordenes) {
+                String proveedor = op.getIdProveedor() != null ? op.getIdProveedor().getRazonSocial() : "SIN PROVEEDOR";
+                String forma = op.getFormaPago() != null ? op.getFormaPago() : "SIN FORMA";
+                Date fecha = op.getFechaPago();
+
+                String key = proveedor + "|" + forma + "|" + fecha;
+
+                if (map.containsKey(key)) {
+                    PagoListadoDTO dto = map.get(key);
+                    dto.setTotalPagado(dto.getTotalPagado().add(op.getMontoTotal()));
+                } else {
+                    map.put(key, new PagoListadoDTO(proveedor, forma, fecha, op.getMontoTotal()));
+                }
+            }
+
+            listadoPagos.addAll(map.values());
+
+            listadoPagos.sort(
+                    Comparator.comparing(PagoListadoDTO::getProveedor, Comparator.nullsLast(String::compareTo))
+                            .thenComparing(PagoListadoDTO::getFormaPago, Comparator.nullsLast(String::compareTo))
+                            .thenComparing(PagoListadoDTO::getFechaPago, Comparator.nullsLast(Date::compareTo))
+            );
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            FacesContext.getCurrentInstance().addMessage(
+                    null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "Error interno al generar el listado: " + e.getMessage(),
+                            null)
+            );
+        }
     }
 
     // ============================
@@ -311,6 +337,30 @@ public class controladorOrdenPago implements Serializable {
 
     public OrdenPago getOrdenPago() {
         return ordenPago;
+    }
+
+    public Date getFechaInicio() {
+        return fechaInicio;
+    }
+
+    public void setFechaInicio(Date fechaInicio) {
+        this.fechaInicio = fechaInicio;
+    }
+
+    public Date getFechaFin() {
+        return fechaFin;
+    }
+
+    public void setFechaFin(Date fechaFin) {
+        this.fechaFin = fechaFin;
+    }
+
+    public List<PagoListadoDTO> getListadoPagos() {
+        return listadoPagos;
+    }
+
+    public void setListadoPagos(List<PagoListadoDTO> listadoPagos) {
+        this.listadoPagos = listadoPagos;
     }
 
 }

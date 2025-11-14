@@ -16,7 +16,8 @@
                 <h:commandButton value=" + Registrar Factura" action="/facturas/nuevo.xhtml"
                                  styleClass="btnAmarillo" />
 
-                <h:dataTable value="#{controladorFactura.listar()}" var="item" styleClass="tablaProveedores" cellpadding="6">
+                <h:dataTable value="#{controladorFactura.listarImpagas()}" var="item" styleClass="tablaProveedores" cellpadding="6"
+                             rendered="#{not empty controladorFactura.listarImpagas()}">
 
                     <h:column>
                         <f:facet name="header">
@@ -92,20 +93,25 @@
                             <h:outputText value="Acciones" style="margin-right: 50px"/>
                         </f:facet>
 
-                        <h:panelGroup rendered="#{item.estado == 'Pendiente'}">
+                        <h:panelGroup rendered="#{item.estado == 'Impaga'}">
                             <h:link class="editarAcciones" outcome="/facturas/editar.xhtml" style="margin-right: 10px">
                                 <f:param name="id" value="#{item.idFactura}" />
                                 <i class="bi bi-pencil"></i>
                             </h:link>
                         </h:panelGroup>
 
-                        <h:outputText value="-" style="margin-right: 50px" rendered="#{item.estado != 'Pendiente'}"/>
+                        <h:outputText value="-" style="margin-right: 50px" rendered="#{item.estado != 'Impaga'}"/>
 
                     </h:column>
 
                 </h:dataTable>
                 <h:commandButton value=" Crear orden de pago" action="/pagos/nuevo.xhtml"
-                                 styleClass="btnAmarillo" />
+                                 styleClass="btnAmarillo"
+                                 rendered="#{not empty controladorFactura.listarImpagas()}"/>
+
+                <h:panelGroup rendered="#{empty controladorFactura.listarImpagas()}">
+                    <h1 style="color: grey; font-style: italic"><strong>NO EXISTEN FACTURAS IMPAGAS</strong></h1>
+                </h:panelGroup>
 
             </h:form>
 

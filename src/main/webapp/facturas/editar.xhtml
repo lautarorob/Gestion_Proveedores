@@ -22,41 +22,50 @@
                 <h2>Editar Factura</h2>
 
                 <div class="row">
-                    <div class="col-md-6 mb-3">
+
+                    <div class="col-md-12 mb-3">
                         <label>Número de Comprobante</label>
                         <h:inputText id="nroComprobante" value="#{controladorFactura.factura.nroComprobante}"
-                                     styleClass="form-control" readonly="true" />
+                                     styleClass="form-control" readonly="true" onblur="validarComprobante(this)"  />
+                        <h:outputText id="errorComprobante" style="color:red; font-size:small"/>
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label>Fecha de Comprobante</label>
+                        <label>Fecha de Comprobante(*)</label>
                         <h:inputText id="fechaComprobante" value="#{controladorFactura.factura.fechaComprobante}"
-                                     styleClass="form-control" readonly="true">
+                                     styleClass="form-control"
+                                     pt:type="date"
+                                     required="true"
+                                     requiredMessage="Campo Obligatorio">>
                             <f:convertDateTime pattern="dd/MM/yyyy" type="date"
                                                timeZone="America/Argentina/Buenos_Aires" />
                         </h:inputText>
+                        <h:message for="fechaComprobante" style="color: red;"></h:message>
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label>Fecha de Registro(*)</label>
+                        <label>Fecha de Registro</label>
                         <h:inputText id="fechaRegistro"
                                      value="#{controladorFactura.factura.fechaRegistro}"
                                      required="true"
-                                     pt:type="date"
-                                     styleClass="form-control">
-                            <!-- Conversor compatible con el formato que envía el navegador -->
-                            <f:convertDateTime pattern="yyyy-MM-dd" timeZone="America/Argentina/Buenos_Aires" />
+                                     readonly="true"
+                                     styleClass="form-control"
+                                     <!-- Conversor compatible con el formato que envía el navegador -->
+                                     <f:convertDateTime pattern="yyyy-MM-dd" timeZone="America/Argentina/Buenos_Aires" />
                         </h:inputText>
+
                     </div>
 
                     <div class="col-md-6 mb-3">
                         <label>Forma de Pago(*)</label>
                         <h:selectOneMenu id="formaPago" value="#{controladorFactura.factura.formaPago}"
-                                         styleClass="form-control select-con-icono">
+                                         styleClass="form-control select-con-icono"
+                                         required="true" requiredMessage="Campo Obligatorio">
                             <f:selectItem itemLabel="Forma de Pago" itemValue="" noSelectionOption="true" />
                             <f:selectItem itemLabel="Contado" itemValue="Contado" />
                             <f:selectItem itemLabel="Cuenta Corriente" itemValue="Cuenta Corriente" />
                         </h:selectOneMenu>
+                        <h:message for="formaPago" style="color: red;"></h:message>
                     </div>
 
                     <div class="col-md-6 mb-3">

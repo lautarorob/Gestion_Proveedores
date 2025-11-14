@@ -50,7 +50,7 @@ function validarProveedor() {
         errorCuit.textContent = "Campo Obligatorio";
         isValid = false;
     } else if (!regexCuit.test(cuit)) {
-        errorCuit.textContent = "Fomato Ivalido";
+        errorCuit.textContent = "Fomato Invalido";
         isValid = false;
     }
 
@@ -63,7 +63,7 @@ function validarProveedor() {
         errorTel.textContent = "Campo Obligatorio";
         isValid = false;
     } else if (!regexTelefono.test(telefono)) {
-        errorTel.textContent = "Fomato Ivalido";
+        errorTel.textContent = "Fomato Invalido";
         isValid = false;
     }
 
@@ -71,7 +71,7 @@ function validarProveedor() {
         errorEmail.textContent = "Campo Obligatorio";
         isValid = false;
     } else if (!regexEmail.test(email)) {
-        errorEmail.textContent = "Fomato Ivalido";
+        errorEmail.textContent = "Fomato Invalido";
         isValid = false;
     }
 
@@ -84,6 +84,14 @@ function validarProveedor() {
 }
 
 function validarProducto() {
+
+    const errorCod = document.getElementById("formulario:errorCodProd");
+    const errorDesc = document.getElementById("formulario:errorDesc");
+    const errorNombre = document.getElementById("formulario:errorNombre");
+    const errorPrecio = document.getElementById("formulario:errorPrecRef");
+    const errorUnidadM = document.getElementById("formulario:errorUnidad");
+    const errorProv = document.getElementById("formulario:errorProveedor");
+
     //objetos
     const codProdObj = document.getElementById("formulario:codProd");
     const descripcionObj = document.getElementById("formulario:descripcion");
@@ -103,32 +111,32 @@ function validarProducto() {
 
 
     if (codProd === "") {
-        alert("Falta codProd");
+        errorCod.textContent = "Campo Obligatorio";
         isValid = false;
     }
 
     if (descripcion === "") {
-        alert("Falta descripcion");
+        errorDesc.textContent = "Campo Obligatorio";
         isValid = false;
     }
 
     if (nombre === "") {
-        alert("Falta nombre");
+        errorNombre.textContent = "Campo Obligatorio";
         isValid = false;
     }
 
     if (precioReferencia === "") {
-        alert("Falta precioReferencia");
+        errorPrecio.textContent = "Campo Obligatorio";
         isValid = false;
     }
 
     if (unidadMedida === "") {
-        alert("Falta unidadMedida");
+        errorUnidadM.textContent = "Campo Obligatorio";
         isValid = false;
     }
 
     if (idProveedor === "") {
-        alert("Falta idProveedor");
+        errorProv.textContent = "Campo Obligatorio";
         isValid = false;
     }
 
@@ -253,4 +261,22 @@ function validarProductoFactura() {
     }
 
     return isValid;
+}
+
+
+function validarComprobante(input) {
+    const valor = input.value.trim();
+    const mensaje = document.getElementById("formulario:errorComprobante");
+
+    // limpiar mensaje previo
+    mensaje.textContent = "";
+
+    const patron = /^\d{4}-\d{8}$/;
+
+    if (!patron.test(valor)) {
+        mensaje.textContent = "Formato incorrecto: debe ser ####-########";
+        return false;
+    }
+
+    return true;
 }

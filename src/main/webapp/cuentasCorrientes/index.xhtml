@@ -15,17 +15,24 @@
                 <div class="panel-custom" style="padding:15px;">
                     <h2>Cuentas Corrientes</h2>
 
-                    <!-- Selector de proveedor -->
+
+                    <!-- FILTROS POR PROVEEDOR Y ESTADO DE PAGO -->
                     <h:panelGrid columns="3" columnClasses="label,value" style="margin-bottom:20px">
 
                         <h:selectOneMenu id="proveedor" value="#{controladorCuentaCorriente.idProveedorSeleccionado}"
                                          styleClass="form-control" style="background-color: #020618">
-                            <f:selectItem itemLabel="-- Seleccione un proveedor --" itemValue="#{null}" />
+                            <f:selectItem itemLabel="Seleccione un proveedor" itemValue="#{null}" />
                             <f:selectItems value="#{controladorCuentaCorriente.listaProveedores}" var="prov"
                                            itemValue="#{prov.idProveedor}" itemLabel="#{prov.nombreComercial}" />
                         </h:selectOneMenu>
 
-                        <!-- Botón Buscar para cargar movimientos -->
+                        <h:selectOneMenu id="estado" value="#{controladorCuentaCorriente.estadoPago}"
+                                         styleClass="form-control" style="background-color: #020618">
+                            <f:selectItem itemLabel="Seleccione un estado" itemValue="#{null}" /> 
+                            <f:selectItem itemLabel="Pagado" itemValue="Pagada" />
+                            <f:selectItem itemLabel="Impago" itemValue="Impago" />
+                        </h:selectOneMenu>
+
                         <h:commandButton id="btnBuscar" value="Buscar"
                                          action="#{controladorCuentaCorriente.cargarMovimientos}" style="margin-left:10px"
                                          class="btnAmarillo" />
@@ -34,7 +41,8 @@
 
                     <!-- PANEL RESUMEN -->
                     <h:panelGroup id="panelMovimientos"
-                                  rendered="#{controladorCuentaCorriente.proveedorSeleccionado != null}">
+                                  rendered="#{controladorCuentaCorriente.proveedorSeleccionado != null }"
+                                  >
 
                         <div
                             style="border:1px solid #ddd; padding:10px; border-radius:6px; margin-bottom:20px; background-color: #020618">
@@ -57,7 +65,8 @@
 
                         <!-- TABLA DE MOVIMIENTOS -->
                         <h:dataTable value="#{controladorCuentaCorriente.movimientos}" var="mov" cellpadding="6"
-                                     styleClass="tablaProveedores">
+                                     styleClass="tablaProveedores"
+                                     rendered="#{not empty controladorCuentaCorriente.movimientos}">
 
                             <h:column>
                                 <f:facet name="header">Fecha</f:facet>

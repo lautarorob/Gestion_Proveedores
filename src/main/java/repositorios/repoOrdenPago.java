@@ -5,6 +5,7 @@ import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,16 +44,33 @@ public class repoOrdenPago {
             return null;
         }
     }
+
     public List<OrdenPago> listarPorProveedor(Integer idProveedor) {
         try {
             return em.createQuery(
-               "SELECT o FROM OrdenPago o WHERE o.idProveedor.idProveedor = :idProv ORDER BY o.fechaPago", 
-                OrdenPago.class)
-                .setParameter("idProv", idProveedor)
-                .getResultList();
+                    "SELECT o FROM OrdenPago o WHERE o.idProveedor.idProveedor = :idProv ORDER BY o.fechaPago",
+                    OrdenPago.class)
+                    .setParameter("idProv", idProveedor)
+                    .getResultList();
         } catch (Exception e) {
             System.out.println("Error al listar órdenes de pago por proveedor: " + e.getMessage());
             return new ArrayList<>();
         }
     }
+
+    public List<OrdenPago> findByFechaPagoBetween(Date fechaInicio, Date fechaFin) {
+        try {
+            String jpql = "SELECT o FROM OrdenPago o "
+                    + "WHERE o.fechaPago BETWEEN :inicio AND :fin "
+                    + "ORDER BY o.idProveedor.razonSocial, o.formaPago, o.fechaPago";
+            return em.createQuery(jpql, OrdenPago.class)
+                    .setParameter("inicio", fechaInicio)
+                    .setParameter("fin", fechaFin)
+                    .getResultList();
+        } catch (Exception e) {
+            System.out.println("Error al listar pagos por período: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
 }

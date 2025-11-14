@@ -96,7 +96,7 @@ public class controladorFactura implements Serializable {
             factura = new Factura();
             factura.setFechaComprobante(new Date());
             factura.setFechaRegistro(new Date());
-            factura.setNroComprobante(generarNumeroComprobante());
+           // factura.setNroComprobante(generarNumeroComprobante());
         }
 
         facturaProducto = new FacturaProducto();
@@ -110,7 +110,7 @@ public class controladorFactura implements Serializable {
                 facturaExistente.setFormaPago(factura.getFormaPago());
 
                 if ("Contado".equalsIgnoreCase(factura.getFormaPago())) {
-                    facturaExistente.setEstado("Pagado");
+                    facturaExistente.setEstado("Pagada");
                 }
 
                 repoFactura.Guardar(facturaExistente);
@@ -119,7 +119,7 @@ public class controladorFactura implements Serializable {
         }
         return "/facturas/index.xhtml?faces-redirect=true";
     }
-
+/*
     public String generarNumeroComprobante() {
         String ultimoNumero = repoFactura.obtenerUltimoComprobante();
 
@@ -137,6 +137,10 @@ public class controladorFactura implements Serializable {
         } catch (Exception e) {
             return "0001-00001000";
         }
+    }*/
+
+    public List<Factura> listarImpagas() {
+        return repoFactura.listarImpagas();
     }
 
     public List<Factura> listar() {
@@ -147,49 +151,63 @@ public class controladorFactura implements Serializable {
      * Agrega un producto a la lista temporal
      */
     public void agregarProducto(FacturaProducto nuevo) {
-        if (nuevo != null && nuevo.getProducto() != null && nuevo.getCantidad() > 0) {
-
-            // Calcular subtotal
-            if (nuevo.getPrecioUnitario() != null) {
-                BigDecimal subtotal = nuevo.getPrecioUnitario()
-                        .multiply(BigDecimal.valueOf(nuevo.getCantidad()))
-                        .setScale(2, RoundingMode.HALF_UP);
-                nuevo.setSubtotal(subtotal);
-            }
-
-            if (nuevo.getCantidad() <= 0) {
-                FacesContext.getCurrentInstance().addMessage("formulario:cantidad",
-                        new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                "Cantidad inválida",
-                                "La cantidad debe ser mayor a 0.")
-                );
-                return; // Detener la ejecución
-            }
-
-            // Asociar la factura
-            nuevo.setFactura(factura);
-
-            // ️ Crear una copia nueva del objeto para evitar referencias duplicadas
-            FacturaProducto copia = new FacturaProducto();
-            copia.setFactura(factura);
-            copia.setProducto(nuevo.getProducto());
-            copia.setDescripcion(nuevo.getDescripcion());
-            copia.setPrecioUnitario(nuevo.getPrecioUnitario());
-            copia.setCantidad(nuevo.getCantidad());
-            copia.setSubtotal(nuevo.getSubtotal());
-
-            // Agregar la copia a la lista
-            productosTemporales.add(copia);
-
-            // Recalcular totales
-            calcularTotales();
-
-            //  Reiniciar el objeto para el siguiente ingreso
-            facturaProducto = new FacturaProducto();
-
-            System.out.println("=== PRODUCTO AGREGADO ===");
-            System.out.println("Total productos en lista: " + productosTemporales.size());
+        // Validar que el objeto y el producto no sean nulos
+        if (nuevo == null || nuevo.getProducto() == null) {
+            FacesContext.getCurrentInstance().addMessage("formulario:producto",
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "Producto requerido",
+                            "Debe seleccionar un producto.")
+            );
+            return;
         }
+
+        // Validar que la cantidad sea positiva (int no puede ser null, solo verificar que sea > 0)
+        if (nuevo.getCantidad() <= 0) {
+            FacesContext.getCurrentInstance().addMessage("formulario:cantidad",
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "Cantidad inválida",
+                            "La cantidad debe ser mayor a 0.")
+            );
+            return; // Detener la ejecución sin agregar el producto
+        }
+
+        // Si todas las validaciones pasan, proceder a agregar el producto
+        if (nuevo.getPrecioUnitario() != null) {
+            // Calcular subtotal
+            BigDecimal subtotal = nuevo.getPrecioUnitario()
+                    .multiply(BigDecimal.valueOf(nuevo.getCantidad()))
+                    .setScale(2, RoundingMode.HALF_UP);
+            nuevo.setSubtotal(subtotal);
+        }
+
+        // Asociar la factura
+        nuevo.setFactura(factura);
+
+        // ️ Crear una copia nueva del objeto para evitar referencias duplicadas
+        FacturaProducto copia = new FacturaProducto();
+        copia.setFactura(factura);
+        copia.setProducto(nuevo.getProducto());
+        copia.setDescripcion(nuevo.getDescripcion());
+        copia.setPrecioUnitario(nuevo.getPrecioUnitario());
+        copia.setCantidad(nuevo.getCantidad());
+        copia.setSubtotal(nuevo.getSubtotal());
+
+        // Agregar la copia a la lista
+        productosTemporales.add(copia);
+
+        // Recalcular totales
+        calcularTotales();
+
+        //  Reiniciar el objeto para el siguiente ingreso
+        facturaProducto = new FacturaProducto();
+        // Asegurarse de que el producto también se limpie para que el evento change se dispare
+        facturaProducto.setProducto(null);
+        facturaProducto.setDescripcion(null);
+        facturaProducto.setPrecioUnitario(null);
+        facturaProducto.setCantidad(0);
+
+        System.out.println("=== PRODUCTO AGREGADO ===");
+        System.out.println("Total productos en lista: " + productosTemporales.size());
     }
 
     /**
@@ -273,12 +291,12 @@ public class controladorFactura implements Serializable {
             if (factura.getFormaPago().equalsIgnoreCase("contado")) {
                 factura.setEstado("Pagada");
             } else if (factura.getFormaPago().equalsIgnoreCase("cuenta corriente")) {
-                factura.setEstado("Pendiente");
+                factura.setEstado("Impaga");
             } else {
                 factura.setEstado("Desconocido");
             }
         } else {
-            factura.setEstado("Pendiente"); // por defecto
+            factura.setEstado("Impaga"); // por defecto
         }
 
         // Primero guardar la factura para obtener el ID
@@ -328,7 +346,7 @@ public class controladorFactura implements Serializable {
         if (factura == null) {
             factura = new Factura();
             factura.setFechaComprobante(new Date());
-            factura.setNroComprobante(generarNumeroComprobante());
+          //  factura.setNroComprobante(generarNumeroComprobante());
         }
         return factura;
     }
@@ -392,25 +410,37 @@ public class controladorFactura implements Serializable {
                 System.out.println("No se encontró la factura con ID: " + id);
                 factura = new Factura(); // inicializa vacía
                 factura.setFechaComprobante(new Date());
-                factura.setNroComprobante(generarNumeroComprobante());
+               // factura.setNroComprobante(generarNumeroComprobante());
             }
             calcularTotales();
         } else if (factura == null) {
             // Si no hay id, es nueva factura
             factura = new Factura();
             factura.setFechaComprobante(new Date());
-            factura.setNroComprobante(generarNumeroComprobante());
+          //  factura.setNroComprobante(generarNumeroComprobante());
         }
     }
 
     public String guardarCambios() {
         if (factura != null && factura.getIdFactura() != null) {
-            // Guardar únicamente fechaRegistro y formaPago
             Optional<Factura> opt = repoFactura.porId(factura.getIdFactura());
             if (opt.isPresent()) {
                 Factura fExistente = opt.get();
+
                 fExistente.setFechaRegistro(factura.getFechaRegistro());
                 fExistente.setFormaPago(factura.getFormaPago());
+
+                // Asignar estado según forma de pago
+                if (fExistente.getFormaPago() != null) {
+                    String forma = fExistente.getFormaPago().trim().toLowerCase();
+                    if (forma.equals("contado")) {
+                        fExistente.setEstado("Pagada");
+                    } else if (forma.equals("cuenta corriente")) {
+                        fExistente.setEstado("Impaga");
+                    } else {
+                        fExistente.setEstado("Desconocido"); // opcional
+                    }
+                }
 
                 repoFactura.Guardar(fExistente);
                 System.out.println("Factura actualizada correctamente.");

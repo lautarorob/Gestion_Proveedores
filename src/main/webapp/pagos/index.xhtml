@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                template="./../template/layout.xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core">
+
+    <ui:define name="contenido">
+        <h:body>
+
+            <h:form>
+                <h:messages globalOnly="true" 
+                            style="color: red; font-weight: bold; margin-bottom: 15px;" 
+                            layout="table" />
+
+                <h2>Listado de Pagos por Período</h2>
+
+                <!-- Filtro de fechas -->
+                <h:panelGrid columns="4" cellpadding="5">
+                    <h:outputLabel for="inicio" value="Fecha inicio:" />
+                    <h:inputText id="inicio" value="#{controladorOrdenPago.fechaInicio}" type="date">
+                        <f:convertDateTime pattern="yyyy-MM-dd" />
+                    </h:inputText>
+
+                    <h:outputLabel for="fin" value="Fecha fin:" />
+                    <h:inputText id="fin" value="#{controladorOrdenPago.fechaFin}" type="date">
+                        <f:convertDateTime pattern="yyyy-MM-dd" />
+                    </h:inputText>
+                </h:panelGrid>
+
+                <br/>
+                <h:commandButton value="Generar listado" 
+                                 action="#{controladorOrdenPago.generarListadoPagos}" 
+                                 styleClass="btnAmarillo"/>
+
+                <br/><br/>
+
+                <!-- Tabla de resultados -->
+                <h:dataTable value="#{controladorOrdenPago.listadoPagos}" var="pago" border="1"
+                             styleClass="table table-striped table-bordered" headerClass="thead-dark">
+
+                    <h:column>
+                        <f:facet name="header">Proveedor</f:facet>
+                            #{pago.proveedor}
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Forma de Pago</f:facet>
+                            #{pago.formaPago}
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Fecha de Pago</f:facet>
+                        <h:outputText value="#{pago.fechaPago}">
+                            <f:convertDateTime pattern="yyyy-MM-dd" />
+                        </h:outputText>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Total Pagado</f:facet>
+                        <h:outputText value="#{pago.totalPagado}">
+                            <f:convertNumber type="currency" currencySymbol="$" />
+                        </h:outputText>
+                    </h:column>
+                </h:dataTable>
+            </h:form>
+
+        </h:body>
+    </ui:define>
+
+</ui:composition>
