@@ -1,70 +1,107 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/JSF/JSFManagedBean.java to edit this template
+ */
 package controladores;
 
 import entidades.Usuario;
+import jakarta.inject.Named;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.inject.Model;
+import jakarta.enterprise.inject.Produces;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIInput;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.validator.ValidatorException;
-import jakarta.faces.view.ViewScoped; // <--- OJO: CAMBIO DE IMPORT A VIEW SCOPED
 import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 import repositorios.repoUsuario;
 
+/**
+ *
+ * @author roble
+ */
 @Named(value = "controladorUsuario")
-@ViewScoped // <--- CLAVE: Los datos viven solo mientras estás en el formulario
+@SessionScoped
 public class controladorUsuario implements Serializable {
 
     @Inject
     private repoUsuario repoUsuario;
 
-    @Inject
-    private controladorSesion controladorSesion; // Para acceder al usuario logueado
-
     private Usuario usuario;
-    private Integer id; // Captura ?id=X de la URL
-    private String confirmPassword;
+
+    private Integer id;
+
+    private String confirmPassword;// Propiedad para guardar el valor de "Repetir Contraseña"
+
+    // permite "capturar" el componente de la primera contraseña
+    // para poder leer su valor desde el validador.
     private UIInput passwordComponent;
 
-    // CONSTRUCTOR: Inicializa un usuario limpio automáticamente
     public controladorUsuario() {
-        this.usuario = new Usuario();
     }
 
-    // --- LÓGICA DE CARGA ---
-    // Este método se llama desde <f:viewAction> en editar.xhtml
-    public void prepararEditar() {
-        if (this.id != null && this.id != 0) {
-            Optional<Usuario> opUsuario = repoUsuario.buscarPorId(this.id);
-            if (opUsuario.isPresent()) {
-                this.usuario = opUsuario.get();
-                // Rellenamos el confirmPassword para que coincida y no de error al guardar
-                this.confirmPassword = this.usuario.getPassword();
-            } else {
-                System.out.println("No se encontró usuario con ID: " + this.id);
-            }
+    @Model
+    @Produces
+    public Usuario usuario() {
+        if (usuario != null) {
+            return usuario; // Si ya hay un usuario en sesión, retornarlo
+        }
+
+        if (id != null && id > 0) {
+            repoUsuario.porId(id).ifPresent(u -> {
+                usuario = u;
+            });
+        } else {
+            usuario = new Usuario();
+        }
+        return usuario;
+    }
+
+    /**
+     * Este método es llamado por el atributo 'validator' del campo
+     * confirmPassword. Compara los dos campos de contraseña.
+     */
+    public void validatePasswordConfirm(FacesContext context, UIComponent component, Object value) {
+        if (value == null) {
+            return; // Valor vacío
+        }
+
+        String confirmPasswordValue = (String) value;
+
+        //valor del *primer* campo de contraseña
+        String passwordValue = (String) passwordComponent.getValue();
+
+        if (passwordValue == null) {
+            passwordValue = ""; // Evitar error si está vacío
+        }
+
+        // La validación
+        if (!passwordValue.equals(confirmPasswordValue)) {
+            // Si no coinciden, lanza una excepción. JSF la mostrará en el h:message
+            throw new ValidatorException(new FacesMessage("Las contraseñas no coinciden."));
         }
     }
 
-    // YA NO NECESITAS 'prepararNuevo'. Al ser ViewScoped, si entras de nuevo
-    // se crea una instancia nueva y limpia sola.
     public List<Usuario> listar() {
         return repoUsuario.Listar();
     }
 
+    
     public String guardar() {
 
         // --- 1: Validar USERNAME (Login único) ---
         Optional<Usuario> userByUsername = repoUsuario.findByUsername(usuario.getUsername());
         if (userByUsername.isPresent()) {
             boolean esNuevo = (usuario.getIdUsuario() == null);
-            // Si el ID es diferente, es otro usuario robando el username
             boolean esOtroUsuario = !userByUsername.get().getIdUsuario().equals(usuario.getIdUsuario());
 
             if (esNuevo || esOtroUsuario) {
+                // Mensaje de error para el campo 'username'
                 FacesContext.getCurrentInstance().addMessage("formulario:username",
                         new FacesMessage(FacesMessage.SEVERITY_ERROR,
                                 "El nombre de usuario (login) '" + usuario.getUsername() + "' ya está en uso.",
@@ -85,7 +122,8 @@ public class controladorUsuario implements Serializable {
             boolean esOtroUsuario = !userByNombreRol.get().getIdUsuario().equals(usuario.getIdUsuario());
 
             if (esNuevo || esOtroUsuario) {
-                FacesContext.getCurrentInstance().addMessage("formulario:nombreCompleto",
+                // Mensaje de error para el campo 'nombreCompleto'
+                FacesContext.getCurrentInstance().addMessage("formulario:nombreCompleto", 
                         new FacesMessage(FacesMessage.SEVERITY_ERROR,
                                 "Ya existe un usuario con el nombre '" + usuario.getNombreCompleto() + "' y el rol '" + usuario.getRol() + "'.",
                                 "Duplicado por Nombre y Rol")
@@ -94,52 +132,28 @@ public class controladorUsuario implements Serializable {
             }
         }
 
-        // --- 3: PREPARAR AUDITORÍA (FIX PARA TRIGGERS) ---
-        // Antes de guardar, le decimos a la BD quién está haciendo esto
-        if (controladorSesion != null && controladorSesion.isLogueado()) {
-            repoUsuario.setCurrentUserId(controladorSesion.getUsuarioLogueado().getIdUsuario());
-        }
-
-        // --- 4: GUARDAR ---
+        
         repoUsuario.Guardar(usuario);
-
-        // Redirigimos para limpiar el formulario y volver a la lista
         return "/usuarios/index.xhtml?faces-redirect=true";
     }
 
     public String eliminar(Integer id) {
-        // --- 1: PREPARAR AUDITORÍA (FIX PARA TRIGGERS) ---
-        // Antes de eliminar, le decimos a la BD quién dio la orden
-        if (controladorSesion != null && controladorSesion.isLogueado()) {
-            repoUsuario.setCurrentUserId(controladorSesion.getUsuarioLogueado().getIdUsuario());
-        }
-
-        // --- 2: ELIMINAR ---
         repoUsuario.Eliminar(id);
-
         return "/usuarios/index.xhtml?faces-redirect=true";
     }
 
-    // --- VALIDACIONES ---
-    public void validatePasswordConfirm(FacesContext context, UIComponent component, Object value) {
-        if (value == null) {
-            return;
-        }
-
-        String confirmVal = (String) value;
-        String originalVal = (String) passwordComponent.getValue();
-
-        if (originalVal == null) {
-            originalVal = "";
-        }
-
-        if (!originalVal.equals(confirmVal)) {
-            throw new ValidatorException(new FacesMessage("Las contraseñas no coinciden."));
-        }
+    public repoUsuario getRepoUsuario() {
+        return repoUsuario;
     }
 
-    // --- GETTERS Y SETTERS ---
+    public void setRepoUsuario(repoUsuario repoUsuario) {
+        this.repoUsuario = repoUsuario;
+    }
+
     public Usuario getUsuario() {
+        if (usuario == null) {
+            usuario();
+        }
         return usuario;
     }
 
@@ -155,6 +169,34 @@ public class controladorUsuario implements Serializable {
         this.id = id;
     }
 
+    public String login() {
+    FacesContext context = FacesContext.getCurrentInstance();
+    Usuario encontrado = repoUsuario.login(usuario.getUsername(), usuario.getPassword());
+
+    if (encontrado != null) {
+        this.usuario = encontrado;
+
+        // REGISTRAR EL USUARIO ACTUAL EN MySQL PARA LOS TRIGGERS
+        repoUsuario.setCurrentUserId(encontrado.getIdUsuario());
+
+        context.addMessage(null, new FacesMessage(
+                FacesMessage.SEVERITY_INFO,
+                "Bienvenido",
+                "Bienvenido " + encontrado.getUsername()
+        ));
+
+        return "/index.xhtml?faces-redirect=true";
+    } else {
+        context.addMessage(null, new FacesMessage(
+                FacesMessage.SEVERITY_ERROR,
+                "Usuario o contraseña incorrectos",
+                "Error"
+        ));
+        return null;
+    }
+}
+
+
     public String getConfirmPassword() {
         return confirmPassword;
     }
@@ -163,6 +205,7 @@ public class controladorUsuario implements Serializable {
         this.confirmPassword = confirmPassword;
     }
 
+    // Getter y Setter para el bindeo
     public UIInput getPasswordComponent() {
         return passwordComponent;
     }
@@ -170,4 +213,5 @@ public class controladorUsuario implements Serializable {
     public void setPasswordComponent(UIInput passwordComponent) {
         this.passwordComponent = passwordComponent;
     }
+
 }

@@ -44,9 +44,6 @@ public class controladorOrdenPago implements Serializable {
     @Inject
     private repoUsuario repoUsuario;
 
-    @Inject
-    private controladorSesion controladorSesion;
-    // ----------------------------------
 
     private List<Proveedor> listaProveedores;
     private Proveedor proveedorSeleccionado;
@@ -213,7 +210,7 @@ public class controladorOrdenPago implements Serializable {
 
     }
 
-    // ============================
+   // ============================
     // CONFIRMAR ORDEN DE PAGO
     // ============================
     public String confirmarPago() {
@@ -227,14 +224,6 @@ public class controladorOrdenPago implements Serializable {
         ordenPago.setFormaPago(formaPago);
         ordenPago.setIdProveedor(proveedorSeleccionado);
         ordenPago.setMontoTotal(totalOrden);
-
-        // ---------------------------------------------------------------
-        // FIX AUDITORÍA: Setear el ID del usuario antes de guardar
-        // ---------------------------------------------------------------
-        if (controladorSesion != null && controladorSesion.isLogueado()) {
-            repoUsuario.setCurrentUserId(controladorSesion.getUsuarioLogueado().getIdUsuario());
-        }
-        // ---------------------------------------------------------------
 
         repoOrdenPago.Guardar(ordenPago);
 

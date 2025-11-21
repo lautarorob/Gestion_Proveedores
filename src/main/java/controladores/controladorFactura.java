@@ -42,9 +42,6 @@ public class controladorFactura implements Serializable {
     private repoUsuario repoUsuario;
     // ---------------------------------------------------
 
-    @Inject
-    private controladorSesion controladorSesion;
-
     private List<Producto> listaProductos;
     private Integer id;
     private Factura factura;
@@ -173,13 +170,17 @@ public class controladorFactura implements Serializable {
         factura.setTotal(total);
     }
 
-    // --- MÉTODOS DE GUARDADO (CON FIX DE AUDITORÍA) ---
+    /**
+     * Guarda la factura y todos sus productos
+     */
     public String guardar() {
+        // Validar que haya productos
         if (productosTemporales == null || productosTemporales.isEmpty()) {
-            return null; // O mensaje de error
+            System.out.println("ERROR: No hay productos para guardar");
+            return null;
         }
 
-        // Estado según forma de pago
+        // Setear estado según la forma de pago ANTES de guardar
         if (factura.getFormaPago() != null) {
             if (factura.getFormaPago().equalsIgnoreCase("contado")) {
                 factura.setEstado("Pagada");
@@ -189,21 +190,19 @@ public class controladorFactura implements Serializable {
                 factura.setEstado("Desconocido");
             }
         } else {
-            factura.setEstado("Impaga");
+            factura.setEstado("Impaga"); // por defecto
         }
 
-        // ---------------------------------------------------------------
-        // FIX AUDITORÍA: Setear el ID del usuario antes de guardar
-        // ---------------------------------------------------------------
-        if (controladorSesion != null && controladorSesion.isLogueado()) {
-            repoUsuario.setCurrentUserId(controladorSesion.getUsuarioLogueado().getIdUsuario());
-        }
-        // ---------------------------------------------------------------
-
-        // Guardar Factura
+        // Primero guardar la factura para obtener el ID
         repoFactura.Guardar(factura);
 
-        // Guardar Productos
+        System.out.println("=== GUARDANDO FACTURA ===");
+        System.out.println("ID Factura: " + factura.getIdFactura());
+        System.out.println("Forma de pago: " + factura.getFormaPago());
+        System.out.println("Estado asignado: " + factura.getEstado());
+        System.out.println("Total productos a guardar: " + productosTemporales.size());
+
+        // Guardar cada producto de la lista temporal
         for (FacturaProducto fp : productosTemporales) {
             if (fp.getFacturaProductoPK() == null) {
                 FacturaProductoPK pk = new FacturaProductoPK(
@@ -214,6 +213,7 @@ public class controladorFactura implements Serializable {
             }
             fp.setFactura(factura);
             repoFacturaProducto.Guardar(fp);
+            System.out.println("Guardado: " + fp.getDescripcion());
         }
 
         return "/facturas/index.xhtml?faces-redirect=true";
@@ -228,6 +228,7 @@ public class controladorFactura implements Serializable {
                 fExistente.setFechaRegistro(factura.getFechaRegistro());
                 fExistente.setFormaPago(factura.getFormaPago());
 
+                // Asignar estado según forma de pago
                 if (fExistente.getFormaPago() != null) {
                     String forma = fExistente.getFormaPago().trim().toLowerCase();
                     if (forma.equals("contado")) {
@@ -235,19 +236,12 @@ public class controladorFactura implements Serializable {
                     } else if (forma.equals("cuenta corriente")) {
                         fExistente.setEstado("Impaga");
                     } else {
-                        fExistente.setEstado("Desconocido");
+                        fExistente.setEstado("Desconocido"); // opcional
                     }
                 }
 
-                // ---------------------------------------------------------------
-                // FIX AUDITORÍA: Setear el ID del usuario antes de actualizar
-                // ---------------------------------------------------------------
-                if (controladorSesion != null && controladorSesion.isLogueado()) {
-                    repoUsuario.setCurrentUserId(controladorSesion.getUsuarioLogueado().getIdUsuario());
-                }
-                // ---------------------------------------------------------------
-
                 repoFactura.Guardar(fExistente);
+                System.out.println("Factura actualizada correctamente.");
             }
         }
         return "/facturas/index.xhtml?faces-redirect=true";
@@ -264,15 +258,8 @@ public class controladorFactura implements Serializable {
                     facturaExistente.setEstado("Pagada");
                 }
 
-                // ---------------------------------------------------------------
-                // FIX AUDITORÍA
-                // ---------------------------------------------------------------
-                if (controladorSesion != null && controladorSesion.isLogueado()) {
-                    repoUsuario.setCurrentUserId(controladorSesion.getUsuarioLogueado().getIdUsuario());
-                }
-                // ---------------------------------------------------------------
-
                 repoFactura.Guardar(facturaExistente);
+                System.out.println("Factura actualizada correctamente.");
             }
         }
         return "/facturas/index.xhtml?faces-redirect=true";

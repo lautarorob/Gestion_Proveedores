@@ -31,10 +31,6 @@ public class controladorProducto {
     @Inject
     private repoUsuario repoUsuario;
 
-    @Inject
-    private controladorSesion controladorSesion;
-    // ----------------------------------
-
     private Integer id;
 
     private Producto producto;
@@ -96,43 +92,22 @@ public class controladorProducto {
         return repoProducto.Listar();
     }
 
-    // --- MÉTODOS CON FIX DE AUDITORÍA ---
     public String guardar() {
-        // FIX AUDITORÍA
-        if (controladorSesion != null && controladorSesion.isLogueado()) {
-            repoUsuario.setCurrentUserId(controladorSesion.getUsuarioLogueado().getIdUsuario());
-        }
-
         repoProducto.Guardar(producto);
         return "/productos/index.xhtml?faces-redirect=true";
     }
 
     public String eliminar(Integer id) {
-        // FIX AUDITORÍA
-        if (controladorSesion != null && controladorSesion.isLogueado()) {
-            repoUsuario.setCurrentUserId(controladorSesion.getUsuarioLogueado().getIdUsuario());
-        }
-
         repoProducto.Eliminar(id);
         return "/productos/index.xhtml?faces-redirect=true";
     }
 
     public String bajaLogica(Integer id) {
-        // FIX AUDITORÍA
-        if (controladorSesion != null && controladorSesion.isLogueado()) {
-            repoUsuario.setCurrentUserId(controladorSesion.getUsuarioLogueado().getIdUsuario());
-        }
-
         repoProducto.BajaLogica(id);
         return "/productos/index.xhtml?faces-redirect=true";
     }
 
     public String reactivar(Integer id) {
-        // FIX AUDITORÍA
-        if (controladorSesion != null && controladorSesion.isLogueado()) {
-            repoUsuario.setCurrentUserId(controladorSesion.getUsuarioLogueado().getIdUsuario());
-        }
-
         repoProducto.Reactivar(id);
         return "/productos/index.xhtml?faces-redirect=true";
     }

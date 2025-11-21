@@ -6,12 +6,6 @@
                 xmlns:p="http://primefaces.org/ui">
 
     <ui:define name="contenido">
-
-        <h:panelGroup rendered="#{controladorSesion.isLogueado()}">
-            <p>Bienvenido: <strong>#{controladorSesion.usuarioLogueado.username}</strong></p>
-            <h:commandLink action="#{controladorSesion.logout()}" value="Cerrar Sesión" />
-        </h:panelGroup>
-
         <p:outputPanel id="seccionGraficos">
             <div class="dashboard-grid">
 
