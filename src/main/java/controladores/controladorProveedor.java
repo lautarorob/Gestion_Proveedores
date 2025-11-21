@@ -13,6 +13,7 @@ import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 import java.util.List;
 import repositorios.repoProveedor;
+import repositorios.repoUsuario; // <--- IMPORTANTE
 
 /**
  *
@@ -21,17 +22,25 @@ import repositorios.repoProveedor;
 @Named(value = "controladorProveedor")
 @RequestScoped
 public class controladorProveedor {
-    
+
     @Inject
     private repoProveedor repoProveedor;
-    
+
+    // --- INYECCIONES PARA AUDITORÍA ---
+    @Inject
+    private repoUsuario repoUsuario;
+
+    @Inject
+    private controladorSesion controladorSesion;
+    // ----------------------------------
+
     private Proveedor proveedor;
-    
+
     private Integer id;
-    
+
     public controladorProveedor() {
     }
-    
+
     @Model
     @Produces
     public Proveedor proveedor() {
@@ -40,44 +49,58 @@ public class controladorProveedor {
             repoProveedor.porId(id).ifPresent(p -> {
                 proveedor = p;
             });
-        }else{
+        } else {
             proveedor = new Proveedor();
         }
         return proveedor;
     }
-    
-    /*
-    @PostConstruct
-    public void init() {
-        proveedor = new Proveedor();
-        
-        proveedor.setEstado(true);
-    }*/
-    
+
     public List<Proveedor> listar() {
         return repoProveedor.Listar();
     }
 
+    // --- MÉTODOS CON FIX DE AUDITORÍA ---
     public String guardar() {
+        // FIX AUDITORÍA
+        if (controladorSesion != null && controladorSesion.isLogueado()) {
+            repoUsuario.setCurrentUserId(controladorSesion.getUsuarioLogueado().getIdUsuario());
+        }
+
         repoProveedor.Guardar(proveedor);
         return "/proveedores/index.xhtml?faces-redirect=true";
     }
 
     public String eliminar(Integer id) {
+        // FIX AUDITORÍA
+        if (controladorSesion != null && controladorSesion.isLogueado()) {
+            repoUsuario.setCurrentUserId(controladorSesion.getUsuarioLogueado().getIdUsuario());
+        }
+
         repoProveedor.Eliminar(id);
         return "/proveedores/index.xhtml?faces-redirect=true";
     }
-    
+
     public String bajaLogica(Integer id) {
+        // FIX AUDITORÍA
+        if (controladorSesion != null && controladorSesion.isLogueado()) {
+            repoUsuario.setCurrentUserId(controladorSesion.getUsuarioLogueado().getIdUsuario());
+        }
+
         repoProveedor.BajaLogica(id);
         return "/proveedores/index.xhtml?faces-redirect=true";
     }
-    
+
     public String reactivar(Integer id) {
+        // FIX AUDITORÍA
+        if (controladorSesion != null && controladorSesion.isLogueado()) {
+            repoUsuario.setCurrentUserId(controladorSesion.getUsuarioLogueado().getIdUsuario());
+        }
+
         repoProveedor.Reactivar(id);
         return "/proveedores/index.xhtml?faces-redirect=true";
     }
 
+    // ------------------------------------
     public repoProveedor getRepoProveedor() {
         return repoProveedor;
     }
@@ -104,7 +127,5 @@ public class controladorProveedor {
     public void setId(Integer id) {
         this.id = id;
     }
-    
-    
-    
+
 }
