@@ -30,10 +30,6 @@ public class controladorProveedor {
     @Inject
     private repoUsuario repoUsuario;
 
-    @Inject
-    private controladorSesion controladorSesion;
-    // ----------------------------------
-
     private Proveedor proveedor;
 
     private Integer id;
@@ -59,43 +55,22 @@ public class controladorProveedor {
         return repoProveedor.Listar();
     }
 
-    // --- MÉTODOS CON FIX DE AUDITORÍA ---
     public String guardar() {
-        // FIX AUDITORÍA
-        if (controladorSesion != null && controladorSesion.isLogueado()) {
-            repoUsuario.setCurrentUserId(controladorSesion.getUsuarioLogueado().getIdUsuario());
-        }
-
         repoProveedor.Guardar(proveedor);
         return "/proveedores/index.xhtml?faces-redirect=true";
     }
 
     public String eliminar(Integer id) {
-        // FIX AUDITORÍA
-        if (controladorSesion != null && controladorSesion.isLogueado()) {
-            repoUsuario.setCurrentUserId(controladorSesion.getUsuarioLogueado().getIdUsuario());
-        }
-
         repoProveedor.Eliminar(id);
         return "/proveedores/index.xhtml?faces-redirect=true";
     }
 
     public String bajaLogica(Integer id) {
-        // FIX AUDITORÍA
-        if (controladorSesion != null && controladorSesion.isLogueado()) {
-            repoUsuario.setCurrentUserId(controladorSesion.getUsuarioLogueado().getIdUsuario());
-        }
-
         repoProveedor.BajaLogica(id);
         return "/proveedores/index.xhtml?faces-redirect=true";
     }
 
     public String reactivar(Integer id) {
-        // FIX AUDITORÍA
-        if (controladorSesion != null && controladorSesion.isLogueado()) {
-            repoUsuario.setCurrentUserId(controladorSesion.getUsuarioLogueado().getIdUsuario());
-        }
-
         repoProveedor.Reactivar(id);
         return "/proveedores/index.xhtml?faces-redirect=true";
     }
