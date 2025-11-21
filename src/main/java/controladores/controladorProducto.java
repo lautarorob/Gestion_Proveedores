@@ -14,6 +14,7 @@ import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 import java.util.List;
 import repositorios.repoProducto;
+import repositorios.repoUsuario; // <--- IMPORTANTE
 
 /**
  *
@@ -25,6 +26,14 @@ public class controladorProducto {
 
     @Inject
     private repoProducto repoProducto;
+
+    // --- INYECCIONES PARA AUDITORÍA ---
+    @Inject
+    private repoUsuario repoUsuario;
+
+    @Inject
+    private controladorSesion controladorSesion;
+    // ----------------------------------
 
     private Integer id;
 
@@ -87,26 +96,48 @@ public class controladorProducto {
         return repoProducto.Listar();
     }
 
+    // --- MÉTODOS CON FIX DE AUDITORÍA ---
     public String guardar() {
+        // FIX AUDITORÍA
+        if (controladorSesion != null && controladorSesion.isLogueado()) {
+            repoUsuario.setCurrentUserId(controladorSesion.getUsuarioLogueado().getIdUsuario());
+        }
+
         repoProducto.Guardar(producto);
         return "/productos/index.xhtml?faces-redirect=true";
     }
 
     public String eliminar(Integer id) {
+        // FIX AUDITORÍA
+        if (controladorSesion != null && controladorSesion.isLogueado()) {
+            repoUsuario.setCurrentUserId(controladorSesion.getUsuarioLogueado().getIdUsuario());
+        }
+
         repoProducto.Eliminar(id);
         return "/productos/index.xhtml?faces-redirect=true";
     }
 
     public String bajaLogica(Integer id) {
+        // FIX AUDITORÍA
+        if (controladorSesion != null && controladorSesion.isLogueado()) {
+            repoUsuario.setCurrentUserId(controladorSesion.getUsuarioLogueado().getIdUsuario());
+        }
+
         repoProducto.BajaLogica(id);
         return "/productos/index.xhtml?faces-redirect=true";
     }
 
     public String reactivar(Integer id) {
+        // FIX AUDITORÍA
+        if (controladorSesion != null && controladorSesion.isLogueado()) {
+            repoUsuario.setCurrentUserId(controladorSesion.getUsuarioLogueado().getIdUsuario());
+        }
+
         repoProducto.Reactivar(id);
         return "/productos/index.xhtml?faces-redirect=true";
     }
 
+    // ------------------------------------
     public repoProducto getRepoProducto() {
         return repoProducto;
     }
@@ -157,7 +188,6 @@ public class controladorProducto {
     public void setProveedorSeleccionado(String proveedorSeleccionado) {
         this.proveedorSeleccionado = proveedorSeleccionado;
     }
-
 
     public String getNombreBusqueda() {
         return nombreBusqueda;

@@ -53,6 +53,11 @@ public class Auditoria implements Serializable {
     @JoinColumn(name = "id_usuarioUltimo", referencedColumnName = "id_usuario")
     @ManyToOne
     private Usuario idusuarioUltimo;
+    @Column(name = "entidad")
+    private String entidad;
+
+    @Column(name = "accion")
+    private String accion;
 
     public Auditoria() {
     }
@@ -98,6 +103,22 @@ public class Auditoria implements Serializable {
         this.idusuarioUltimo = idusuarioUltimo;
     }
 
+    public String getEntidad() {
+        return entidad;
+    }
+
+    public void setEntidad(String entidad) {
+        this.entidad = entidad;
+    }
+
+    public String getAccion() {
+        return accion;
+    }
+
+    public void setAccion(String accion) {
+        this.accion = accion;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -122,5 +143,5 @@ public class Auditoria implements Serializable {
     public String toString() {
         return "entidades.Auditoria[ idAuditoria=" + idAuditoria + " ]";
     }
-    
+
 }

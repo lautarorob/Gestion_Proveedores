@@ -2,10 +2,63 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="jakarta.faces.facelets"
-                template="./../template/layout.xhtml">
+                template="./../template/layout.xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:pt="jakarta.faces.passthrough"
+                xmlns:f="jakarta.faces.core">
+
+    <f:metadata>
+        <f:viewParam name="id" value="#{controladorUsuario.id}"/>
+        <f:viewAction action="#{controladorUsuario.prepararEditar}" />
+    </f:metadata>
 
     <ui:define name="contenido">
-        contenido
+        <f:view>
+
+            <h:form id="formulario">
+                <h2>Editar Usuario</h2>
+                <p class="letraChica">Actualice los datos del Usuario</p>
+                <div class="row">
+
+                    <div>
+                        <h:inputHidden value="#{controladorUsuario.usuario.idUsuario}"/>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <h:inputText id="userName" 
+                                     value="#{controladorUsuario.usuario.username}" 
+                                     required="true"
+                                     pt:placeholder="Nombre de Usuario" 
+                                     styleClass="form-control" />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <h:inputText id="nombreCompleto" 
+                                     value="#{controladorUsuario.usuario.nombreCompleto}" 
+                                     required="true" 
+                                     pt:placeholder="Nombre Completo"
+                                     styleClass="form-control" />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <h:selectOneMenu id="rol" value="#{controladorUsuario.usuario.rol}" styleClass="form-control select-con-icono">
+                            <f:selectItem itemLabel="--ROL--" itemValue="" noSelectionOption="true"/>
+                            <f:selectItem itemLabel="Admin" itemValue="admin"/>
+                            <f:selectItem itemLabel="Gerente" itemValue="gerente"/>
+                            <f:selectItem itemLabel="Supervisor" itemValue="supervisor"/>
+                            <f:selectItem itemLabel="Operador" itemValue="operador"/>
+                        </h:selectOneMenu>
+                    </div>
+
+                </div>
+
+                <h:commandButton value="Cancelar" action="/proveedores/index.xhtml" styleClass="btnGris"/>
+                <h:commandButton value="Guardar Proveedor" 
+                                 action="#{controladorUsuario.guardar}" 
+                                 styleClass="btnAmarillo" 
+                                 />
+            </h:form>
+        </f:view>
     </ui:define>
 
 </ui:composition>

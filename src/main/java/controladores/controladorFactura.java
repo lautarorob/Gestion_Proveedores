@@ -20,6 +20,7 @@ import java.util.Optional;
 import repositorios.repoFactura;
 import repositorios.repoFacturaProducto;
 import repositorios.repoProducto;
+import repositorios.repoUsuario; // <--- IMPORTANTE
 
 @Named(value = "controladorFactura")
 @ViewScoped
@@ -32,11 +33,19 @@ public class controladorFactura implements Serializable {
 
     @Inject
     private repoFacturaProducto repoFacturaProducto;
-    private List<Producto> listaProductos;
 
     @Inject
-    private repoProducto repoProducto; // o el nombre de tu repositorio real
+    private repoProducto repoProducto;
 
+    // --- NUEVA INYECCIÓN NECESARIA PARA LA AUDITORÍA ---
+    @Inject
+    private repoUsuario repoUsuario;
+    // ---------------------------------------------------
+
+    @Inject
+    private controladorSesion controladorSesion;
+
+    private List<Producto> listaProductos;
     private Integer id;
     private Factura factura;
 
@@ -52,41 +61,6 @@ public class controladorFactura implements Serializable {
     public controladorFactura() {
     }
 
-    public void eliminarProducto(int index) {
-        if (productosTemporales != null && !productosTemporales.isEmpty()) {
-            if (index >= 0 && index < productosTemporales.size()) {
-                FacturaProducto eliminado = productosTemporales.remove(index);
-                calcularTotales(); // Asegúrate de que esto actualiza subtotal, iva y total
-                System.out.println("Producto eliminado: " + eliminado.getDescripcion());
-            } else {
-                System.out.println("Índice fuera de rango: " + index);
-            }
-        } else {
-            System.out.println("No hay productos");
-        }
-    }
-
-//  @PostConstruct
-//public void init() {
-//    productosTemporales = new ArrayList<>();
-//    listaProductos = repoProducto.Listar(); // carga todos los productos
-//
-//    if (factura == null) {
-//        if (id != null && id > 0) {
-//            factura = repoFactura.porId(id).orElse(new Factura());
-//            if (factura.getIdFactura() != null) {
-//                productosTemporales = new ArrayList<>(factura.getFacturaProductoList());
-//            }
-//        } else {
-//            factura = new Factura();
-//            factura.setFechaComprobante(new Date());
-//            factura.setNroComprobante(generarNumeroComprobante());
-//        }
-//    }
-//
-//    facturaProducto = new FacturaProducto();
-//    calcularTotales();
-//}
     @PostConstruct
     public void init() {
         productosTemporales = new ArrayList<>();
@@ -96,60 +70,15 @@ public class controladorFactura implements Serializable {
             factura = new Factura();
             factura.setFechaComprobante(new Date());
             factura.setFechaRegistro(new Date());
-           // factura.setNroComprobante(generarNumeroComprobante());
+            // factura.setNroComprobante(generarNumeroComprobante());
         }
 
         facturaProducto = new FacturaProducto();
     }
 
-    public String actualizarFechaYFormaPago() {
-        if (factura != null && factura.getIdFactura() != null) {
-            Factura facturaExistente = repoFactura.porId(factura.getIdFactura()).orElse(null);
-            if (facturaExistente != null) {
-                facturaExistente.setFechaRegistro(factura.getFechaRegistro());
-                facturaExistente.setFormaPago(factura.getFormaPago());
+    // --- LÓGICA DE PRODUCTOS ---
+    private FacturaProducto facturaProducto = new FacturaProducto();
 
-                if ("Contado".equalsIgnoreCase(factura.getFormaPago())) {
-                    facturaExistente.setEstado("Pagada");
-                }
-
-                repoFactura.Guardar(facturaExistente);
-                System.out.println("Factura actualizada correctamente.");
-            }
-        }
-        return "/facturas/index.xhtml?faces-redirect=true";
-    }
-/*
-    public String generarNumeroComprobante() {
-        String ultimoNumero = repoFactura.obtenerUltimoComprobante();
-
-        if (ultimoNumero == null || ultimoNumero.isEmpty()) {
-            return "0001-00001000";
-        }
-
-        try {
-            String[] partes = ultimoNumero.split("-");
-            String prefijo = partes[0];
-            int numero = Integer.parseInt(partes[1]);
-            numero++;
-            String nuevoNumero = String.format("%08d", numero);
-            return prefijo + "-" + nuevoNumero;
-        } catch (Exception e) {
-            return "0001-00001000";
-        }
-    }*/
-
-    public List<Factura> listarImpagas() {
-        return repoFactura.listarImpagas();
-    }
-
-    public List<Factura> listar() {
-        return repoFactura.Listar();
-    }
-
-    /**
-     * Agrega un producto a la lista temporal
-     */
     public void agregarProducto(FacturaProducto nuevo) {
         // Validar que el objeto y el producto no sean nulos
         if (nuevo == null || nuevo.getProducto() == null) {
@@ -161,29 +90,27 @@ public class controladorFactura implements Serializable {
             return;
         }
 
-        // Validar que la cantidad sea positiva (int no puede ser null, solo verificar que sea > 0)
+        // Validar cantidad
         if (nuevo.getCantidad() <= 0) {
             FacesContext.getCurrentInstance().addMessage("formulario:cantidad",
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
                             "Cantidad inválida",
                             "La cantidad debe ser mayor a 0.")
             );
-            return; // Detener la ejecución sin agregar el producto
+            return;
         }
 
-        // Si todas las validaciones pasan, proceder a agregar el producto
+        // Calcular subtotal
         if (nuevo.getPrecioUnitario() != null) {
-            // Calcular subtotal
             BigDecimal subtotal = nuevo.getPrecioUnitario()
                     .multiply(BigDecimal.valueOf(nuevo.getCantidad()))
                     .setScale(2, RoundingMode.HALF_UP);
             nuevo.setSubtotal(subtotal);
         }
 
-        // Asociar la factura
         nuevo.setFactura(factura);
 
-        // ️ Crear una copia nueva del objeto para evitar referencias duplicadas
+        // Crear copia
         FacturaProducto copia = new FacturaProducto();
         copia.setFactura(factura);
         copia.setProducto(nuevo.getProducto());
@@ -192,56 +119,35 @@ public class controladorFactura implements Serializable {
         copia.setCantidad(nuevo.getCantidad());
         copia.setSubtotal(nuevo.getSubtotal());
 
-        // Agregar la copia a la lista
         productosTemporales.add(copia);
-
-        // Recalcular totales
         calcularTotales();
 
-        //  Reiniciar el objeto para el siguiente ingreso
+        // Reiniciar objeto
         facturaProducto = new FacturaProducto();
-        // Asegurarse de que el producto también se limpie para que el evento change se dispare
         facturaProducto.setProducto(null);
         facturaProducto.setDescripcion(null);
         facturaProducto.setPrecioUnitario(null);
         facturaProducto.setCantidad(0);
-
-        System.out.println("=== PRODUCTO AGREGADO ===");
-        System.out.println("Total productos en lista: " + productosTemporales.size());
     }
 
-    /**
-     * MÉTODO ÚNICO PARA ELIMINAR - Recibe el índice directamente desde JSF
-     */
     public void eliminarProductoPorIndice(int index) {
-        System.out.println("=== ELIMINAR PRODUCTO ===");
-        System.out.println("Índice recibido: " + index);
-        System.out.println("Tamaño de lista ANTES: " + productosTemporales.size());
-
         if (productosTemporales != null && index >= 0 && index < productosTemporales.size()) {
-            FacturaProducto productoEliminado = productosTemporales.remove(index);
+            productosTemporales.remove(index);
             calcularTotales();
-
-            System.out.println("Producto eliminado: " + productoEliminado.getDescripcion());
-            System.out.println("Tamaño de lista DESPUÉS: " + productosTemporales.size());
-        } else {
-            System.out.println("ERROR: Índice fuera de rango o lista nula");
-            System.out.println("Lista es null: " + (productosTemporales == null));
-            if (productosTemporales != null) {
-                System.out.println("Tamaño lista: " + productosTemporales.size());
-            }
         }
     }
 
-    /**
-     * Calcula subtotal, IVA y total de la factura
-     */
+    public void actualizarCamposProducto() {
+        if (facturaProducto != null && facturaProducto.getProducto() != null) {
+            facturaProducto.setDescripcion(facturaProducto.getProducto().getDescripcion());
+            facturaProducto.setPrecioUnitario(facturaProducto.getProducto().getPrecioReferencia());
+        }
+    }
+
     public void calcularTotales() {
         BigDecimal subtotal = BigDecimal.ZERO;
 
-        // Calcular subtotal sumando todos los productos
         for (FacturaProducto fp : productosTemporales) {
-            // Asegurar que cada producto tenga su subtotal calculado
             if (fp.getSubtotal() == null && fp.getPrecioUnitario() != null) {
                 BigDecimal productoSubtotal = fp.getPrecioUnitario()
                         .multiply(new BigDecimal(fp.getCantidad()))
@@ -257,36 +163,23 @@ public class controladorFactura implements Serializable {
         subtotal = subtotal.setScale(2, RoundingMode.HALF_UP);
         factura.setSubtotal(subtotal);
 
-        // Calcular IVA (21%) solo si el tipo de factura es "A"
         BigDecimal iva = BigDecimal.ZERO;
         if ("A".equalsIgnoreCase(factura.getTipo())) {
-            iva = subtotal.multiply(IVA_PORCENTAJE)
-                    .setScale(2, RoundingMode.HALF_UP);
+            iva = subtotal.multiply(IVA_PORCENTAJE).setScale(2, RoundingMode.HALF_UP);
         }
         factura.setIva(iva);
 
-        // Calcular total (subtotal + IVA)
-        BigDecimal total = subtotal.add(iva)
-                .setScale(2, RoundingMode.HALF_UP);
+        BigDecimal total = subtotal.add(iva).setScale(2, RoundingMode.HALF_UP);
         factura.setTotal(total);
-
-        System.out.println("=== TOTALES CALCULADOS ===");
-        System.out.println("Subtotal: " + subtotal);
-        System.out.println("IVA: " + iva);
-        System.out.println("Total: " + total);
     }
 
-    /**
-     * Guarda la factura y todos sus productos
-     */
+    // --- MÉTODOS DE GUARDADO (CON FIX DE AUDITORÍA) ---
     public String guardar() {
-        // Validar que haya productos
         if (productosTemporales == null || productosTemporales.isEmpty()) {
-            System.out.println("ERROR: No hay productos para guardar");
-            return null;
+            return null; // O mensaje de error
         }
 
-        // Setear estado según la forma de pago ANTES de guardar
+        // Estado según forma de pago
         if (factura.getFormaPago() != null) {
             if (factura.getFormaPago().equalsIgnoreCase("contado")) {
                 factura.setEstado("Pagada");
@@ -296,19 +189,21 @@ public class controladorFactura implements Serializable {
                 factura.setEstado("Desconocido");
             }
         } else {
-            factura.setEstado("Impaga"); // por defecto
+            factura.setEstado("Impaga");
         }
 
-        // Primero guardar la factura para obtener el ID
+        // ---------------------------------------------------------------
+        // FIX AUDITORÍA: Setear el ID del usuario antes de guardar
+        // ---------------------------------------------------------------
+        if (controladorSesion != null && controladorSesion.isLogueado()) {
+            repoUsuario.setCurrentUserId(controladorSesion.getUsuarioLogueado().getIdUsuario());
+        }
+        // ---------------------------------------------------------------
+
+        // Guardar Factura
         repoFactura.Guardar(factura);
 
-        System.out.println("=== GUARDANDO FACTURA ===");
-        System.out.println("ID Factura: " + factura.getIdFactura());
-        System.out.println("Forma de pago: " + factura.getFormaPago());
-        System.out.println("Estado asignado: " + factura.getEstado());
-        System.out.println("Total productos a guardar: " + productosTemporales.size());
-
-        // Guardar cada producto de la lista temporal
+        // Guardar Productos
         for (FacturaProducto fp : productosTemporales) {
             if (fp.getFacturaProductoPK() == null) {
                 FacturaProductoPK pk = new FacturaProductoPK(
@@ -319,13 +214,97 @@ public class controladorFactura implements Serializable {
             }
             fp.setFactura(factura);
             repoFacturaProducto.Guardar(fp);
-            System.out.println("Guardado: " + fp.getDescripcion());
         }
 
         return "/facturas/index.xhtml?faces-redirect=true";
     }
 
-    // GETTERS Y SETTERS
+    public String guardarCambios() {
+        if (factura != null && factura.getIdFactura() != null) {
+            Optional<Factura> opt = repoFactura.porId(factura.getIdFactura());
+            if (opt.isPresent()) {
+                Factura fExistente = opt.get();
+
+                fExistente.setFechaRegistro(factura.getFechaRegistro());
+                fExistente.setFormaPago(factura.getFormaPago());
+
+                if (fExistente.getFormaPago() != null) {
+                    String forma = fExistente.getFormaPago().trim().toLowerCase();
+                    if (forma.equals("contado")) {
+                        fExistente.setEstado("Pagada");
+                    } else if (forma.equals("cuenta corriente")) {
+                        fExistente.setEstado("Impaga");
+                    } else {
+                        fExistente.setEstado("Desconocido");
+                    }
+                }
+
+                // ---------------------------------------------------------------
+                // FIX AUDITORÍA: Setear el ID del usuario antes de actualizar
+                // ---------------------------------------------------------------
+                if (controladorSesion != null && controladorSesion.isLogueado()) {
+                    repoUsuario.setCurrentUserId(controladorSesion.getUsuarioLogueado().getIdUsuario());
+                }
+                // ---------------------------------------------------------------
+
+                repoFactura.Guardar(fExistente);
+            }
+        }
+        return "/facturas/index.xhtml?faces-redirect=true";
+    }
+
+    public String actualizarFechaYFormaPago() {
+        if (factura != null && factura.getIdFactura() != null) {
+            Factura facturaExistente = repoFactura.porId(factura.getIdFactura()).orElse(null);
+            if (facturaExistente != null) {
+                facturaExistente.setFechaRegistro(factura.getFechaRegistro());
+                facturaExistente.setFormaPago(factura.getFormaPago());
+
+                if ("Contado".equalsIgnoreCase(factura.getFormaPago())) {
+                    facturaExistente.setEstado("Pagada");
+                }
+
+                // ---------------------------------------------------------------
+                // FIX AUDITORÍA
+                // ---------------------------------------------------------------
+                if (controladorSesion != null && controladorSesion.isLogueado()) {
+                    repoUsuario.setCurrentUserId(controladorSesion.getUsuarioLogueado().getIdUsuario());
+                }
+                // ---------------------------------------------------------------
+
+                repoFactura.Guardar(facturaExistente);
+            }
+        }
+        return "/facturas/index.xhtml?faces-redirect=true";
+    }
+
+    // --- OTROS MÉTODOS ---
+    public void cargarFacturaPorVista() {
+        if (id != null && id > 0 && (factura == null || factura.getIdFactura() == null)) {
+            Optional<Factura> opt = repoFactura.obtenerFacturaConProductos(id);
+            if (opt.isPresent()) {
+                factura = opt.get();
+                productosTemporales = new ArrayList<>(factura.getFacturaProductoList());
+            } else {
+                factura = new Factura();
+                factura.setFechaComprobante(new Date());
+            }
+            calcularTotales();
+        } else if (factura == null) {
+            factura = new Factura();
+            factura.setFechaComprobante(new Date());
+        }
+    }
+
+    public List<Factura> listarImpagas() {
+        return repoFactura.listarImpagas();
+    }
+
+    public List<Factura> listar() {
+        return repoFactura.Listar();
+    }
+
+    // --- GETTERS Y SETTERS ---
     public repoFactura getRepoFactura() {
         return repoFactura;
     }
@@ -346,7 +325,6 @@ public class controladorFactura implements Serializable {
         if (factura == null) {
             factura = new Factura();
             factura.setFechaComprobante(new Date());
-          //  factura.setNroComprobante(generarNumeroComprobante());
         }
         return factura;
     }
@@ -373,7 +351,6 @@ public class controladorFactura implements Serializable {
     public void setIndiceEliminar(Integer indiceEliminar) {
         this.indiceEliminar = indiceEliminar;
     }
-    private FacturaProducto facturaProducto = new FacturaProducto();
 
     public FacturaProducto getFacturaProducto() {
         return facturaProducto;
@@ -383,13 +360,6 @@ public class controladorFactura implements Serializable {
         this.facturaProducto = facturaProducto;
     }
 
-    public void actualizarCamposProducto() {
-        if (facturaProducto != null && facturaProducto.getProducto() != null) {
-            facturaProducto.setDescripcion(facturaProducto.getProducto().getDescripcion());
-            facturaProducto.setPrecioUnitario(facturaProducto.getProducto().getPrecioReferencia());
-        }
-    }
-
     public List<Producto> getListaProductos() {
         return listaProductos;
     }
@@ -397,56 +367,4 @@ public class controladorFactura implements Serializable {
     public void setListaProductos(List<Producto> listaProductos) {
         this.listaProductos = listaProductos;
     }
-
-    public void cargarFacturaPorVista() {
-        System.out.println("Cargando factura con id: " + id);
-
-        if (id != null && id > 0 && (factura == null || factura.getIdFactura() == null)) {
-            Optional<Factura> opt = repoFactura.obtenerFacturaConProductos(id); // trae factura con productos
-            if (opt.isPresent()) {
-                factura = opt.get();
-                productosTemporales = new ArrayList<>(factura.getFacturaProductoList());
-            } else {
-                System.out.println("No se encontró la factura con ID: " + id);
-                factura = new Factura(); // inicializa vacía
-                factura.setFechaComprobante(new Date());
-               // factura.setNroComprobante(generarNumeroComprobante());
-            }
-            calcularTotales();
-        } else if (factura == null) {
-            // Si no hay id, es nueva factura
-            factura = new Factura();
-            factura.setFechaComprobante(new Date());
-          //  factura.setNroComprobante(generarNumeroComprobante());
-        }
-    }
-
-    public String guardarCambios() {
-        if (factura != null && factura.getIdFactura() != null) {
-            Optional<Factura> opt = repoFactura.porId(factura.getIdFactura());
-            if (opt.isPresent()) {
-                Factura fExistente = opt.get();
-
-                fExistente.setFechaRegistro(factura.getFechaRegistro());
-                fExistente.setFormaPago(factura.getFormaPago());
-
-                // Asignar estado según forma de pago
-                if (fExistente.getFormaPago() != null) {
-                    String forma = fExistente.getFormaPago().trim().toLowerCase();
-                    if (forma.equals("contado")) {
-                        fExistente.setEstado("Pagada");
-                    } else if (forma.equals("cuenta corriente")) {
-                        fExistente.setEstado("Impaga");
-                    } else {
-                        fExistente.setEstado("Desconocido"); // opcional
-                    }
-                }
-
-                repoFactura.Guardar(fExistente);
-                System.out.println("Factura actualizada correctamente.");
-            }
-        }
-        return "/facturas/index.xhtml?faces-redirect=true";
-    }
-
 }

@@ -65,29 +65,45 @@ public class repoUsuario implements Serializable {
             TypedQuery<Usuario> query = em.createQuery(
                     "SELECT u FROM Usuario u WHERE u.username = :username",
                     Usuario.class);
-            
-            
+
             query.setParameter("username", username);
-            
+
             return Optional.of(query.getSingleResult());
         } catch (NoResultException e) {
             return Optional.empty();
         }
     }
     
-    
-    
+    public Optional<Usuario> buscarPorId(Integer id) {
+        try {
+            TypedQuery<Usuario> query = em.createQuery(
+                    "SELECT u FROM Usuario u WHERE u.idUsuario = :idUsuario",
+                    Usuario.class);
+
+            query.setParameter("idUsuario", id);
+
+            return Optional.of(query.getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
+    }
+
     public Optional<Usuario> findByNombreAndRol(String nombreCompleto, String rol) {
         try {
             TypedQuery<Usuario> query = em.createQuery(
-                "SELECT u FROM Usuario u WHERE u.nombreCompleto = :nombreCompleto AND u.rol = :rol", 
-                Usuario.class);
+                    "SELECT u FROM Usuario u WHERE u.nombreCompleto = :nombreCompleto AND u.rol = :rol",
+                    Usuario.class);
             query.setParameter("nombreCompleto", nombreCompleto);
             query.setParameter("rol", rol);
             return Optional.of(query.getSingleResult());
         } catch (NoResultException e) {
             return Optional.empty();
         }
+    }
+
+    public void setCurrentUserId(Integer userId) {
+        em.createNativeQuery("SET @app_user_id = " + userId)
+                .executeUpdate();
     }
 
 }

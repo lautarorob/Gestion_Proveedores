@@ -22,7 +22,7 @@
                         </f:facet>
                         <h:outputText value="#{item.username}"/>
                     </h:column>
-                    
+
                     <h:column>
                         <f:facet name="header">
                             <h:outputText value="Nombre Completo"/>
@@ -35,6 +35,25 @@
                             <h:outputText value="Rol"/>
                         </f:facet>
                         <h:outputText value="#{item.rol}"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Acciones" />
+                        </f:facet>
+                        <div class="botonesAcciones">
+
+                            <h:link class="editarAcciones" outcome="/usuarios/editar.xhtml" style="margin-right: 10px">
+                                <f:param name="id" value="#{item.idUsuario}" />
+                                <i class="bi bi-pencil"></i>
+                            </h:link>
+                            <h:commandLink class="eliminarAcciones"
+                                           action="#{controladorUsuario.eliminar(item.idUsuario)}"
+                                           onclick="return confirm('¿Confirma la baja?')">
+                                <i class="bi bi-trash3"></i>
+                            </h:commandLink>
+
+                        </div>
                     </h:column>
                 </h:dataTable>
 

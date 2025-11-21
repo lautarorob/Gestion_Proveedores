@@ -30,7 +30,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/XHtml.xhtml to edit t
 
                     <div class="form-group">
                         <h:inputText id="username" 
-                                     value="#{controladorUsuario.usuario.username}" 
+                                     value="#{controladorSesion.usernameInput}" 
                                      styleClass="form-control login-input" 
                                      pt:placeholder="Usuario" 
                                      required="true" 
@@ -40,7 +40,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/XHtml.xhtml to edit t
 
                     <div class="form-group">
                         <h:inputSecret id="password" 
-                                       value="#{controladorUsuario.usuario.password}" 
+                                       value="#{controladorSesion.passwordInput}" 
                                        styleClass="form-control login-input" 
                                        pt:placeholder="Contraseña" 
                                        required="true" 
@@ -54,7 +54,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/XHtml.xhtml to edit t
 
                     <h:commandButton value="Iniciar Sesión" 
                                      styleClass="btn-login" 
-                                     action="#{controladorUsuario.login()}" />
+                                     action="#{controladorSesion.login()}" />
                 </h:form>
             </f:view>
         </div>
