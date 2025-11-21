@@ -8,6 +8,15 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this t
 */
 
 
+body, html {
+    /* Usamos !important para ganarle a PrimeFaces */
+    background-color: #1C2533 !important;
+    color: #EAEAEA !important;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
 [data-bs-theme="dark"] {
 
     /* Fondo principal: Un azul oscuro y profundo */
@@ -152,4 +161,59 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this t
 
 .error{
     color: red;
+}
+
+
+/* --- Estilos del Dashboard --- */
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Dos columnas */
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Ocupar todo el ancho (para el KPI o en móviles) */
+.full-width {
+    grid-column: 1 / -1;
+}
+
+/* Tarjeta KPI (Deuda Total) */
+.kpi-card {
+    background-color: #2A2D35; /* Azul intermedio */
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    border-left: 5px solid #dc3545; /* Rojo para indicar deuda/alerta */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+.kpi-titulo {
+    color: #A0A0A0; /* Gris claro */
+    margin-top: 0;
+}
+
+.kpi-numero {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #dc3545; /* Rojo deuda */
+}
+
+/* Estilos para las tarjetas de PrimeFaces (Gráficos) */
+body .ui-card.chart-card {
+    background-color: #2A2D35; /* Azul intermedio */
+    color: #EAEAEA;
+    border: 1px solid #404a5d;
+}
+
+body .ui-card.chart-card .ui-card-title {
+    color: #F0B90B; /* Títulos en amarillo */
+    font-size: 1.2rem;
+}
+
+/* Responsividad: En pantallas chicas, todo a 1 columna */
+@media (max-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
 }

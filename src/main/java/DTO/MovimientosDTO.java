@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class MovimientosDTO implements Comparable<MovimientosDTO> {
-    
+
     private Date fecha;
     private String tipo; // "Factura" u "Orden de Pago"
     private String comprobante; // nro_comprobante
@@ -14,23 +14,23 @@ public class MovimientosDTO implements Comparable<MovimientosDTO> {
     private BigDecimal saldoParcial;
     private String estado;
     private Integer idProveedor; // Para filtrar por proveedor
-    
+
     // Constructor vacío
     public MovimientosDTO() {
         this.debe = BigDecimal.ZERO;
         this.haber = BigDecimal.ZERO;
         this.saldoParcial = BigDecimal.ZERO;
     }
-    
+
     // Constructor para Facturas
     public static MovimientosDTO fromFactura(
-            Date fecha, 
-            String nroComprobante, 
+            Date fecha,
+            String nroComprobante,
             String descripcion,
-            BigDecimal total, 
+            BigDecimal total,
             String estado,
             Integer idProveedor) {
-        
+
         MovimientosDTO dto = new MovimientosDTO();
         dto.setFecha(fecha);
         dto.setTipo("Factura");
@@ -42,33 +42,33 @@ public class MovimientosDTO implements Comparable<MovimientosDTO> {
         dto.setIdProveedor(idProveedor);
         return dto;
     }
-    
+
     // Constructor para Órdenes de Pago
     public static MovimientosDTO fromOrdenPago(
-            Date fechaPago, 
-            String nroOrden, 
-            String formaPago,
-            BigDecimal montoTotal, 
+            Date fechaPago,
+            String nroOrden,
+            String descripcion, // <-- CAMBIADO: Antes era 'formaPago'
+            BigDecimal montoTotal,
             Integer idProveedor) {
-        
+
         MovimientosDTO dto = new MovimientosDTO();
         dto.setFecha(fechaPago);
         dto.setTipo("Orden de Pago");
         dto.setComprobante(nroOrden);
-        dto.setDescripcion("Pago " + formaPago);
+        dto.setDescripcion(descripcion); //  Asigna la descripción recibida
         dto.setDebe(BigDecimal.ZERO);
         dto.setHaber(montoTotal); // Los pagos van al HABER
         dto.setEstado("Pagada");
         dto.setIdProveedor(idProveedor);
         return dto;
     }
-    
+
     // Para ordenar cronológicamente
     @Override
     public int compareTo(MovimientosDTO otro) {
         return this.fecha.compareTo(otro.fecha);
     }
-    
+
     // Getters y Setters
     public Date getFecha() {
         return fecha;

@@ -35,7 +35,7 @@ public class repoProveedor {
             em.merge(p);
         });
     }
-    
+
     public void Reactivar(Integer id) {
         porId(id).ifPresent(p -> {
             p.setEstado(true);

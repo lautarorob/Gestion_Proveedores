@@ -30,7 +30,7 @@
                                          styleClass="form-control" style="background-color: #020618">
                             <f:selectItem itemLabel="Seleccione un estado" itemValue="#{null}" /> 
                             <f:selectItem itemLabel="Pagado" itemValue="Pagada" />
-                            <f:selectItem itemLabel="Impago" itemValue="Impago" />
+                            <f:selectItem itemLabel="Impago" itemValue="Impaga" />
                         </h:selectOneMenu>
 
                         <h:commandButton id="btnBuscar" value="Buscar"
@@ -123,7 +123,7 @@
                             <h:column>
                                 <f:facet name="header">Estado</f:facet>
                                 <h:outputText value="#{mov.estado}"
-                                              style="font-weight:bold; color: #{mov.estado == 'Pendiente' ? 'orange' : 'green'}" />
+                                              style="font-weight:bold; color: #{mov.estado == 'Impaga' ? 'red' : 'green'}" />
                             </h:column>
 
                         </h:dataTable>

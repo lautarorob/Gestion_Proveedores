@@ -52,4 +52,16 @@ public class repoFacturaProducto {
                 .getResultList();
     }
 
+    // Top Productos Vendidos
+    public List<Object[]> obtenerProductosMasVendidos() {
+        String jpql = "SELECT fp.producto.nombre, SUM(fp.cantidad) "
+                + "FROM FacturaProducto fp "
+                + "GROUP BY fp.producto.nombre "
+                + "ORDER BY SUM(fp.cantidad) DESC";
+
+        return em.createQuery(jpql, Object[].class)
+                .setMaxResults(5)
+                .getResultList();
+    }
+
 }
