@@ -113,7 +113,7 @@ public class repoFactura {
 
     public BigDecimal getSaldoPendiente(Integer idProveedor) {
         TypedQuery<BigDecimal> query = em.createQuery(
-                "SELECT SUM(f.total) FROM Factura f WHERE f.idProveedor.idProveedor = :id AND f.estado = 'Pendiente'",
+                "SELECT SUM(f.total) FROM Factura f WHERE f.idProveedor.idProveedor = :id AND f.estado = 'Impaga'",
                 BigDecimal.class
         );
         query.setParameter("id", idProveedor);
@@ -147,6 +147,40 @@ public class repoFactura {
         } catch (Exception e) {
             e.printStackTrace();
             return new ArrayList<>();
+        }
+    }
+
+    // 1. Top Proveedores con Deuda
+    public List<Object[]> obtenerTopDeudas() {
+        String jpql = "SELECT f.idProveedor.razonSocial, SUM(f.total) "
+                + "FROM Factura f "
+                + "WHERE f.estado = 'Impaga' "
+                + "GROUP BY f.idProveedor.razonSocial "
+                + "ORDER BY SUM(f.total) DESC";
+
+        return em.createQuery(jpql, Object[].class)
+                .setMaxResults(5) // Limitamos a los 5 mayores
+                .getResultList();
+    }
+
+    // 2. Distribución por Forma de Pago
+    public List<Object[]> obtenerTotalesPorFormaPago() {
+        String jpql = "SELECT f.formaPago, SUM(f.total) "
+                + "FROM Factura f "
+                + "WHERE f.formaPago IS NOT NULL "
+                + "GROUP BY f.formaPago";
+
+        return em.createQuery(jpql, Object[].class).getResultList();
+    }
+
+    // 3. Deuda Total (Tarjeta pequeña del dashboard)
+    public Double obtenerDeudaTotal() {
+        String jpql = "SELECT SUM(f.total) FROM Factura f WHERE f.estado = 'Impaga'";
+        try {
+            Number resultado = em.createQuery(jpql, Number.class).getSingleResult();
+            return resultado != null ? resultado.doubleValue() : 0.0;
+        } catch (Exception e) {
+            return 0.0;
         }
     }
 
