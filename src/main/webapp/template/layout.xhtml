@@ -6,8 +6,6 @@
 
     <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <!--  <h:outputStylesheet name="css/default.css"/>
-              <h:outputStylesheet name="css/cssLayout.css"/>-->
         <title>Gestion de Proveedores</title>
         <h:outputStylesheet name="css/misEstilos.css" />
         <h:outputScript name="js/misScript.js" />
@@ -18,62 +16,101 @@
 
     <h:body pt:data-bs-theme="dark" pt:class="d-flex flex-column vh-100">
 
+        <!-- Botón hamburguesa (móviles) -->
+        <button class="menu-toggle" id="menuToggle" onclick="toggleSidebar()">
+            <i class="bi bi-list"></i>
+        </button>
+
+        <!-- Overlay para cerrar el menú en móviles -->
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
         <div class="container-fluid flex-grow-1">
             <div class="row h-100">
-                <aside class="col-md-3 col-lg-2 p-3 sidebar">
-                    <h3 class="mb-4"><i class="bi bi-gear"></i> Opciones</h3>
+                <aside class="col-md-3 col-lg-2 p-3 sidebar" id="sidebar">
+                    <!-- Botón de cierre dentro del sidebar (solo visible en móviles) -->
+                    <button class="sidebar-close" onclick="closeSidebar()">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                    
+                    <!-- Botón para colapsar/expandir (solo desktop) -->
+                    <button class="sidebar-collapse-btn" id="collapseBtn" onclick="toggleCollapse()">
+                        <i class="bi bi-chevron-left" id="collapseIcon"></i>
+                    </button>
+                    
+                    <h3 class="mb-4 sidebar-title">
+                        <i class="bi bi-gear"></i> 
+                        <span class="sidebar-text">Opciones</span>
+                    </h3>
 
                     <ul class="nav flex-column">
                         <li class="nav-item">
                             <h:link outcome="/index.xhtml" class="nav-link #{view.viewId == '/index.xhtml' ? 'active' : ''}">
                                 <i class="bi bi-house"></i>
-                                <h:outputText value=" Inicio" />
+                                <span class="sidebar-text">Inicio</span>
                             </h:link>
                         </li>
                         <li class="nav-item">
                             <h:link outcome="/proveedores/index.xhtml" class="nav-link #{view.viewId == '/proveedores/index.xhtml' ? 'active' : ''}">
                                 <i class="bi bi-truck"></i>
-                                <h:outputText value=" Proveedores" />
+                                <span class="sidebar-text">Proveedores</span>
                             </h:link>
                         </li>
                         <li class="nav-item">
                             <h:link outcome="/productos/index.xhtml" class="nav-link #{view.viewId == '/productos/index.xhtml' ? 'active' : ''}">
-                                <i class="bi bi-basket3"></i> Productos
+                                <i class="bi bi-basket3"></i>
+                                <span class="sidebar-text">Productos</span>
                             </h:link>
                         </li>
                         <li class="nav-item">
                             <h:link outcome="/facturas/index.xhtml" class="nav-link #{view.viewId == '/facturas/index.xhtml' ? 'active' : ''}" >
-                                <i class="bi bi-receipt-cutoff"></i> Facturas
+                                <i class="bi bi-receipt-cutoff"></i>
+                                <span class="sidebar-text">Facturas</span>
                             </h:link>
                         </li>
                         <li class="nav-item">
                             <h:link outcome="/pagos/index.xhtml" class="nav-link #{view.viewId == '/pagos/index.xhtml' ? 'active' : ''}" >
-                                <i class="bi bi-credit-card"></i> Pagos
+                                <i class="bi bi-credit-card"></i>
+                                <span class="sidebar-text">Pagos</span>
                             </h:link>
                         </li>
                         <li class="nav-item">
                             <h:link outcome="/cuentasCorrientes/index.xhtml" class="nav-link #{view.viewId == '/cuentasCorrientes/index.xhtml' ? 'active' : ''}">
-                                <i class="bi bi-bank"></i> Cuentas Corrientes
+                                <i class="bi bi-bank"></i>
+                                <span class="sidebar-text">Cuentas Corrientes</span>
                             </h:link>
                         </li>
-                        <ui:fragment rendered="#{controladorUsuario.usuarioLogueado== 'gerente' || controladorUsuario.usuarioLogueado.rol == 'admin'}">
+                        <ui:fragment rendered="#{controladorUsuario.usuarioLogueado.rol == 'gerente' || controladorUsuario.usuarioLogueado.rol == 'admin'}">
                             <li class="nav-item">
                                 <h:link class="nav-link" outcome="/auditoria/index.xhtml">
-                                    <i class="bi-clipboard-check"></i>  Auditoria
+                                    <i class="bi bi-clipboard-check"></i>
+                                    <span class="sidebar-text">Auditoria</span>
                                 </h:link>
                             </li>
                         </ui:fragment>
                         <ui:fragment rendered="#{controladorUsuario.usuarioLogueado.rol == 'admin'}">
                             <li class="nav-item">
                                 <h:link outcome="/usuarios/index.xhtml" class="nav-link #{view.viewId == '/usuarios/index.xhtml' ? 'active' : ''}">
-                                    <i class="bi bi-person"></i> Usuarios
+                                    <i class="bi bi-person"></i>
+                                    <span class="sidebar-text">Usuarios</span>
                                 </h:link>
                             </li>
                         </ui:fragment>
+                        
+                        <!-- LOGOUT CON FORMULARIO -->
+                        <li class="nav-item">
+                            <h:form style="margin: 0; padding: 0;">
+                                <h:commandLink action="#{controladorUsuario.logout()}" 
+                                               styleClass="nav-link"
+                                               onclick="if(!confirm('¿Estás seguro de cerrar sesión?')) return false;">
+                                    <i class="bi bi-box-arrow-left"></i>
+                                    <span class="sidebar-text">Cerrar Sesión</span>
+                                </h:commandLink>
+                            </h:form>
+                        </li>
                     </ul>
                 </aside>
 
-                <main class="col-md-9 col-lg-10 p-4">
+                <main class="col-md-9 col-lg-10 p-4" id="mainContent">
                     <ui:insert name="contenido">
                     </ui:insert>
                 </main>
@@ -81,7 +118,6 @@
         </div>
 
         <!-- Bootstrap JS Bundle -->
-
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
                 integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>

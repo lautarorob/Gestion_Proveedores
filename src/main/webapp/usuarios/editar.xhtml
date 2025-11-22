@@ -28,7 +28,7 @@
                                      value="#{controladorUsuario.usuario.username}" 
                                      required="true"
                                      pt:placeholder="Nombre de Usuario" 
-                                     styleClass="form-control" />
+                                     styleClass="form-control" style="background-color: #020618"/>
                     </div>
 
                     <div class="col-md-6 mb-3">
@@ -36,11 +36,11 @@
                                      value="#{controladorUsuario.usuario.nombreCompleto}" 
                                      required="true" 
                                      pt:placeholder="Nombre Completo"
-                                     styleClass="form-control" />
+                                     styleClass="form-control" style="background-color: #020618"/>
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <h:selectOneMenu id="rol" value="#{controladorUsuario.usuario.rol}" styleClass="form-control select-con-icono">
+                        <h:selectOneMenu id="rol" value="#{controladorUsuario.usuario.rol}" styleClass="form-control" style="background-color: #020618">
                             <f:selectItem itemLabel="--ROL--" itemValue="" noSelectionOption="true"/>
                             <f:selectItem itemLabel="Admin" itemValue="admin"/>
                             <f:selectItem itemLabel="Gerente" itemValue="gerente"/>
@@ -51,7 +51,7 @@
 
                 </div>
 
-                <h:commandButton value="Cancelar" action="/proveedores/index.xhtml" styleClass="btnGris"/>
+                <h:commandButton value="Cancelar" action="/usuarios/index.xhtml" styleClass="btnGris"/>
                 <h:commandButton value="Guardar Proveedor" 
                                  action="#{controladorUsuario.guardar}" 
                                  styleClass="btnAmarillo" 

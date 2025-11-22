@@ -109,9 +109,13 @@ function validarProducto() {
 
     let isValid = true;
 
+    const regex = /^[A-Z]{3}-\d{4}$/;
 
     if (codProd === "") {
         errorCod.textContent = "Campo Obligatorio";
+        isValid = false;
+    } else if (!regex.test(codProd)) {
+        errorCod.textContent = "Formato Invalido";
         isValid = false;
     }
 
@@ -280,3 +284,65 @@ function validarComprobante(input) {
 
     return true;
 }
+
+// Función para toggle del sidebar (móviles)
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    sidebar.classList.toggle('show');
+    overlay.classList.toggle('show');
+}
+
+// Función para cerrar el sidebar (móviles)
+function closeSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    sidebar.classList.remove('show');
+    overlay.classList.remove('show');
+}
+
+// Función para colapsar/expandir el sidebar (desktop)
+function toggleCollapse() {
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    const collapseIcon = document.getElementById('collapseIcon');
+    
+    sidebar.classList.toggle('collapsed');
+    mainContent.classList.toggle('expanded');
+    
+    // Cambiar el icono
+    if (sidebar.classList.contains('collapsed')) {
+        collapseIcon.classList.remove('bi-chevron-left');
+        collapseIcon.classList.add('bi-chevron-right');
+        // Guardar estado en localStorage
+        localStorage.setItem('sidebarCollapsed', 'true');
+    } else {
+        collapseIcon.classList.remove('bi-chevron-right');
+        collapseIcon.classList.add('bi-chevron-left');
+        localStorage.setItem('sidebarCollapsed', 'false');
+    }
+}
+
+// Restaurar el estado del sidebar al cargar la página
+document.addEventListener('DOMContentLoaded', function() {
+    // Restaurar estado colapsado
+    const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+    if (isCollapsed) {
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        const collapseIcon = document.getElementById('collapseIcon');
+        
+        sidebar.classList.add('collapsed');
+        mainContent.classList.add('expanded');
+        collapseIcon.classList.remove('bi-chevron-left');
+        collapseIcon.classList.add('bi-chevron-right');
+    }
+    
+    // Cerrar sidebar en móviles al hacer clic en un link
+    if (window.innerWidth <= 768) {
+        const sidebarLinks = document.querySelectorAll('.sidebar .nav-link');
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', closeSidebar);
+        });
+    }
+});

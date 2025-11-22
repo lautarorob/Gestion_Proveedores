@@ -22,7 +22,7 @@
                                      value="#{controladorProveedor.proveedor.razonSocial}" 
                                      required="true"
                                      pt:placeholder="Razón Social" 
-                                     styleClass="form-control" />
+                                     styleClass="form-control" style="background-color: #020618"/>
                         <span id="formulario:errorRazonSoc" class="error"></span>
                     </div>
                     <div class="col-md-6 mb-3">
@@ -31,7 +31,7 @@
                                      value="#{controladorProveedor.proveedor.cuit}" 
                                      required="true" 
                                      pt:placeholder="XX-12345678-X"
-                                     styleClass="form-control" />
+                                     styleClass="form-control" style="background-color: #020618"/>
                         <span id="formulario:errorCuit" class="error"></span>
                     </div>
 
@@ -40,7 +40,7 @@
                         <h:inputText id="nombreComercial" 
                                      value="#{controladorProveedor.proveedor.nombreComercial}" 
                                      pt:placeholder="Nombre Comercial"
-                                     styleClass="form-control" />
+                                     styleClass="form-control" style="background-color: #020618"/>
                         <span id="formulario:errorNombreCom" class="error"></span>
                     </div>
                     
@@ -49,7 +49,7 @@
                         <h:inputText id="telefono" 
                                      value="#{controladorProveedor.proveedor.telefono}" 
                                      pt:placeholder="+543851234567"
-                                     styleClass="form-control" />
+                                     styleClass="form-control" style="background-color: #020618"/>
                         <span id="formulario:errorTel" class="error"></span>
                     </div>
 
@@ -58,13 +58,13 @@
                         <h:inputText id="email" 
                                      value="#{controladorProveedor.proveedor.email}" 
                                      pt:placeholder="example@example.example"
-                                     styleClass="form-control" />
+                                     styleClass="form-control" style="background-color: #020618"/>
                         <span id="formulario:errorEmail" class="error"></span>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label>IVA(*)</label>
-                        <h:selectOneMenu id="tipoIva" value="#{controladorProveedor.proveedor.tipoIva}" styleClass="form-control select-con-icono">
-                            <f:selectItem itemLabel="--Tipo de IVA--" itemValue="" noSelectionOption="true"/>
+                        <h:selectOneMenu id="tipoIva" value="#{controladorProveedor.proveedor.tipoIva}" styleClass="form-select" style="background-color: #020618">
+                            <f:selectItem itemLabel="Tipo de IVA" itemValue="" noSelectionOption="true"/>
                             <f:selectItem itemLabel="Monotributo" itemValue="Monotributo"/>
                             <f:selectItem itemLabel="Responsable Inscripto" itemValue="Responsable Inscripto"/>
                             <f:selectItem itemLabel="Excento" itemValue="Excento"/>

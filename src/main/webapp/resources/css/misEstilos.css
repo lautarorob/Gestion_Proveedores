@@ -2,82 +2,298 @@
 Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
 Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this template
 */
-/* 
-    Created on : 16 oct 2025, 09:13:38
-    Author     : roble
+/* Created on : 16 oct 2025, 09:13:38
+    Updated with Collapsible Sidebar
 */
 
-
 body, html {
-    /* Usamos !important para ganarle a PrimeFaces */
     background-color: #1C2533 !important;
     color: #EAEAEA !important;
     margin: 0;
     padding: 0;
     height: 100%;
+    overflow: hidden;
 }
 
 [data-bs-theme="dark"] {
-
-    /* Fondo principal: Un azul oscuro y profundo */
     --bs-body-bg: #1C2533;
-
-    /* Fondo para componentes: Un azul ligeramente más claro para el contraste */
     --bs-tertiary-bg: #2A2D35;
-
-    /* Mantenemos los otros colores para texto y detalles */
     --bs-body-color: #EAEAEA;
     --bs-secondary-color: #A0A0A0;
     --bs-warning: #F0B90B;
     --bs-warning-text-emphasis: #F0B90B;
-
-    /* También es buena idea definir el color de los bordes para que combine */
     --bs-border-color: #404a5d;
 }
 
-
-/* Estilos del Sidebar */
-.sidebar {
-    background-color: #020618;
+/* ===== BOTÓN HAMBURGUESA (Móvil) ===== */
+.menu-toggle {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1100;
+    background-color: #F0B90B;
+    color: #020618;
+    border: none;
+    border-radius: 5px;
+    width: 45px;
+    height: 45px;
+    font-size: 24px;
+    cursor: pointer;
+    display: none; /* Oculto por defecto en desktop */
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
 }
 
-/* Estilo base de los links - TEXTO AMARILLO */
+.menu-toggle:hover {
+    background-color: #FFD700;
+    transform: scale(1.05);
+}
+
+.menu-toggle:active {
+    transform: scale(0.95);
+}
+
+/* Overlay oscuro para móviles */
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.show {
+    display: block;
+    opacity: 1;
+}
+
+/* Botón de cerrar dentro del sidebar (Móvil) */
+.sidebar-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: transparent;
+    color: #F0B90B;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    display: none; /* Oculto en desktop */
+    padding: 5px;
+    transition: color 0.3s ease;
+}
+
+.sidebar-close:hover {
+    color: #FFD700;
+}
+
+/* ===== LAYOUT GENERAL ===== */
+.container-fluid {
+    height: 100vh;
+    overflow: hidden;
+    padding: 0;
+}
+
+.row.h-100 {
+    height: 100%;
+    margin: 0;
+}
+
+/* ===== SIDEBAR (ESTILOS BASE) ===== */
+.sidebar {
+    background-color: #020618;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 16.666667%; /* Valor por defecto (col-lg-2) */
+    overflow-y: auto;
+    overflow-x: visible; /* Permitir que el botón de colapso sobresalga */
+    z-index: 1000;
+    padding: 1rem;
+    /* Transición modificada para soportar transform (movil) y width (desktop) */
+    transition: transform 0.3s ease, width 0.3s ease;
+}
+
+/* Scrollbar sidebar */
+.sidebar::-webkit-scrollbar { width: 8px; }
+.sidebar::-webkit-scrollbar-track { background: #020618; }
+.sidebar::-webkit-scrollbar-thumb { background: #F0B90B; border-radius: 4px; }
+.sidebar::-webkit-scrollbar-thumb:hover { background: #FFD700; }
+
+/* ===== CONTENIDO PRINCIPAL (MAIN) ===== */
+main {
+    margin-left: 16.666667%; /* Valor por defecto */
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: auto;
+    padding: 1.5rem;
+    width: 83.333333%; /* Valor por defecto */
+    /* Transición añadida para el margen y el ancho */
+    transition: margin-left 0.3s ease, width 0.3s ease;
+}
+
+/* Scrollbar main */
+main::-webkit-scrollbar { width: 10px; height: 10px; }
+main::-webkit-scrollbar-track { background: #1C2533; }
+main::-webkit-scrollbar-thumb { background: #404a5d; border-radius: 5px; }
+main::-webkit-scrollbar-thumb:hover { background: #F0B90B; }
+main::-webkit-scrollbar-corner { background: #1C2533; }
+
+/* ===== ESTILOS NAVEGACIÓN ===== */
 .sidebar .nav-item .nav-link {
-    color: #F0B90B; /* Amarillo para todos los items */
+    color: #F0B90B;
     font-size: 1rem;
     border-radius: .375rem;
     margin-bottom: 0.25rem;
     transition: all 0.3s ease;
+    /* Flex para alinear iconos y texto */
+    display: flex;
+    align-items: center;
+    white-space: nowrap; /* Evita que el texto baje de línea */
 }
 
-/* Hover */
 .sidebar .nav-item .nav-link:hover {
-    color: #FFD700; /* Amarillo más brillante al pasar el mouse */
-    background-color: var(--bs-tertiary-bg);
-}
-
-/* Link activo */
-.sidebar .nav-item .nav-link.active {
-    color: #F0B90B; /* Color oscuro para contrastar con fondo amarillo */
-    font-weight: 600;
-}
-
-/* Iconos */
-.sidebar .nav-link .bi,
-.sidebar .nav-link .fa-solid {
-    margin-right: 15px;
-    width: 20px;
-}
-
-/*hover activo para se selecciona una opcions*/
-.nav-link.active {
     color: #FFD700;
     background-color: var(--bs-tertiary-bg);
 }
 
+.sidebar .nav-item .nav-link.active {
+    color: #FFD700;
+    font-weight: 600;
+    background-color: var(--bs-tertiary-bg);
+}
+
+/* Iconos de navegación */
+.sidebar .nav-link .bi,
+.sidebar .nav-link .fa-solid {
+    margin-right: 15px;
+    width: 20px;
+    flex-shrink: 0; /* Evita que el icono se aplaste */
+    font-size: 1.1rem;
+    transition: margin 0.3s ease;
+}
+
+/* Texto del enlace (Para poder ocultarlo suavemente) */
+.sidebar-text {
+    display: inline-block;
+    transition: opacity 0.2s ease;
+    opacity: 1;
+}
+
+/* Forms logout */
+.nav-item form {
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block;
+}
+.nav-item form .nav-link {
+    display: flex; /* Cambiado a flex para consistencia */
+    width: 100%;
+}
+
+/* ===== NUEVO: BOTÓN COLAPSAR SIDEBAR (DESKTOP) ===== */
+.sidebar-collapse-btn {
+    position: absolute;
+    top: 50%;
+    right: -15px; /* Sobresale del sidebar */
+    transform: translateY(-50%);
+    background-color: #F0B90B;
+    color: #020618;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+    cursor: pointer;
+    display: none; /* Oculto por defecto (se activa en media query) */
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    z-index: 1001;
+}
+
+.sidebar-collapse-btn:hover {
+    background-color: #FFD700;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.sidebar-collapse-btn:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+/* ===== NUEVO: ESTADOS COLAPSADOS (DESKTOP) ===== */
+
+/* Estado: Sidebar Colapsado */
+.sidebar.collapsed {
+    width: 70px !important;
+    padding: 1rem 0.5rem; /* Reducir padding horizontal */
+}
+
+/* Ocultar textos cuando está colapsado */
+.sidebar.collapsed .sidebar-text,
+.sidebar.collapsed .sidebar-title { /* Si tienes títulos de sección */
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+    display: none; /* Asegura que no ocupen espacio */
+}
+
+/* Ajustar enlaces al centro */
+.sidebar.collapsed .nav-link {
+    justify-content: center;
+    padding: 0.75rem 0;
+}
+
+/* Quitar margen del icono cuando está solo */
+.sidebar.collapsed .nav-link .bi,
+.sidebar.collapsed .nav-link .fa-solid {
+    margin-right: 0;
+    font-size: 1.3rem;
+}
+
+/* Tooltip al pasar el mouse sobre icono colapsado */
+.sidebar.collapsed .nav-link {
+    position: relative;
+}
+
+.sidebar.collapsed .nav-link:hover::after {
+    content: attr(title); /* Requiere title="Texto" en el HTML del enlace */
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #2A2D35;
+    color: #F0B90B;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    white-space: nowrap;
+    margin-left: 15px;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    border: 1px solid #404a5d;
+    font-size: 0.9rem;
+    pointer-events: none;
+}
+
+/* Estado: Main Expandido (cuando el sidebar es pequeño) */
+main.expanded {
+    margin-left: 70px !important;
+    width: calc(100% - 70px) !important;
+}
+
+
+/* ===== ESTILOS TABLAS Y BOTONES (Originales) ===== */
 .tablaProveedores{
     background-color: #020618;
-    width:100%;
+    width: 100%;
     border-collapse: collapse;
 }
 .tablaProveedores th{
@@ -85,26 +301,13 @@ body, html {
     background-color: var(--bs-tertiary-bg);
     text-align: center;
 }
-
 .tablaProveedores td{
     text-align: center;
     border: 2px solid #ddd;
     border-collapse: collapse;
 }
-
-.tablaProveedores th:first-child{
-    padding-left: 30px;
-}
-.tablaProveedores td:first-child{
-    padding-left: 30px;
-}
-
-.tablaProveedores th:last-child{
-    padding-right: 30px;
-}
-.tablaProveedores td:last-child{
-    padding-right: 30px;
-}
+.tablaProveedores th:first-child, .tablaProveedores td:first-child{ padding-left: 30px; }
+.tablaProveedores th:last-child, .tablaProveedores td:last-child{ padding-right: 30px; }
 
 .btnAmarillo{
     font-size: 15px;
@@ -118,9 +321,7 @@ body, html {
     margin: 10px;
 }
 
-.divNewProv{
-    padding: 10px;
-}
+.divNewProv{ padding: 10px; }
 
 .btnGris{
     font-size: 15px;
@@ -137,83 +338,97 @@ body, html {
     padding-left: 10px;
 }
 
-.editarAcciones{
-    color: white;
-}
-
-.eliminarAcciones{
-    color: #FB2C36;
-}
-
-.reactivaAcciones{
-    display: flex; /* <-- Añade esto */
-    justify-content: center; /* Esto ahora centrará horizontalmente */
-    color: #03FC77;
-    width: 100%;
-}
-
-
-.botonesAcciones{
-    display: flex;
-    justify-content: center;
-    width: 100%;
-}
-
-.error{
-    color: red;
-}
-
+.editarAcciones{ color: white; }
+.eliminarAcciones{ color: #FB2C36; }
+.reactivaAcciones{ display: flex; justify-content: center; color: #03FC77; width: 100%; }
+.botonesAcciones{ display: flex; justify-content: center; width: 100%; }
+.error{ color: red; }
 
 /* --- Estilos del Dashboard --- */
-
 .dashboard-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Dos columnas */
+    grid-template-columns: 1fr 1fr;
     gap: 20px;
     padding: 20px;
 }
 
-/* Ocupar todo el ancho (para el KPI o en móviles) */
-.full-width {
-    grid-column: 1 / -1;
-}
+.full-width { grid-column: 1 / -1; }
 
-/* Tarjeta KPI (Deuda Total) */
 .kpi-card {
-    background-color: #2A2D35; /* Azul intermedio */
+    background-color: #2A2D35;
     padding: 20px;
     border-radius: 8px;
     text-align: center;
-    border-left: 5px solid #dc3545; /* Rojo para indicar deuda/alerta */
+    border-left: 5px solid #dc3545;
     box-shadow: 0 4px 6px rgba(0,0,0,0.3);
 }
 
-.kpi-titulo {
-    color: #A0A0A0; /* Gris claro */
-    margin-top: 0;
-}
+.kpi-titulo { color: #A0A0A0; margin-top: 0; }
+.kpi-numero { font-size: 2.5rem; font-weight: bold; color: #dc3545; }
 
-.kpi-numero {
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: #dc3545; /* Rojo deuda */
-}
-
-/* Estilos para las tarjetas de PrimeFaces (Gráficos) */
 body .ui-card.chart-card {
-    background-color: #2A2D35; /* Azul intermedio */
+    background-color: #2A2D35;
     color: #EAEAEA;
     border: 1px solid #404a5d;
 }
-
 body .ui-card.chart-card .ui-card-title {
-    color: #F0B90B; /* Títulos en amarillo */
+    color: #F0B90B;
     font-size: 1.2rem;
 }
 
-/* Responsividad: En pantallas chicas, todo a 1 columna */
+/* ===== RESPONSIVE (MEDIA QUERIES) ===== */
+
+/* Móviles y tablets pequeñas (< 768px) */
 @media (max-width: 768px) {
-    .dashboard-grid {
-        grid-template-columns: 1fr;
+    .menu-toggle { display: flex; }
+    .sidebar-close { display: block; }
+    
+    .sidebar {
+        transform: translateX(-100%); /* Sidebar oculto */
+        width: 280px !important; /* Ancho fijo en móvil */
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
     }
+    
+    .sidebar.show {
+        transform: translateX(0);
+    }
+    
+    main {
+        margin-left: 0 !important;
+        width: 100% !important;
+        padding-top: 70px;
+    }
+    
+    .dashboard-grid { grid-template-columns: 1fr; }
+    
+    /* Ocultar botón colapso escritorio en móvil */
+    .sidebar-collapse-btn { display: none !important; }
+}
+
+/* Tablets y Desktop (> 769px) */
+@media (min-width: 769px) {
+    /* Mostrar botón de colapso */
+    .sidebar-collapse-btn {
+        display: flex;
+    }
+}
+
+/* Tablets Específico (769px - 991px) */
+@media (min-width: 769px) and (max-width: 991px) {
+    .sidebar { width: 25%; } /* Normal */
+    main { margin-left: 25%; width: 75%; } /* Normal */
+    
+    /* Si se colapsa en tablet: */
+    .sidebar.collapsed { width: 70px !important; }
+    main.expanded { margin-left: 70px !important; width: calc(100% - 70px) !important; }
+}
+
+/* Desktop Específico (> 992px) */
+@media (min-width: 992px) {
+    .sidebar { width: 16.666667%; } /* Normal */
+    main { margin-left: 16.666667%; width: 83.333333%; } /* Normal */
+    
+    /* Si se colapsa en desktop: */
+    .sidebar.collapsed { width: 70px !important; }
+    main.expanded { margin-left: 70px !important; width: calc(100% - 70px) !important; }
 }

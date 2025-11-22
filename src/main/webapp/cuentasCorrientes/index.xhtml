@@ -20,14 +20,14 @@
                     <h:panelGrid columns="3" columnClasses="label,value" style="margin-bottom:20px">
 
                         <h:selectOneMenu id="proveedor" value="#{controladorCuentaCorriente.idProveedorSeleccionado}"
-                                         styleClass="form-control" style="background-color: #020618">
+                                         styleClass="form-select" style="background-color: #020618">
                             <f:selectItem itemLabel="Seleccione un proveedor" itemValue="#{null}" />
                             <f:selectItems value="#{controladorCuentaCorriente.listaProveedores}" var="prov"
                                            itemValue="#{prov.idProveedor}" itemLabel="#{prov.nombreComercial}" />
                         </h:selectOneMenu>
 
                         <h:selectOneMenu id="estado" value="#{controladorCuentaCorriente.estadoPago}"
-                                         styleClass="form-control" style="background-color: #020618">
+                                         styleClass="form-select" style="background-color: #020618">
                             <f:selectItem itemLabel="Seleccione un estado" itemValue="#{null}" /> 
                             <f:selectItem itemLabel="Pagado" itemValue="Pagada" />
                             <f:selectItem itemLabel="Impago" itemValue="Impaga" />

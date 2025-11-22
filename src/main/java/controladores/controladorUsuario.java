@@ -32,7 +32,6 @@ public class controladorUsuario implements Serializable {
 
     /**
      * Inicializa el usuario para editar/crear
-     * Este método debe ser llamado cuando se carga la página de edición/nuevo
      */
     public Usuario getUsuario() {
         if (id != null && id > 0) {
@@ -40,15 +39,28 @@ public class controladorUsuario implements Serializable {
             if (usuario == null || !id.equals(usuario.getIdUsuario())) {
                 usuario = repoUsuario.porId(id).orElse(new Usuario());
             }
-        } else if (usuario == null) {
-            // Modo nuevo: crear usuario vacío
-            usuario = new Usuario();
+        } else {
+            // Modo nuevo: siempre crear usuario vacío
+            if (usuario == null || usuario.getIdUsuario() != null) {
+                usuario = new Usuario();
+                confirmPassword = null; // Limpiar confirmación de contraseña
+            }
         }
         return usuario;
     }
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
+    }
+
+    /**
+     * Limpia el usuario de edición/creación Llamar este método al entrar a la
+     * página de nuevo usuario
+     */
+    public void prepararNuevoUsuario() {
+        this.usuario = new Usuario();
+        this.id = null;
+        this.confirmPassword = null;
     }
 
     /**
@@ -91,7 +103,7 @@ public class controladorUsuario implements Serializable {
             boolean esOtroUsuario = !userByUsername.get().getIdUsuario().equals(usuario.getIdUsuario());
 
             if (esNuevo || esOtroUsuario) {
-                FacesContext.getCurrentInstance().addMessage("formulario:userName",
+                FacesContext.getCurrentInstance().addMessage("formulario:username",
                         new FacesMessage(FacesMessage.SEVERITY_ERROR,
                                 "El nombre de usuario (login) '" + usuario.getUsername() + "' ya está en uso.",
                                 "Login duplicado")
@@ -121,11 +133,12 @@ public class controladorUsuario implements Serializable {
         }
 
         repoUsuario.Guardar(usuario);
-        
+
         // Limpiar el usuario editado después de guardar
         usuario = null;
         id = null;
-        
+        confirmPassword = null;
+
         return "/usuarios/index.xhtml?faces-redirect=true";
     }
 
@@ -160,6 +173,48 @@ public class controladorUsuario implements Serializable {
             ));
             return null;
         }
+    }
+
+    /**
+     * Cierra la sesión del usuario actual Limpia todos los datos de la sesión y
+     * redirige al login
+     */
+    public String logout() {
+        FacesContext context = FacesContext.getCurrentInstance();
+
+        // Limpiar el ID del usuario en MySQL (para los triggers)
+        try {
+            repoUsuario.setCurrentUserId(null);
+        } catch (Exception e) {
+            System.out.println("Error al limpiar usuario en MySQL: " + e.getMessage());
+        }
+
+        // Limpiar todos los datos del controlador
+        this.usuarioLogueado = null;
+        this.usuario = null;
+        this.id = null;
+        this.confirmPassword = null;
+
+        // Invalidar la sesión completa
+        context.getExternalContext().invalidateSession();
+
+        // Mensaje de despedida (opcional)
+        context.addMessage(null, new FacesMessage(
+                FacesMessage.SEVERITY_INFO,
+                "Sesión cerrada",
+                "Has cerrado sesión exitosamente"
+        ));
+
+        // Redirigir al login
+        return "/login.xhtml?faces-redirect=true";
+    }
+
+    /**
+     * Verifica si hay un usuario logueado Útil para mostrar/ocultar elementos
+     * en la vista
+     */
+    public boolean isLogueado() {
+        return usuarioLogueado != null;
     }
 
     // Getters y Setters

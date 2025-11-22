@@ -43,6 +43,7 @@ public class controladorFactura implements Serializable {
     // ---------------------------------------------------
 
     private List<Producto> listaProductos;
+    private List<Producto> listaProductosPorProveedor;
     private Integer id;
     private Factura factura;
 
@@ -60,19 +61,41 @@ public class controladorFactura implements Serializable {
 
     @PostConstruct
     public void init() {
-        productosTemporales = new ArrayList<>();
-        listaProductos = repoProducto.Listar();
-
+        // 1. PRIMERO inicializar la factura si es null
         if (factura == null) {
             factura = new Factura();
             factura.setFechaComprobante(new Date());
             factura.setFechaRegistro(new Date());
-            // factura.setNroComprobante(generarNumeroComprobante());
         }
 
+        // 2. Inicializar listas
+        productosTemporales = new ArrayList<>();
+        listaProductos = repoProducto.Listar();
+
+        // 3. SOLO cargar productos por proveedor SI hay un proveedor seleccionado
+        if (factura.getIdProveedor() != null && factura.getIdProveedor().getIdProveedor() != null) {
+            listaProductosPorProveedor = repoProducto.buscarPorProveedor(factura.getIdProveedor().getIdProveedor());
+        } else {
+            listaProductosPorProveedor = new ArrayList<>(); // Lista vacía si no hay proveedor
+        }
+
+        // 4. Inicializar facturaProducto
         facturaProducto = new FacturaProducto();
     }
 
+// Método que se llamará cuando el usuario seleccione un proveedor
+    public void cargarProductosPorProveedor() {
+        if (factura != null && factura.getIdProveedor() != null) {
+            Integer idProveedor = factura.getIdProveedor().getIdProveedor();
+            if (idProveedor != null) {
+                listaProductosPorProveedor = repoProducto.buscarPorProveedor(idProveedor);
+                System.out.println("Productos cargados para proveedor ID: " + idProveedor
+                        + " - Total: " + listaProductosPorProveedor.size());
+            }
+        } else {
+            listaProductosPorProveedor = new ArrayList<>();
+        }
+    }
     // --- LÓGICA DE PRODUCTOS ---
     private FacturaProducto facturaProducto = new FacturaProducto();
 
@@ -353,5 +376,13 @@ public class controladorFactura implements Serializable {
 
     public void setListaProductos(List<Producto> listaProductos) {
         this.listaProductos = listaProductos;
+    }
+
+    public List<Producto> getListaProductosPorProveedor() {
+        return listaProductosPorProveedor;
+    }
+
+    public void setListaProductosPorProveedor(List<Producto> listaProductosPorProveedor) {
+        this.listaProductosPorProveedor = listaProductosPorProveedor;
     }
 }

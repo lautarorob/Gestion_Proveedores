@@ -22,8 +22,8 @@
                         <h:inputText id="codProd" 
                                      value="#{controladorProducto.producto.codProd}" 
                                      required="true"
-                                     pt:placeholder="Ingrese el codigo" 
-                                     styleClass="form-control" />
+                                     pt:placeholder="ABC-1234" 
+                                     styleClass="form-control" style="background-color: #020618"/>
                         <span id="formulario:errorCodProd" class="error"></span>
                     </div>
                     <div></div>
@@ -33,7 +33,7 @@
                         <h:inputTextarea id="descripcion"
                                          value="#{controladorProducto.producto.descripcion}" 
                                          pt:placeholder="Ingrese la descripcion"
-                                         styleClass="form-control" />
+                                         styleClass="form-control" style="background-color: #020618"/>
                         <span id="formulario:errorDesc" class="error"></span>
                     </div>
 
@@ -43,7 +43,7 @@
                                      value="#{controladorProducto.producto.nombre}" 
                                      required="true" 
                                      pt:placeholder=" Ingrese el nombre comercial"
-                                     styleClass="form-control" />
+                                     styleClass="form-control" style="background-color: #020618"/>
                         <span id="formulario:errorNombre" class="error"></span>
                     </div>
 
@@ -52,13 +52,13 @@
                         <h:inputText id="precioReferencia" 
                                      value="#{controladorProducto.producto.precioReferencia}" 
                                      pt:placeholder=" Ingrese el precio de referencia"
-                                     styleClass="form-control" />
+                                     styleClass="form-control" style="background-color: #020618"/>
                         <span id="formulario:errorPrecRef" class="error"></span>
                     </div>
 
                     <div class="col-md-6 mb-3">
                         <label>Unidad de medida</label>
-                        <h:selectOneMenu id="unidadMedida" value="#{controladorProducto.producto.unidadMedida}" styleClass="form-control select-con-icono">
+                        <h:selectOneMenu id="unidadMedida" value="#{controladorProducto.producto.unidadMedida}" styleClass="form-select" style="background-color: #020618">
                             <f:selectItem itemLabel="Unidad de medida" itemValue="" noSelectionOption="true"/>
                             <f:selectItem itemLabel="MiliLitro" itemValue="MiliLitro"/>
                             <f:selectItem itemLabel="Litro" itemValue="Litro"/>
@@ -75,7 +75,7 @@
                         <h:selectOneMenu id="idProveedor"
                                          value="#{controladorProducto.producto.idProveedor}"
                                          converter="proveedorConverter"
-                                         styleClass="form-control select-con-icono">
+                                         styleClass="form-select" style="background-color: #020618">
                             <f:selectItem itemLabel="Proveedor Habitual" itemValue="#{null}"/>
                             <f:selectItems value="#{controladorProducto.listaProveedores}"
                                            var="prov"

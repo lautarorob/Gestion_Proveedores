@@ -14,15 +14,24 @@
                 <h3><strong>Nueva Factura</strong></h3>
 
                 <p style="font-size: 12px; color: #808080;">Rellene los siguientes campos para registrar una nueva factura</p>
-
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label>Proveedor(*)</label>
-                        <h:selectOneMenu id="idProveedor" value="#{controladorFactura.factura.idProveedor}"
-                                         converter="proveedorConverter" styleClass="form-control select-con-icono" required="true" requiredMessage="Campo Obligatorio">
+                        <h:selectOneMenu id="idProveedor" 
+                                         value="#{controladorFactura.factura.idProveedor}"
+                                         converter="proveedorConverter" 
+                                         styleClass="form-control select-con-icono" 
+                                         required="true" 
+                                         requiredMessage="Campo Obligatorio">
                             <f:selectItem itemLabel="Seleccione un proveedor" itemValue="#{null}" />
-                            <f:selectItems value="#{controladorProducto.listaProveedores}" var="prov"
-                                           itemLabel="#{prov.razonSocial}" itemValue="#{prov}" />
+                            <f:selectItems value="#{controladorProducto.listaProveedores}" 
+                                           var="prov"
+                                           itemLabel="#{prov.razonSocial}" 
+                                           itemValue="#{prov}" />
+                            <!-- AGREGAR ESTE AJAX -->
+                            <f:ajax event="change" 
+                                    listener="#{controladorFactura.cargarProductosPorProveedor}"
+                                    render="producto" />
                         </h:selectOneMenu>
                         <h:message for="idProveedor" style="color: red;"></h:message>
                     </div>
@@ -103,7 +112,7 @@
                                          converter="productoConverter"
                                          styleClass="form-control select-con-icono">
                             <f:selectItem itemLabel="Seleccione un producto" itemValue="#{null}" />
-                            <f:selectItems value="#{controladorFactura.listaProductos}" var="prod"
+                            <f:selectItems value="#{controladorFactura.listaProductosPorProveedor}" var="prod"
                                            itemLabel="#{prod.nombre}" itemValue="#{prod}" />
                             <f:ajax event="change"
                                     listener="#{controladorFactura.actualizarCamposProducto}"

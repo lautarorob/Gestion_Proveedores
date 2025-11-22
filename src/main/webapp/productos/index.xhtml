@@ -22,12 +22,12 @@
                     <h:inputText id="busqueda" 
                                  value="#{controladorProducto.nombreBusqueda}"
                                  size="30"
-                                 styleClass="form-control"
+                                 styleClass="form-control" style="background-color: #020618"
                                  pt:placeholder="Buscar producto"
                                  title="Nombre de producto"/>
                 <!-- BARRA DE Filtrado -->      
-                    <h:selectOneMenu id="proveedor" value="#{controladorProducto.proveedorSeleccionado}" styleClass="form-select">
-                        <f:selectItem itemLabel="-- Todos los proveedores --" itemValue="" />
+                    <h:selectOneMenu id="proveedor" value="#{controladorProducto.proveedorSeleccionado}" styleClass="form-select" style="background-color: #020618">
+                        <f:selectItem itemLabel="Todos los proveedores" itemValue="" />
                         <f:selectItems value="#{controladorProducto.listaProveedores}"
                                        var="prov"
                                        itemLabel="#{prov.razonSocial}"

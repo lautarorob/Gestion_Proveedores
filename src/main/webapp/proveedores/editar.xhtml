@@ -24,50 +24,56 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
+                        <label>Razon Social</label>
                         <h:inputText id="razonSocial" 
                                      value="#{controladorProveedor.proveedor.razonSocial}" 
                                      required="true"
                                      pt:placeholder="Razón Social" 
-                                     styleClass="form-control" />
+                                     styleClass="form-control" style="background-color: #020618"/>
                         <span id="formulario:errorRazonSoc" class="error"></span>
                     </div>
                     
                     <div class="col-md-6 mb-3">
+                        <label>CUIT</label>
                         <h:inputText id="cuit" 
                                      value="#{controladorProveedor.proveedor.cuit}" 
                                      required="true" 
                                      pt:placeholder="CUIT"
-                                     styleClass="form-control" />
+                                     styleClass="form-control" style="background-color: #020618"/>
                         <span id="formulario:errorCuit" class="error"></span>
                     </div>
 
                     <div class="col-md-6 mb-3">
+                        <label>Nombre Comercial</label>
                         <h:inputText id="nombreComercial" 
                                      value="#{controladorProveedor.proveedor.nombreComercial}" 
                                      pt:placeholder="Nombre Comercial"
-                                     styleClass="form-control" />
+                                     styleClass="form-control" style="background-color: #020618"/>
                         <span id="formulario:errorNombreCom" class="error"></span>
                     </div>
                     
                     <div class="col-md-6 mb-3">
+                         <label>Telefono/Fijo</label>
                         <h:inputText id="telefono" 
                                      value="#{controladorProveedor.proveedor.telefono}" 
                                      pt:placeholder="Teléfono"
-                                     styleClass="form-control" />
+                                     styleClass="form-control" style="background-color: #020618"/>
                         <span id="formulario:errorTel" class="error"></span>
                     </div>
 
                     <div class="col-md-6 mb-3">
+                        <label>Email</label>
                         <h:inputText id="email" 
                                      value="#{controladorProveedor.proveedor.email}" 
                                      pt:placeholder="Email"
-                                     styleClass="form-control" />
+                                     styleClass="form-control" style="background-color: #020618"/>
                         <span id="formulario:errorEmail" class="error"></span>
                     </div>
                     
                     <div class="col-md-6 mb-3">
-                        <h:selectOneMenu id="tipoIva" value="#{controladorProveedor.proveedor.tipoIva}" styleClass="form-control select-con-icono">
-                            <f:selectItem itemLabel="--Tipo de IVA--" itemValue="" noSelectionOption="true"/>
+                        <label>IVA</label>
+                        <h:selectOneMenu id="tipoIva" value="#{controladorProveedor.proveedor.tipoIva}" styleClass="form-select" style="background-color: #020618">
+                            <f:selectItem itemLabel="Tipo de IVA" itemValue="" noSelectionOption="true"/>
                             <f:selectItem itemLabel="Monotributo" itemValue="Monotributo"/>
                             <f:selectItem itemLabel="Responsable Inscripto" itemValue="Responsable Inscripto"/>
                             <f:selectItem itemLabel="Excento" itemValue="Excento"/>
@@ -77,6 +83,7 @@
                 </div>
 
                 <div class="col-12 mb-3">
+                    <label>Estado</label>
                     <div class="form-check">
                         <h:selectBooleanCheckbox id="estado" 
                                                  value="#{controladorProveedor.proveedor.estado}" 

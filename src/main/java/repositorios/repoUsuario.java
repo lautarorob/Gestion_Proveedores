@@ -4,6 +4,8 @@
  */
 package repositorios;
 
+import entidades.Producto;
+import entidades.Proveedor;
 import entidades.Usuario;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
@@ -73,7 +75,7 @@ public class repoUsuario implements Serializable {
             return Optional.empty();
         }
     }
-    
+
     public Optional<Usuario> buscarPorId(Integer id) {
         try {
             TypedQuery<Usuario> query = em.createQuery(
