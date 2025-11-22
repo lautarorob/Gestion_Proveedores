@@ -163,14 +163,36 @@ public class repoFactura {
                 .getResultList();
     }
 
-    // 2. Distribución por Forma de Pago
     public List<Object[]> obtenerTotalesPorFormaPago() {
-        String jpql = "SELECT f.formaPago, SUM(f.total) "
-                + "FROM Factura f "
-                + "WHERE f.formaPago IS NOT NULL "
-                + "GROUP BY f.formaPago";
+        try {
+            String sql
+                    = // Facturas de Contado
+                    "SELECT 'Contado' as forma_pago, SUM(total) as total "
+                    + "FROM facturas "
+                    + "WHERE forma_pago = 'Contado' "
+                    + "GROUP BY forma_pago "
+                    + "UNION ALL "
+                    + // Facturas de Cuenta Corriente con forma de pago de la orden
+                    "SELECT op.forma_pago, SUM(f.total) "
+                    + "FROM facturas f "
+                    + "INNER JOIN ordenes_pago op ON f.id_orden_pago = op.id_orden_pago "
+                    + "WHERE f.forma_pago = 'Cuenta Corriente' AND op.forma_pago IS NOT NULL "
+                    + "GROUP BY op.forma_pago "
+                    + "ORDER BY total DESC";
 
-        return em.createQuery(jpql, Object[].class).getResultList();
+            List<Object[]> resultados = em.createNativeQuery(sql).getResultList();
+
+            System.out.println("=== RESULTADOS FORMAS DE PAGO ===");
+            for (Object[] fila : resultados) {
+                System.out.println("Forma: " + fila[0] + " | Total: " + fila[1]);
+            }
+
+            return resultados;
+        } catch (Exception e) {
+            System.out.println("Error en obtenerTotalesPorFormaPago: " + e.getMessage());
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
     }
 
     // 3. Deuda Total (Tarjeta pequeña del dashboard)
@@ -181,6 +203,34 @@ public class repoFactura {
             return resultado != null ? resultado.doubleValue() : 0.0;
         } catch (Exception e) {
             return 0.0;
+        }
+    }
+    
+    // 4. Comparación Histórico Cuenta Corriente vs Órdenes de Pago
+    public List<Object[]> obtenerComparacionCuentaCorriente() {
+        try {
+            String sql
+                    = // Total HISTÓRICO de facturas en cuenta corriente (pagadas + impagas)
+                    "SELECT 'Facturas Cta Cte' as concepto, SUM(total) as monto "
+                    + "FROM facturas "
+                    + "WHERE forma_pago = 'Cuenta Corriente' "
+                    + "UNION ALL "
+                    + // Total de órdenes de pago generadas (lo que ya se pagó)
+                    "SELECT 'Órdenes de Pago' as concepto, SUM(monto_total) as monto "
+                    + "FROM ordenes_pago";
+
+            List<Object[]> resultados = em.createNativeQuery(sql).getResultList();
+
+            System.out.println("=== COMPARACIÓN CUENTA CORRIENTE ===");
+            for (Object[] fila : resultados) {
+                System.out.println("Concepto: " + fila[0] + " | Monto: " + fila[1]);
+            }
+
+            return resultados;
+        } catch (Exception e) {
+            System.out.println("Error en obtenerComparacionCuentaCorriente: " + e.getMessage());
+            e.printStackTrace();
+            return new ArrayList<>();
         }
     }
 
