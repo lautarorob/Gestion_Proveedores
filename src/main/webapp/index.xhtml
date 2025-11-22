@@ -4,14 +4,17 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="jakarta.faces.facelets"
                 template="./template/layout.xhtml" xmlns:h="jakarta.faces.html" xmlns:f="jakarta.faces.core"
                 xmlns:p="http://primefaces.org/ui">
+
     <ui:define name="contenido">
         <h:panelGroup>
-            <h1 style="color: white;font-family: 'Brush Script MT', 'Lucida Handwriting', cursive;">
+            <h1 style="color: white; font-family: 'Brush Script MT', 'Lucida Handwriting', cursive;">
                 Bienvenido <strong style="color:#F0B90B ">"#{controladorUsuario.usuarioLogueado.username}"👋</strong>
             </h1>
         </h:panelGroup>
+
         <p:outputPanel id="seccionGraficos" rendered="#{controladorUsuario.usuarioLogueado.rol != 'operador'}">
             <div class="dashboard-grid">
+                
                 <div class="kpi-card full-width">
                     <h3 class="kpi-titulo">Deuda Total Actual</h3>
                     <h:outputText value="#{controladorDashboard.deudaTotal}" styleClass="kpi-numero">
@@ -21,23 +24,32 @@
 
                 <p:card styleClass="chart-card">
                     <f:facet name="title">Top 5 Proveedores (Deuda)</f:facet>
-                    <p:barChart model="#{controladorDashboard.proveedoresModel}" style="width: 100%; height: 250px;" />
+                    <div style="width: 100%; overflow: hidden;">
+                        <p:barChart model="#{controladorDashboard.proveedoresModel}" style="width: 100%; height: 250px;" />
+                    </div>
                 </p:card>
 
                 <p:card styleClass="chart-card">
                     <f:facet name="title">Métodos de Pago Más Usados</f:facet>
-                    <p:donutChart model="#{controladorDashboard.formasPagoModel}" style="width: 100%; height: 250px;" />
+                    <div style="width: 100%; overflow: hidden;">
+                        <p:donutChart model="#{controladorDashboard.formasPagoModel}" style="width: 100%; height: 250px;" />
+                    </div>
                 </p:card>
 
                 <p:card styleClass="chart-card">
                     <f:facet name="title">Top 5 Productos Más Vendidos</f:facet>
-                    <p:barChart model="#{controladorDashboard.productosModel}" style="width: 100%; height: 250px;" />
+                    <div style="width: 100%; overflow: hidden;">
+                        <p:barChart model="#{controladorDashboard.productosModel}" style="width: 100%; height: 250px;" />
+                    </div>
                 </p:card>
 
                 <p:card styleClass="chart-card">
-                    <f:facet name="title">Monto Hisorico de Facturas en Cta Cte VS Monto Historico de Ordenes de Pago</f:facet>
-                    <p:barChart model="#{controladorDashboard.cuentaCorrienteModel}" style="width: 100%; height: 250px;" />
+                    <f:facet name="title">Histórico: Facturas vs Órdenes de Pago</f:facet>
+                    <div style="width: 100%; overflow: hidden;">
+                        <p:barChart model="#{controladorDashboard.cuentaCorrienteModel}" style="width: 100%; height: 250px;" />
+                    </div>
                 </p:card>
+                
             </div>
         </p:outputPanel>
     </ui:define>

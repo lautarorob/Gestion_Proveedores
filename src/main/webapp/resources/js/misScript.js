@@ -307,37 +307,43 @@ function toggleCollapse() {
     const mainContent = document.getElementById('mainContent');
     const collapseIcon = document.getElementById('collapseIcon');
     
+    // 1. Alternar clases
     sidebar.classList.toggle('collapsed');
     mainContent.classList.toggle('expanded');
     
-    // Cambiar el icono
+    // 2. Gestionar Icono y LocalStorage
     if (sidebar.classList.contains('collapsed')) {
         collapseIcon.classList.remove('bi-chevron-left');
         collapseIcon.classList.add('bi-chevron-right');
-        // Guardar estado en localStorage
         localStorage.setItem('sidebarCollapsed', 'true');
     } else {
         collapseIcon.classList.remove('bi-chevron-right');
         collapseIcon.classList.add('bi-chevron-left');
         localStorage.setItem('sidebarCollapsed', 'false');
     }
+
+    // 3. FORZAR REDIBUJADO DE GRÁFICOS
+    // Disparamos el evento resize 3 veces: al inicio, mitad y final de la transición (300ms)
+    setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 50);
+    setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 150);
+    setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 310);
 }
 
 // Restaurar el estado del sidebar al cargar la página
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Restaurar estado colapsado
     const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
     if (isCollapsed) {
         const sidebar = document.getElementById('sidebar');
         const mainContent = document.getElementById('mainContent');
         const collapseIcon = document.getElementById('collapseIcon');
-        
+
         sidebar.classList.add('collapsed');
         mainContent.classList.add('expanded');
         collapseIcon.classList.remove('bi-chevron-left');
         collapseIcon.classList.add('bi-chevron-right');
     }
-    
+
     // Cerrar sidebar en móviles al hacer clic en un link
     if (window.innerWidth <= 768) {
         const sidebarLinks = document.querySelectorAll('.sidebar .nav-link');

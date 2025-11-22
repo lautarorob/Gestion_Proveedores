@@ -122,10 +122,19 @@ body, html {
 }
 
 /* Scrollbar sidebar */
-.sidebar::-webkit-scrollbar { width: 8px; }
-.sidebar::-webkit-scrollbar-track { background: #020618; }
-.sidebar::-webkit-scrollbar-thumb { background: #F0B90B; border-radius: 4px; }
-.sidebar::-webkit-scrollbar-thumb:hover { background: #FFD700; }
+.sidebar::-webkit-scrollbar {
+    width: 8px;
+}
+.sidebar::-webkit-scrollbar-track {
+    background: #020618;
+}
+.sidebar::-webkit-scrollbar-thumb {
+    background: #F0B90B;
+    border-radius: 4px;
+}
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: #FFD700;
+}
 
 /* ===== CONTENIDO PRINCIPAL (MAIN) ===== */
 main {
@@ -140,11 +149,23 @@ main {
 }
 
 /* Scrollbar main */
-main::-webkit-scrollbar { width: 10px; height: 10px; }
-main::-webkit-scrollbar-track { background: #1C2533; }
-main::-webkit-scrollbar-thumb { background: #404a5d; border-radius: 5px; }
-main::-webkit-scrollbar-thumb:hover { background: #F0B90B; }
-main::-webkit-scrollbar-corner { background: #1C2533; }
+main::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+main::-webkit-scrollbar-track {
+    background: #1C2533;
+}
+main::-webkit-scrollbar-thumb {
+    background: #404a5d;
+    border-radius: 5px;
+}
+main::-webkit-scrollbar-thumb:hover {
+    background: #F0B90B;
+}
+main::-webkit-scrollbar-corner {
+    background: #1C2533;
+}
 
 /* ===== ESTILOS NAVEGACIÓN ===== */
 .sidebar .nav-item .nav-link {
@@ -306,8 +327,12 @@ main.expanded {
     border: 2px solid #ddd;
     border-collapse: collapse;
 }
-.tablaProveedores th:first-child, .tablaProveedores td:first-child{ padding-left: 30px; }
-.tablaProveedores th:last-child, .tablaProveedores td:last-child{ padding-right: 30px; }
+.tablaProveedores th:first-child, .tablaProveedores td:first-child{
+    padding-left: 30px;
+}
+.tablaProveedores th:last-child, .tablaProveedores td:last-child{
+    padding-right: 30px;
+}
 
 .btnAmarillo{
     font-size: 15px;
@@ -321,7 +346,9 @@ main.expanded {
     margin: 10px;
 }
 
-.divNewProv{ padding: 10px; }
+.divNewProv{
+    padding: 10px;
+}
 
 .btnGris{
     font-size: 15px;
@@ -338,11 +365,26 @@ main.expanded {
     padding-left: 10px;
 }
 
-.editarAcciones{ color: white; }
-.eliminarAcciones{ color: #FB2C36; }
-.reactivaAcciones{ display: flex; justify-content: center; color: #03FC77; width: 100%; }
-.botonesAcciones{ display: flex; justify-content: center; width: 100%; }
-.error{ color: red; }
+.editarAcciones{
+    color: white;
+}
+.eliminarAcciones{
+    color: #FB2C36;
+}
+.reactivaAcciones{
+    display: flex;
+    justify-content: center;
+    color: #03FC77;
+    width: 100%;
+}
+.botonesAcciones{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+.error{
+    color: red;
+}
 
 /* --- Estilos del Dashboard --- */
 .dashboard-grid {
@@ -352,7 +394,9 @@ main.expanded {
     padding: 20px;
 }
 
-.full-width { grid-column: 1 / -1; }
+.full-width {
+    grid-column: 1 / -1;
+}
 
 .kpi-card {
     background-color: #2A2D35;
@@ -363,8 +407,15 @@ main.expanded {
     box-shadow: 0 4px 6px rgba(0,0,0,0.3);
 }
 
-.kpi-titulo { color: #A0A0A0; margin-top: 0; }
-.kpi-numero { font-size: 2.5rem; font-weight: bold; color: #dc3545; }
+.kpi-titulo {
+    color: #A0A0A0;
+    margin-top: 0;
+}
+.kpi-numero {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #dc3545;
+}
 
 body .ui-card.chart-card {
     background-color: #2A2D35;
@@ -376,33 +427,65 @@ body .ui-card.chart-card .ui-card-title {
     font-size: 1.2rem;
 }
 
+body .ui-card.chart-card .ui-card-content {
+    overflow: hidden; /* Ayuda a que el canvas no empuje los bordes */
+}
+
+/* Aseguramos que los elementos dentro del grid puedan encogerse */
+.dashboard-grid > * {
+    min-width: 0;
+}
+
+/* Aseguramos que la tarjeta corte el contenido sobrante */
+body .ui-card.chart-card {
+    background-color: #2A2D35;
+    color: #EAEAEA;
+    border: 1px solid #404a5d;
+    /* ESTAS DOS LINEAS SON LA CLAVE: */
+    min-width: 0;
+    overflow: hidden;
+}
+
+/* Forzamos al contenedor del contenido de la tarjeta a no desbordar */
+body .ui-card .ui-card-content {
+    overflow: hidden;
+}
+
 /* ===== RESPONSIVE (MEDIA QUERIES) ===== */
 
 /* Móviles y tablets pequeñas (< 768px) */
 @media (max-width: 768px) {
-    .menu-toggle { display: flex; }
-    .sidebar-close { display: block; }
-    
+    .menu-toggle {
+        display: flex;
+    }
+    .sidebar-close {
+        display: block;
+    }
+
     .sidebar {
         transform: translateX(-100%); /* Sidebar oculto */
         width: 280px !important; /* Ancho fijo en móvil */
         box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
     }
-    
+
     .sidebar.show {
         transform: translateX(0);
     }
-    
+
     main {
         margin-left: 0 !important;
         width: 100% !important;
         padding-top: 70px;
     }
-    
-    .dashboard-grid { grid-template-columns: 1fr; }
-    
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
     /* Ocultar botón colapso escritorio en móvil */
-    .sidebar-collapse-btn { display: none !important; }
+    .sidebar-collapse-btn {
+        display: none !important;
+    }
 }
 
 /* Tablets y Desktop (> 769px) */
@@ -415,20 +498,40 @@ body .ui-card.chart-card .ui-card-title {
 
 /* Tablets Específico (769px - 991px) */
 @media (min-width: 769px) and (max-width: 991px) {
-    .sidebar { width: 25%; } /* Normal */
-    main { margin-left: 25%; width: 75%; } /* Normal */
-    
+    .sidebar {
+        width: 25%;
+    } /* Normal */
+    main {
+        margin-left: 25%;
+        width: 75%;
+    } /* Normal */
+
     /* Si se colapsa en tablet: */
-    .sidebar.collapsed { width: 70px !important; }
-    main.expanded { margin-left: 70px !important; width: calc(100% - 70px) !important; }
+    .sidebar.collapsed {
+        width: 70px !important;
+    }
+    main.expanded {
+        margin-left: 70px !important;
+        width: calc(100% - 70px) !important;
+    }
 }
 
 /* Desktop Específico (> 992px) */
 @media (min-width: 992px) {
-    .sidebar { width: 16.666667%; } /* Normal */
-    main { margin-left: 16.666667%; width: 83.333333%; } /* Normal */
-    
+    .sidebar {
+        width: 16.666667%;
+    } /* Normal */
+    main {
+        margin-left: 16.666667%;
+        width: 83.333333%;
+    } /* Normal */
+
     /* Si se colapsa en desktop: */
-    .sidebar.collapsed { width: 70px !important; }
-    main.expanded { margin-left: 70px !important; width: calc(100% - 70px) !important; }
+    .sidebar.collapsed {
+        width: 70px !important;
+    }
+    main.expanded {
+        margin-left: 70px !important;
+        width: calc(100% - 70px) !important;
+    }
 }
