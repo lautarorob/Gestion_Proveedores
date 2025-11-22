@@ -4,6 +4,7 @@ import entidades.OrdenPago;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -71,6 +72,45 @@ public class repoOrdenPago {
             System.out.println("Error al listar pagos por período: " + e.getMessage());
             return new ArrayList<>();
         }
+    }
+
+    public List<OrdenPago> buscarConFiltros(
+            Integer proveedorId,
+            String formaPago,
+            Date fechaInicio,
+            Date fechaFin) {
+
+        String jpql = "SELECT o FROM OrdenPago o WHERE 1=1";
+
+        if (proveedorId != null) {
+            jpql += " AND o.idProveedor.idProveedor = :proveedorId";
+        }
+        if (formaPago != null && !formaPago.isEmpty()) {
+            jpql += " AND o.formaPago = :formaPago";
+        }
+        if (fechaInicio != null) {
+            jpql += " AND o.fechaPago >= :fechaInicio";
+        }
+        if (fechaFin != null) {
+            jpql += " AND o.fechaPago <= :fechaFin";
+        }
+
+        TypedQuery<OrdenPago> query = em.createQuery(jpql, OrdenPago.class);
+
+        if (proveedorId != null) {
+            query.setParameter("proveedorId", proveedorId);
+        }
+        if (formaPago != null && !formaPago.isEmpty()) {
+            query.setParameter("formaPago", formaPago);
+        }
+        if (fechaInicio != null) {
+            query.setParameter("fechaInicio", fechaInicio);
+        }
+        if (fechaFin != null) {
+            query.setParameter("fechaFin", fechaFin);
+        }
+
+        return query.getResultList();
     }
 
 }

@@ -26,17 +26,17 @@
                     <div class="col-md-12 mb-3">
                         <label>Número de Comprobante</label>
                         <h:inputText id="nroComprobante" value="#{controladorFactura.factura.nroComprobante}"
-                                     styleClass="form-control" readonly="true" onblur="validarComprobante(this)"  />
+                                     styleClass="form-control" style="background-color: #020618" readonly="true" onblur="validarComprobante(this)"  />
                         <h:outputText id="errorComprobante" style="color:red; font-size:small"/>
                     </div>
 
                     <div class="col-md-6 mb-3">
                         <label>Fecha de Comprobante(*)</label>
                         <h:inputText id="fechaComprobante" value="#{controladorFactura.factura.fechaComprobante}"
-                                     styleClass="form-control"
+                                     styleClass="form-control" style="background-color: #020618"
                                      pt:type="date"
                                      required="true"
-                                     requiredMessage="Campo Obligatorio">>
+                                     requiredMessage="Campo Obligatorio">
                             <f:convertDateTime pattern="dd/MM/yyyy" type="date"
                                                timeZone="America/Argentina/Buenos_Aires" />
                         </h:inputText>
@@ -49,7 +49,7 @@
                                      value="#{controladorFactura.factura.fechaRegistro}"
                                      required="true"
                                      readonly="true"
-                                     styleClass="form-control">
+                                     styleClass="form-control" style="background-color: #020618">
                                      <f:convertDateTime pattern="yyyy-MM-dd" timeZone="America/Argentina/Buenos_Aires" />
                         </h:inputText>
 
@@ -58,7 +58,7 @@
                     <div class="col-md-6 mb-3">
                         <label>Forma de Pago(*)</label>
                         <h:selectOneMenu id="formaPago" value="#{controladorFactura.factura.formaPago}"
-                                         styleClass="form-control select-con-icono"
+                                         styleClass="form-select" style="background-color: #020618"
                                          required="true" requiredMessage="Campo Obligatorio">
                             <f:selectItem itemLabel="Forma de Pago" itemValue="" noSelectionOption="true" />
                             <f:selectItem itemLabel="Contado" itemValue="Contado" />
@@ -72,7 +72,7 @@
                         <h:inputText id="estado" value="#{controladorFactura.factura.estado}"
                                      pt:placeholder="Estado"
                                      readonly="true"
-                                     styleClass="form-control"/>
+                                     styleClass="form-control" style="background-color: #020618"/>
                     </div>
 
                     <div class="col-md-6 mb-3">
@@ -80,7 +80,7 @@
                         <h:inputText id="proveedor" value="#{controladorFactura.factura.idProveedor.razonSocial}"
                                      pt:placeholder="Proveedor"
                                      readonly="true"
-                                     styleClass="form-control"/>
+                                     styleClass="form-control" style="background-color: #020618"/>
                     </div>
 
                 </div>
@@ -120,7 +120,7 @@
                 <!-- Totales de la factura -->
                 <h:panelGroup id="totalesFactura" class="row mt-4">
                     <div class="col-md-6 offset-md-6">
-                        <div class="card">
+                        <div class="card" styleClass="form-control" style="background-color: #020618; border: 1px solid #FFD700">
                             <div class="card-body">
                                 <h5><strong>Resumen</strong></h5>
                                 <div class="row mb-2">
@@ -141,7 +141,7 @@
                                         </div>
                                     </div>
                                 </h:panelGroup>
-                                <div class="row mb-2" style="border-top: 2px solid #000; padding-top: 10px;">
+                                <div class="row mb-2" style="border-top: 2px solid #FFD700; padding-top: 10px;">
                                     <div class="col-6"><strong>Total:</strong></div>
                                     <div class="col-6 text-end">
                                         <h:outputText value="#{controladorFactura.factura.total != null ? controladorFactura.factura.total : 0}">

@@ -12,6 +12,7 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
@@ -105,6 +106,25 @@ public class repoUsuario implements Serializable {
 
     public void setCurrentUserId(Integer userId) {
         em.createNativeQuery("SET @app_user_id = " + userId)
+                .executeUpdate();
+    }
+
+    public List<Usuario> listarActivos() {
+        return em.createQuery("SELECT u FROM Usuario u WHERE u.estado = true", Usuario.class)
+                .getResultList();
+    }
+
+    @Transactional
+    public void BajaLogica(Integer id) {
+        em.createQuery("UPDATE Usuario u SET u.estado = false WHERE u.idUsuario = :id")
+                .setParameter("id", id)
+                .executeUpdate();
+    }
+
+    @Transactional
+    public void ActivarLogica(Integer id) {
+        em.createQuery("UPDATE Usuario u SET u.estado = true WHERE u.idUsuario = :id")
+                .setParameter("id", id)
                 .executeUpdate();
     }
 

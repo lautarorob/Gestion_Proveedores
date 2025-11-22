@@ -24,6 +24,7 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
+                        <label>Nombre de Usuario</label>
                         <h:inputText id="userName" 
                                      value="#{controladorUsuario.usuario.username}" 
                                      required="true"
@@ -32,6 +33,7 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
+                        <label>Nombre Completo</label>
                         <h:inputText id="nombreCompleto" 
                                      value="#{controladorUsuario.usuario.nombreCompleto}" 
                                      required="true" 
@@ -40,6 +42,7 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
+                        <label>Rol</label>
                         <h:selectOneMenu id="rol" value="#{controladorUsuario.usuario.rol}" styleClass="form-control" style="background-color: #020618">
                             <f:selectItem itemLabel="--ROL--" itemValue="" noSelectionOption="true"/>
                             <f:selectItem itemLabel="Admin" itemValue="admin"/>

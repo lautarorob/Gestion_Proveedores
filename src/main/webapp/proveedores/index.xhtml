@@ -8,12 +8,33 @@
         <f:view>
             <h:form>
 
-                <h3><strong>Proveedores</strong></h3>
+                <h2><strong>Proveedores</strong></h2>
+                <div class="linea-titulo"></div>
 
                 <h:commandButton value=" + Dar de alta proveedor" action="/proveedores/nuevo.xhtml"
                                  styleClass="btnAmarillo" />
 
-                <h:dataTable value="#{controladorProveedor.listar()}" var="item" styleClass="tablaProveedores" cellpadding="6">
+                <!-- BARRA DE Filtrado -->      
+                <h:selectOneMenu id="proveedor" value="#{controladorProveedor.proveedorSeleccionado}" styleClass="form-select" style="background-color: #020618">
+                    <f:selectItem itemLabel="Todos los proveedores" itemValue="" />
+                    <f:selectItems value="#{controladorProveedor.listaProveedores}"
+                                   var="prov"
+                                   itemLabel="#{prov.razonSocial}"
+                                   itemValue="#{prov.idProveedor}" />
+                </h:selectOneMenu>
+                <div style="margin-top:15px; display:flex; gap:10px;">
+                    <h:commandLink 
+                        action="#{controladorProveedor.buscarProveedor}"
+                        styleClass="btnAmarillo d-flex align-items-center">
+                        <i class="bi bi-funnel" style="margin-right:5px;"></i>
+                        Aplicar filtro
+                    </h:commandLink>
+                    <h:commandButton value="Limpiar" 
+                                     action="#{controladorProveedor.limpiarFiltro}"
+                                     style="margin-left: 10px;" class="btnAmarillo"/>
+                </div>
+
+                <h:dataTable value="#{controladorProveedor.listaProveedores}" var="item" styleClass="tablaProveedores" cellpadding="6">
 
                     <h:column>
                         <f:facet name="header">

@@ -19,7 +19,7 @@
                 <div class="col-md-6">
                     <label><strong>Filtrar por proveedor:</strong></label>
                     <h:selectOneMenu value="#{controladorOrdenPago.proveedorSeleccionadoId}"
-                                     styleClass="form-control">
+                                     styleClass="form-select" style="background-color: #020618">
                         <f:selectItem itemLabel="Seleccione" itemValue="" />
                         <f:selectItems value="#{controladorOrdenPago.listaProveedores}" var="p"
                                        itemLabel="#{p.razonSocial}" 
@@ -37,7 +37,7 @@
             <h:dataTable id="facturas"
                          value="#{controladorOrdenPago.facturasImpagas}"
                          var="f"
-                         styleClass="table table-striped table-bordered">
+                         styleClass="tablaProveedores">
 
                 <h:column>
                     <f:facet name="header">Fecha Registro</f:facet>
@@ -74,7 +74,7 @@
             <h:dataTable id="detalle"
                          value="#{controladorOrdenPago.facturasSeleccionadas}"
                          var="sel"
-                         styleClass="table table-striped table-bordered">
+                         styleClass="tablaProveedores">
 
                 <h:column><f:facet name="header">Nro Comprobante</f:facet>#{sel.nroComprobante}</h:column>
                 <h:column><f:facet name="header">Razón Social</f:facet>#{sel.idProveedor.razonSocial}</h:column>
@@ -88,7 +88,7 @@
             <!-- ======================= TOTALES ======================= -->
             <div class="row mt-4">
                 <div class="col-md-6 offset-md-6">
-                    <div class="card">
+                    <div class="card" styleClass="form-control" style="background-color: #020618; border: 1px solid #FFD700">
                         <div class="card-body">
 
                             <h5><strong>Resumen</strong></h5>
@@ -107,7 +107,7 @@
                                 </div>
                             </div>
 
-                            <div class="row mt-2" style="border-top:2px solid #000; padding-top:10px;">
+                            <div class="row mt-2" style="border-top:2px solid #FFD700; padding-top:10px;">
                                 <div class="col-6"><strong>Total Orden:</strong></div>
                                 <div class="col-6 text-end">
                                     #{controladorOrdenPago.totalOrden}
@@ -128,7 +128,7 @@
                                  value="#{controladorOrdenPago.ordenPago.fechaPago}"
                                  required="true"
                                  pt:type="date"
-                                 styleClass="form-control"
+                                 styleClass="form-control" style="background-color: #020618"
                                  requiredMessage="Campo Obligatorio">
                         <f:convertDateTime pattern="yyyy-MM-dd"
                                            timeZone="America/Argentina/Buenos_Aires" />
@@ -139,7 +139,7 @@
                 <div class="col-md-6 mb-3">
                     <label>Forma de pago:</label>
                     <h:selectOneMenu id="formaPago" 
-                                     value="#{controladorOrdenPago.formaPago}" styleClass="form-control"
+                                     value="#{controladorOrdenPago.formaPago}" styleClass="form-select" style="background-color: #020618"
                                      requiredMessage="Campo Obligatorio"
                                      required="true">
                         <f:selectItem itemLabel="Seleccione" itemValue="" />

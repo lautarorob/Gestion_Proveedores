@@ -14,56 +14,100 @@
                             style="color: red; font-weight: bold; margin-bottom: 15px;" 
                             layout="table" />
 
-                <h2>Listado de Pagos por Período</h2>
+                <h2><strong>Listado de Pagos realizados</strong></h2>
+                <div class="linea-titulo"></div>
 
-                <!-- Filtro de fechas -->
-                <h:panelGrid columns="4" cellpadding="5">
-                    <h:outputLabel for="inicio" value="Fecha inicio:" />
-                    <h:inputText id="inicio" value="#{controladorOrdenPago.fechaInicio}" type="date">
-                        <f:convertDateTime pattern="yyyy-MM-dd" />
-                    </h:inputText>
+                <h:panelGrid columns="8" cellpadding="5" styleClass="filtros-grid">
 
-                    <h:outputLabel for="fin" value="Fecha fin:" />
-                    <h:inputText id="fin" value="#{controladorOrdenPago.fechaFin}" type="date">
-                        <f:convertDateTime pattern="yyyy-MM-dd" />
-                    </h:inputText>
+                    <h:panelGroup>
+                        <h:outputLabel for="inicio" value="Fecha inicio:" styleClass="label-filtro" />
+                        <h:inputText id="inicio" value="#{controladorOrdenPago.fechaInicio}" type="date"   styleClass="form-control" style="background-color: #020618" >
+                            <f:convertDateTime pattern="yyyy-MM-dd" />
+                        </h:inputText>
+                    </h:panelGroup>
+
+
+                    <h:panelGroup>
+                        <h:outputLabel for="fin" value="Fecha fin:" styleClass="label-filtro" />
+                        <h:inputText id="fin" value="#{controladorOrdenPago.fechaFin}" type="date"   styleClass="form-control" style="background-color: #020618" >
+                            <f:convertDateTime pattern="yyyy-MM-dd" />
+                        </h:inputText>
+                    </h:panelGroup>
+
+
+                    <h:panelGroup>
+                        <h:outputLabel for="proveedor" value="Proveedor:" styleClass="label-filtro" />
+                        <h:selectOneMenu id="proveedor" value="#{controladorOrdenPago.proveedorSeleccionadoId}" styleClass="form-select" style="background-color: #020618" >
+                            <f:selectItem itemValue="" itemLabel="-- Todos --" />
+                            <f:selectItems value="#{controladorOrdenPago.listaProveedores}" 
+                                           var="prov"
+                                           itemValue="#{prov.idProveedor}"
+                                           itemLabel="#{prov.razonSocial}" />
+                        </h:selectOneMenu>
+                    </h:panelGroup>
+
+                    <h:panelGroup>
+                        <h:outputLabel for="forma" value="Forma de Pago:" styleClass="label-filtro"  />
+                        <h:selectOneMenu id="forma" value="#{controladorOrdenPago.formaPago}" styleClass="form-select" style="background-color: #020618" >
+                            <f:selectItem itemValue="" itemLabel="-- Todas --" />
+                            <f:selectItem itemValue="EFECTIVO" itemLabel="Efectivo" />
+                            <f:selectItem itemValue="TRANSFERENCIA" itemLabel="Transferencia" />
+                            <f:selectItem itemValue="CHEQUE" itemLabel="Cheque" />
+                        </h:selectOneMenu>
+                    </h:panelGroup>
+
                 </h:panelGrid>
 
+
                 <br/>
-                <h:commandButton value="Generar listado" 
-                                 action="#{controladorOrdenPago.generarListadoPagos}" 
-                                 styleClass="btnAmarillo"/>
+                <h:commandLink action="#{controladorOrdenPago.generarListadoPagos}" 
+                               styleClass="btnAmarillo">
+                    <i class="bi bi-funnel"></i>
+                    Aplicar filtro
+                </h:commandLink>
+                <h:commandLink action="#{controladorOrdenPago.limpiarFiltros}" 
+                               styleClass="btnGris">
+                    <i class="bi bi-eraser" style="margin-right:6px;"></i>
+                    Limpiar filtros
+                </h:commandLink>
+
+
+
+
+
 
                 <br/><br/>
 
                 <!-- Tabla de resultados -->
-                <h:dataTable value="#{controladorOrdenPago.listadoPagos}" var="pago" border="1"
-                             styleClass="table table-striped table-bordered" headerClass="thead-dark">
+                <h:dataTable value="#{controladorOrdenPago.listadoPagos}" var="item" styleClass="tablaProveedores" cellpadding="6">
+
 
                     <h:column>
+                        <f:facet name="header">Fecha de pago</f:facet>
+                        <h:outputText value="#{item.fechaPago}">
+                            <f:convertDateTime pattern="yyyy-MM-dd"/>
+                        </h:outputText>
+                    </h:column>
+                    <h:column>
                         <f:facet name="header">Proveedor</f:facet>
-                            #{pago.proveedor}
+                        <h:outputText value="#{item.idProveedor != null ? item.idProveedor.razonSocial : 'SIN PROVEEDOR'}"/>
                     </h:column>
 
                     <h:column>
                         <f:facet name="header">Forma de Pago</f:facet>
-                            #{pago.formaPago}
+                        <h:outputText value="#{item.formaPago != null ? item.formaPago : 'SIN FORMA'}"/>
                     </h:column>
 
+
                     <h:column>
-                        <f:facet name="header">Fecha de Pago</f:facet>
-                        <h:outputText value="#{pago.fechaPago}">
-                            <f:convertDateTime pattern="yyyy-MM-dd" />
+                        <f:facet name="header">Monto total </f:facet>
+                        <h:outputText value="#{item.montoTotal}">
+                            <f:convertNumber type="currency"/>
                         </h:outputText>
                     </h:column>
 
-                    <h:column>
-                        <f:facet name="header">Total Pagado</f:facet>
-                        <h:outputText value="#{pago.totalPagado}">
-                            <f:convertNumber type="currency" currencySymbol="$" />
-                        </h:outputText>
-                    </h:column>
                 </h:dataTable>
+
             </h:form>
 
         </h:body>

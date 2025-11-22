@@ -11,8 +11,8 @@
 
             <h:form>
 
-                <h3><strong>Lista de usuarios</strong></h3>
-
+                <h2><strong>Listado de usuarios</strong></h2>
+                <div class="linea-titulo"></div>
                 <h:commandButton value=" + Dar de alta usuario" action="/usuarios/nuevo.xhtml"
                                  styleClass="btnAmarillo" />
                 <h:dataTable value="#{controladorUsuario.listar()}" var="item" styleClass="tablaProveedores" cellpadding="6">
@@ -36,6 +36,13 @@
                         </f:facet>
                         <h:outputText value="#{item.rol}"/>
                     </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Estado"/>
+                        </f:facet>
+                        <h:outputText value="#{item.estado ? 'Activo' : 'Inactivo'}"/>
+                    </h:column>
+
 
                     <h:column>
                         <f:facet name="header">
@@ -43,14 +50,28 @@
                         </f:facet>
                         <div class="botonesAcciones">
 
-                            <h:link class="editarAcciones" outcome="/usuarios/editar.xhtml" style="margin-right: 10px">
+                            <h:link class="editarAcciones" 
+                                    outcome="/usuarios/editar.xhtml" 
+                                    style="margin-right: 10px"
+                                    rendered="#{item.estado}">
                                 <f:param name="id" value="#{item.idUsuario}" />
                                 <i class="bi bi-pencil"></i>
                             </h:link>
+
+                            <!-- Mostrar ícono de baja solo si está activo -->
                             <h:commandLink class="eliminarAcciones"
-                                           action="#{controladorUsuario.eliminar(item.idUsuario)}"
-                                           onclick="return confirm('¿Confirma la baja?')">
+                                           action="#{controladorUsuario.bajaLogica(item.idUsuario)}"
+                                           onclick="return confirm('¿Confirma la baja?')"
+                                           rendered="#{item.estado}">
                                 <i class="bi bi-trash3"></i>
+                            </h:commandLink>
+
+                            <!-- Mostrar ícono de activar solo si está inactivo -->
+                            <h:commandLink class="activarAcciones"
+                                           action="#{controladorUsuario.activarLogica(item.idUsuario)}"
+                                           onclick="return confirm('¿Confirma activar este usuario?')"
+                                           rendered="#{!item.estado}">
+                                <i class="bi bi-check-circle"></i>
                             </h:commandLink>
 
                         </div>

@@ -12,8 +12,10 @@
         <f:view>
 
             <h:form>
+                
+                <h2><strong>Listado productos</strong></h2>
+                <div class="linea-titulo"></div>
 
-                <h1><h:outputText value="Listado productos"/></h1>
 
                 <h:commandButton value="+ Dar de Alta Producto" action="nuevo?faces-redirect=true" style="margin-left: 10px;" styleClass="btnAmarillo"/>
 
@@ -25,7 +27,7 @@
                                  styleClass="form-control" style="background-color: #020618"
                                  pt:placeholder="Buscar producto"
                                  title="Nombre de producto"/>
-                <!-- BARRA DE Filtrado -->      
+                    <!-- BARRA DE Filtrado -->      
                     <h:selectOneMenu id="proveedor" value="#{controladorProducto.proveedorSeleccionado}" styleClass="form-select" style="background-color: #020618">
                         <f:selectItem itemLabel="Todos los proveedores" itemValue="" />
                         <f:selectItems value="#{controladorProducto.listaProveedores}"

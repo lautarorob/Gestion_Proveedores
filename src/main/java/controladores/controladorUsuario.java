@@ -26,6 +26,7 @@ public class controladorUsuario implements Serializable {
     private Integer id;
     private String confirmPassword;
     private UIInput passwordComponent;
+    private Boolean estado = true;
 
     public controladorUsuario() {
     }
@@ -209,6 +210,16 @@ public class controladorUsuario implements Serializable {
         return "/login.xhtml?faces-redirect=true";
     }
 
+    public String bajaLogica(Integer id) {
+        repoUsuario.BajaLogica(id);
+        return "/usuarios/index.xhtml?faces-redirect=true";
+    }
+
+    public String activarLogica(Integer id) {
+        repoUsuario.ActivarLogica(id); // método que pone estado = true
+        return "/usuarios/index.xhtml?faces-redirect=true";
+    }
+
     /**
      * Verifica si hay un usuario logueado Útil para mostrar/ocultar elementos
      * en la vista
@@ -249,4 +260,13 @@ public class controladorUsuario implements Serializable {
     public void setRepoUsuario(repoUsuario repoUsuario) {
         this.repoUsuario = repoUsuario;
     }
+
+    public Boolean getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Boolean estado) {
+        this.estado = estado;
+    }
+
 }

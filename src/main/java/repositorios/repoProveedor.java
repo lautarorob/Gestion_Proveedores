@@ -57,4 +57,10 @@ public class repoProveedor {
         return em.createQuery("SELECT p FROM Proveedor p", Proveedor.class).getResultList();
     }
 
+    public List<Proveedor> buscarPorProveedor(Integer idProveedor) {
+        return em.createQuery("SELECT p FROM Proveedor p WHERE p.idProveedor = :idProveedor", Proveedor.class)
+                .setParameter("idProveedor", idProveedor)
+                .getResultList();
+    }
+
 }

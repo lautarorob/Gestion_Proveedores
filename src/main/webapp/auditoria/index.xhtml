@@ -2,49 +2,82 @@
 <!DOCTYPE composition
     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="jakarta.faces.facelets"
-    template="./../template/layout.xhtml" xmlns:h="jakarta.faces.html" xmlns:f="jakarta.faces.core">
+                template="./../template/layout.xhtml" xmlns:h="jakarta.faces.html" xmlns:f="jakarta.faces.core"
+                xmlns:pt="jakarta.faces.passthrough">
 
     <ui:define name="contenido">
 
         <h:form>
-            <h3><strong>Auditoria</strong></h3>
-            <h:dataTable value="#{controladorAuditoria.lista}" var="item" styleClass="tablaProveedores" cellpadding="6">
+            <h2 class="titulo"><strong>Auditoria</strong></h2>
+            <div class="linea-titulo"></div>
+
+
+            <h:panelGrid columns="8" cellpadding="5">
+
+
+                <h:selectOneMenu value="#{controladorAuditoria.idUsuario}" styleClass="form-select" style="background-color: #020618">
+                    <f:selectItem itemLabel="-- Seleccionar Usuario --" itemValue="#{null}" />
+                    <f:selectItems value="#{controladorAuditoria.listaUsuarios}"
+                                   var="u"
+                                   itemLabel="#{u.nombreCompleto} "
+                                   itemValue="#{u.idUsuario}" />
+                </h:selectOneMenu>
+
+
+
+                <h:outputText value="Desde:" />
+                <h:inputText value="#{controladorAuditoria.fechaDesde}"   pt:type="date"  styleClass="form-control" style="background-color: #020618">
+                    <f:convertDateTime pattern="yyyy-MM-dd"/>
+                </h:inputText>
+
+                <h:outputText value="Hasta:" />
+                <h:inputText value="#{controladorAuditoria.fechaHasta}"   pt:type="date"  styleClass="form-control" style="background-color: #020618">
+                    <f:convertDateTime pattern="yyyy-MM-dd" type="date"/>
+                </h:inputText>
+
+
+
+
+            </h:panelGrid>
+            <!-- 🔹 Botones fuera del panelGrid -->
+            <div style="margin-top:15px; display:flex; gap:10px;">
+                <h:commandLink action="#{controladorAuditoria.filtrar()}" 
+                               styleClass="btnAmarillo d-flex align-items-center">
+                    <i class="bi bi-funnel" style="margin-right:5px;"></i>
+                    Aplicar filtro
+                </h:commandLink>
+
+                <h:commandButton value="Limpiar" 
+                                 action="#{controladorAuditoria.limpiar}" 
+                                 styleClass="btnAmarillo">
+                    <f:ajax render="@form"/>
+                </h:commandButton>
+            </div>
+            <br/>
+
+            <h:dataTable value="#{controladorAuditoria.lista}" var="item" cellpadding="4" styleClass="tablaProveedores">
                 <h:column>
-                    <f:facet name="header">
-                        <h:outputText value="Usuario" />
-                    </f:facet>
-                    <h:outputText value="#{item.idusuarioUltimo.nombreCompleto}" />
+                    <f:facet name="header">Usuario</f:facet>
+                        #{item.idusuarioUltimo.nombreCompleto}
                 </h:column>
                 <h:column>
-                    <f:facet name="header">
-                        <h:outputText value="Fecha de Movimiento" />
-                    </f:facet>
+                    <f:facet name="header">Fecha Movimiento</f:facet>
                     <h:outputText value="#{item.fechaMovimiento}">
                         <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
                     </h:outputText>
                 </h:column>
-
-
                 <h:column>
-                    <f:facet name="header">
-                        <h:outputText value="Entidad Modificada" />
-                    </f:facet>
-                    <h:outputText value="#{item.entidad}" />
+                    <f:facet name="header">Entidad</f:facet>
+                        #{item.entidad}
                 </h:column>
                 <h:column>
-                    <f:facet name="header">
-                        <h:outputText value="Accion" />
-                    </f:facet>
-                    <h:outputText value="#{item.accion}" />
+                    <f:facet name="header">Acción</f:facet>
+                        #{item.accion}
                 </h:column>
                 <h:column>
-                    <f:facet name="header">
-                        <h:outputText value="Descripcion" />
-                    </f:facet>
-                    <h:outputText value="#{item.descripcion}" />
+                    <f:facet name="header">Descripción</f:facet>
+                        #{item.descripcion}
                 </h:column>
-
-
             </h:dataTable>
         </h:form>
 

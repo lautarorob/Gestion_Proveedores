@@ -36,6 +36,7 @@ import java.util.List;
     @NamedQuery(name = "Usuario.findByNombreCompleto", query = "SELECT u FROM Usuario u WHERE u.nombreCompleto = :nombreCompleto"),
     @NamedQuery(name = "Usuario.findByusername", query = "SELECT u FROM Usuario u WHERE u.username = :username"),
     @NamedQuery(name = "Usuario.findByPassword", query = "SELECT u FROM Usuario u WHERE u.password = :password"),
+    @NamedQuery(name = "Usuario.findByEstado", query = "SELECT u FROM Usuario u WHERE u.estado = :estado"),
     @NamedQuery(name = "Usuario.findByRol", query = "SELECT u FROM Usuario u WHERE u.rol = :rol")})
 public class Usuario implements Serializable {
 
@@ -65,6 +66,7 @@ public class Usuario implements Serializable {
     private String nombreCompleto;
     @OneToMany(mappedBy = "idusuarioUltimo")
     private List<Auditoria> auditoriaList;
+    private boolean estado = true;
 
     public Usuario() {
     }
@@ -98,6 +100,14 @@ public class Usuario implements Serializable {
 
     public String getUsername() {
         return username;
+    }
+
+    public boolean isEstado() {
+        return estado;
+    }
+
+    public void setEstado(boolean estado) {
+        this.estado = estado;
     }
 
     public void setUsername(String nombre_completo) {

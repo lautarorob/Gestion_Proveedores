@@ -535,3 +535,82 @@ body .ui-card .ui-card-content {
         width: calc(100% - 70px) !important;
     }
 }
+
+
+.linea-titulo {
+    width: 100%;
+    height: 1px;
+    background-color: white;
+    box-shadow: 0 1px 2px rgba(255,255,255,0.3);
+    margin-bottom: 15px;
+}
+.filtros-grid {
+    width: 100%;
+}
+
+.label-filtro {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.form-control, .form-select {
+    width: 100%;
+    padding: 6px;
+    border-radius: 4px;
+}
+
+/* Contenedor principal centrado */
+.contenedor-bienvenida {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 60vh; /* Ocupa el 60% de la altura de la pantalla para centrar visualmente */
+    text-align: center;
+    animation: fadeIn 1s ease-in;
+}
+
+/* Estilo del Icono */
+.contenedor-bienvenida .bi-cart4 {
+    font-size: 8rem; /* Tamaño muy grande */
+    color: #F0B90B;  /* Tu amarillo corporativo */
+    margin-bottom: 1rem;
+    /* Efecto de resplandor suave */
+    text-shadow: 0 0 20px rgba(240, 185, 11, 0.4); 
+    transition: transform 0.3s ease;
+}
+
+/* Pequeña animación al pasar el mouse sobre el icono */
+.contenedor-bienvenida .bi-cart4:hover {
+    transform: scale(1.1) rotate(-10deg);
+}
+
+/* Estilo del Título */
+.titulo-sistema {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #EAEAEA;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 0;
+}
+
+/* Parte destacada del texto (Proveedores) en amarillo */
+.texto-destacado {
+    color: #F0B90B;
+}
+
+/* Subtítulo discreto */
+.subtitulo-sistema {
+    font-size: 1.2rem;
+    color: #A0A0A0;
+    margin-top: 10px;
+    font-weight: 300;
+}
+
+/* Animación de entrada */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}

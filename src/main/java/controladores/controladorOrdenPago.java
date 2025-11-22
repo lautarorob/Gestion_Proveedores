@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import repositorios.repoFactura;
 import repositorios.repoOrdenPago;
 import repositorios.repoProveedor;
@@ -44,12 +45,12 @@ public class controladorOrdenPago implements Serializable {
     @Inject
     private repoUsuario repoUsuario;
 
-
     private List<Proveedor> listaProveedores;
     private Proveedor proveedorSeleccionado;
 
     private List<Factura> facturasImpagas;
     private List<Factura> facturasSeleccionadas;
+    private List<OrdenPago> listadoPagos;
 
     private OrdenPago ordenPago;
     private String formaPago;
@@ -61,7 +62,24 @@ public class controladorOrdenPago implements Serializable {
     private Date fechaInicio;
     private Date fechaFin;
 
-    private List<PagoListadoDTO> listadoPagos;
+    private Integer proveedorFiltroId;
+    private String formaPagoFiltro;
+
+    public Integer getProveedorFiltroId() {
+        return proveedorFiltroId;
+    }
+
+    public void setProveedorFiltroId(Integer proveedorFiltroId) {
+        this.proveedorFiltroId = proveedorFiltroId;
+    }
+
+    public String getFormaPagoFiltro() {
+        return formaPagoFiltro;
+    }
+
+    public void setFormaPagoFiltro(String formaPagoFiltro) {
+        this.formaPagoFiltro = formaPagoFiltro;
+    }
 
     public Integer getProveedorSeleccionadoId() {
         return proveedorSeleccionadoId;
@@ -85,6 +103,7 @@ public class controladorOrdenPago implements Serializable {
         totalSubtotal = BigDecimal.ZERO;
         totalIva = BigDecimal.ZERO;
         totalOrden = BigDecimal.ZERO;
+        listarTodo();
     }
 
     // ============================
@@ -210,7 +229,7 @@ public class controladorOrdenPago implements Serializable {
 
     }
 
-   // ============================
+    // ============================
     // CONFIRMAR ORDEN DE PAGO
     // ============================
     public String confirmarPago() {
@@ -251,51 +270,64 @@ public class controladorOrdenPago implements Serializable {
 
     public void generarListadoPagos() {
         try {
-            listadoPagos = new ArrayList<>();
-
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(fechaFin);
-            cal.add(Calendar.DAY_OF_MONTH, 1);
-            Date fechaFinInclusive = cal.getTime();
-
-            List<OrdenPago> ordenes = repoOrdenPago.findByFechaPagoBetween(fechaInicio, fechaFinInclusive);
-            System.out.println("Cant ordenes: " + ordenes.size());
-
-            Map<String, PagoListadoDTO> map = new HashMap<>();
-
-            for (OrdenPago op : ordenes) {
-                String proveedor = op.getIdProveedor() != null ? op.getIdProveedor().getRazonSocial() : "SIN PROVEEDOR";
-                String forma = op.getFormaPago() != null ? op.getFormaPago() : "SIN FORMA";
-                Date fecha = op.getFechaPago();
-
-                String key = proveedor + "|" + forma + "|" + fecha;
-
-                if (map.containsKey(key)) {
-                    PagoListadoDTO dto = map.get(key);
-                    dto.setTotalPagado(dto.getTotalPagado().add(op.getMontoTotal()));
-                } else {
-                    map.put(key, new PagoListadoDTO(proveedor, forma, fecha, op.getMontoTotal()));
-                }
+            if (fechaInicio != null && fechaFin != null) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(fechaFin);
+                cal.add(Calendar.DAY_OF_MONTH, 1);
+                fechaFin = cal.getTime();
             }
 
-            listadoPagos.addAll(map.values());
+            List<OrdenPago> ordenes = repoOrdenPago.buscarConFiltros(
+                    proveedorSeleccionadoId,
+                    formaPago,
+                    fechaInicio,
+                    fechaFin
+            );
 
+            // Aplicar filtros adicionales
+            listadoPagos = ordenes.stream()
+                    .filter(op -> proveedorFiltroId == null
+                    || (op.getIdProveedor() != null
+                    && op.getIdProveedor().getIdProveedor().equals(proveedorFiltroId)))
+                    .filter(op -> formaPagoFiltro == null || formaPagoFiltro.isEmpty()
+                    || (op.getFormaPago() != null
+                    && op.getFormaPago().equalsIgnoreCase(formaPagoFiltro)))
+                    .collect(Collectors.toList());
+
+            // Ordenamiento
             listadoPagos.sort(
-                    Comparator.comparing(PagoListadoDTO::getProveedor, Comparator.nullsLast(String::compareTo))
-                            .thenComparing(PagoListadoDTO::getFormaPago, Comparator.nullsLast(String::compareTo))
-                            .thenComparing(PagoListadoDTO::getFechaPago, Comparator.nullsLast(Date::compareTo))
+                    Comparator.comparing(
+                            (OrdenPago op)
+                            -> op.getIdProveedor() != null ? op.getIdProveedor().getRazonSocial() : "SIN PROVEEDOR",
+                            Comparator.nullsLast(String::compareTo)
+                    )
+                            .thenComparing(
+                                    op -> op.getFormaPago() != null ? op.getFormaPago() : "SIN FORMA",
+                                    Comparator.nullsLast(String::compareTo)
+                            )
+                            .thenComparing(OrdenPago::getFechaPago, Comparator.nullsLast(Date::compareTo))
+                            .thenComparing(OrdenPago::getNroOrden, Comparator.nullsLast(String::compareTo)) // opcional
             );
 
         } catch (Exception e) {
             e.printStackTrace();
-
             FacesContext.getCurrentInstance().addMessage(
                     null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            "Error interno al generar el listado: " + e.getMessage(),
-                            null)
+                            "Error interno al generar el listado: " + e.getMessage(), null)
             );
         }
+    }
+
+    public void limpiarFiltros() {
+        fechaInicio = null;
+        fechaFin = null;
+        proveedorSeleccionadoId = null;
+        formaPago = null;
+        proveedorFiltroId = null;
+        formaPagoFiltro = null;
+        listarTodo();
+
     }
 
     // ============================
@@ -361,12 +393,15 @@ public class controladorOrdenPago implements Serializable {
         this.fechaFin = fechaFin;
     }
 
-    public List<PagoListadoDTO> getListadoPagos() {
+    public List<OrdenPago> getListadoPagos() {
         return listadoPagos;
     }
 
-    public void setListadoPagos(List<PagoListadoDTO> listadoPagos) {
+    public void setListadoPagos(List<OrdenPago> listadoPagos) {
         this.listadoPagos = listadoPagos;
     }
 
+    public void listarTodo() {
+        listadoPagos = repoOrdenPago.buscarConFiltros(null, null, null, null);
+    }
 }
