@@ -34,6 +34,26 @@ public class controladorProveedor {
 
     private Integer id;
 
+    private String proveedorSeleccionado; // ID del proveedor seleccionado en el filtro de búsqueda
+
+    private List<Proveedor> listaProveedores;
+
+    public List<Proveedor> getListaProveedores() {
+        return listaProveedores;
+    }
+
+    public void setListaProveedores(List<Proveedor> listaProveedores) {
+        this.listaProveedores = listaProveedores;
+    }
+
+    public String getProveedorSeleccionado() {
+        return proveedorSeleccionado;
+    }
+
+    public void setProveedorSeleccionado(String proveedorSeleccionado) {
+        this.proveedorSeleccionado = proveedorSeleccionado;
+    }
+
     public controladorProveedor() {
     }
 
@@ -49,6 +69,26 @@ public class controladorProveedor {
             proveedor = new Proveedor();
         }
         return proveedor;
+    }
+
+    @PostConstruct
+    public void init() {
+        listaProveedores = repoProveedor.Listar();
+    }
+
+    public void limpiarFiltro() {
+        proveedorSeleccionado = null; 
+        listaProveedores = repoProveedor.Listar();
+    }
+
+    public void buscarProveedor() {
+        if (proveedorSeleccionado == null || proveedorSeleccionado.isEmpty()) {
+            // Si no hay filtro, mostrar todos
+            listaProveedores = repoProveedor.Listar();
+        } else {
+            // Si hay filtro, buscar por ID
+            listaProveedores = repoProveedor.buscarPorProveedor(Integer.valueOf(proveedorSeleccionado));
+        }
     }
 
     public List<Proveedor> listar() {
