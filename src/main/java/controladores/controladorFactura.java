@@ -38,8 +38,8 @@ public class controladorFactura implements Serializable {
     private repoProducto repoProducto;
 
     // --- NUEVA INYECCIÓN NECESARIA PARA LA AUDITORÍA ---
-    @Inject
-    private repoUsuario repoUsuario;
+   // @Inject
+    //private repoUsuario repoUsuario;
     // ---------------------------------------------------
 
     private List<Producto> listaProductos;
@@ -84,18 +84,19 @@ public class controladorFactura implements Serializable {
     }
 
 // Método que se llamará cuando el usuario seleccione un proveedor
-    public void cargarProductosPorProveedor() {
-        if (factura != null && factura.getIdProveedor() != null) {
-            Integer idProveedor = factura.getIdProveedor().getIdProveedor();
-            if (idProveedor != null) {
-                listaProductosPorProveedor = repoProducto.buscarPorProveedor(idProveedor);
-                System.out.println("Productos cargados para proveedor ID: " + idProveedor
-                        + " - Total: " + listaProductosPorProveedor.size());
-            }
-        } else {
-            listaProductosPorProveedor = new ArrayList<>();
+   public void cargarProductosPorProveedor() {
+    if (factura != null && factura.getIdProveedor() != null) {
+        Integer idProveedor = factura.getIdProveedor().getIdProveedor();
+        if (idProveedor != null) {
+            // Este método ahora solo trae productos ACTIVOS
+            listaProductosPorProveedor = repoProducto.buscarPorProveedor(idProveedor);
+            System.out.println("Productos ACTIVOS cargados para proveedor ID: " + idProveedor
+                    + " - Total: " + listaProductosPorProveedor.size());
         }
+    } else {
+        listaProductosPorProveedor = new ArrayList<>();
     }
+}
     // --- LÓGICA DE PRODUCTOS ---
     private FacturaProducto facturaProducto = new FacturaProducto();
 

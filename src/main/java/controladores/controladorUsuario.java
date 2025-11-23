@@ -150,11 +150,36 @@ public class controladorUsuario implements Serializable {
 
     public String login() {
         FacesContext context = FacesContext.getCurrentInstance();
-        Usuario encontrado = repoUsuario.login(usuario.getUsername(), usuario.getPassword());
 
-        if (encontrado != null) {
-            this.usuarioLogueado = encontrado; // Guardar como usuario logueado
-            this.usuario = null; // Limpiar el usuario de edición
+        // Primero verificar si el usuario existe
+        Optional<Usuario> usuarioOpt = repoUsuario.findByUsername(usuario.getUsername());
+
+        if (usuarioOpt.isPresent()) {
+            Usuario encontrado = usuarioOpt.get();
+
+            // Verificar si está inactivo
+            if (!encontrado.isEstado()) {
+                context.addMessage(null, new FacesMessage(
+                        FacesMessage.SEVERITY_ERROR,
+                        "Usuario inactivo",
+                        "Tu cuenta ha sido desactivada. Contacta al administrador."
+                ));
+                return null;
+            }
+
+            // Verificar contraseña
+            if (!encontrado.getPassword().equals(usuario.getPassword())) {
+                context.addMessage(null, new FacesMessage(
+                        FacesMessage.SEVERITY_ERROR,
+                        "Contraseña incorrecta",
+                        "La contraseña ingresada no es correcta."
+                ));
+                return null;
+            }
+
+            // Login exitoso
+            this.usuarioLogueado = encontrado;
+            this.usuario = null;
 
             // REGISTRAR EL USUARIO ACTUAL EN MySQL PARA LOS TRIGGERS
             repoUsuario.setCurrentUserId(encontrado.getIdUsuario());
@@ -166,11 +191,13 @@ public class controladorUsuario implements Serializable {
             ));
 
             return "/index.xhtml?faces-redirect=true";
+
         } else {
+            // Usuario no existe
             context.addMessage(null, new FacesMessage(
                     FacesMessage.SEVERITY_ERROR,
-                    "Usuario o contraseña incorrectos",
-                    "Error"
+                    "Usuario no encontrado",
+                    "El usuario ingresado no existe."
             ));
             return null;
         }

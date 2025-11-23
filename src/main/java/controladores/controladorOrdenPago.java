@@ -42,8 +42,8 @@ public class controladorOrdenPago implements Serializable {
     private repoProveedor repoProveedor;
 
     // --- INYECCIONES PARA AUDITORÍA ---
-    @Inject
-    private repoUsuario repoUsuario;
+    //@Inject
+    //private repoUsuario repoUsuario;
 
     private List<Proveedor> listaProveedores;
     private Proveedor proveedorSeleccionado;

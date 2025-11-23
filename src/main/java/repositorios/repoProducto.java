@@ -10,6 +10,8 @@ import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,11 +25,19 @@ public class repoProducto {
     @Inject
     EntityManager em;
 
-    public void Guardar(Producto pr) {
-        if (pr.getIdProducto() != null && pr.getIdProducto() > 0) {
-            em.merge(pr);
-        } else {
-            em.persist(pr);
+    public String Guardar(Producto pr) {
+        try {
+            if (pr.getIdProducto() != null && pr.getIdProducto() > 0) {
+                em.merge(pr);
+            } else {
+                em.persist(pr);
+            }
+            em.flush(); // Forzar la operación para capturar excepciones
+            return "OK";
+        } catch (Exception e) {
+            System.out.println("Error al guardar producto: " + e.getMessage());
+            e.printStackTrace();
+            return "ERROR";
         }
     }
 
@@ -60,9 +70,21 @@ public class repoProducto {
     }
 
     public List<Producto> buscarPorProveedor(Integer idProveedor) {
-        return em.createQuery("SELECT p FROM Producto p WHERE p.idProveedor.idProveedor = :idProveedor", Producto.class)
-                .setParameter("idProveedor", idProveedor)
-                .getResultList();
+        try {
+            String jpql = "SELECT p FROM Producto p "
+                    + "WHERE p.idProveedor.idProveedor = :idProveedor "
+                    + "AND p.estado = true "
+                    + // Solo productos activos
+                    "ORDER BY p.nombre";
+
+            return em.createQuery(jpql, Producto.class)
+                    .setParameter("idProveedor", idProveedor)
+                    .getResultList();
+        } catch (Exception e) {
+            System.out.println("Error al buscar productos activos por proveedor: " + e.getMessage());
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
     }
 
     public List<Proveedor> obtenerTodosProveedores() {
@@ -85,6 +107,30 @@ public class repoProducto {
                 .setParameter("idProveedor", idProveedor)
                 .setParameter("nombre", "%" + nombre + "%")
                 .getResultList();
+    }
+
+    // En repoProducto.java - Agregar este método:
+    public boolean existeCodProd(String codProd, Integer idProductoActual) {
+        try {
+            String jpql = "SELECT COUNT(p) FROM Producto p WHERE p.codProd = :codigo";
+
+            if (idProductoActual != null) {
+                jpql += " AND p.idProducto != :idActual";
+            }
+
+            TypedQuery<Long> query = em.createQuery(jpql, Long.class);
+            query.setParameter("codigo", codProd);
+
+            if (idProductoActual != null) {
+                query.setParameter("idActual", idProductoActual);
+            }
+
+            Long count = query.getSingleResult();
+            return count > 0;
+        } catch (Exception e) {
+            System.out.println("Error al verificar código duplicado: " + e.getMessage());
+            return false;
+        }
     }
 
 }

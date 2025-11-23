@@ -52,7 +52,7 @@ public class repoUsuario implements Serializable {
     public Usuario login(String username, String password) {
         try {
             TypedQuery<Usuario> query = em.createQuery(
-                    "SELECT u FROM Usuario u WHERE u.username = :username AND u.password = :password",
+                    "SELECT u FROM Usuario u WHERE u.username = :username AND u.password = :password AND u.estado = true",
                     Usuario.class);
             query.setParameter("username", username);
             query.setParameter("password", password);
@@ -60,7 +60,6 @@ public class repoUsuario implements Serializable {
         } catch (NoResultException e) {
             return null;
         }
-
     }
 
     public Optional<Usuario> findByUsername(String username) {

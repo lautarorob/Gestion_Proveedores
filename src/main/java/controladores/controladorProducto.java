@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSF/JSFManagedBean.java to edit this template
- */
 package controladores;
 
 import entidades.Producto;
@@ -12,14 +8,12 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Model;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
+import jakarta.faces.application.FacesMessage;  // <--- AGREGAR
+import jakarta.faces.context.FacesContext;      // <--- AGREGAR
 import java.util.List;
 import repositorios.repoProducto;
-import repositorios.repoUsuario; // <--- IMPORTANTE
+import repositorios.repoUsuario;
 
-/**
- *
- * @author roble
- */
 @Named(value = "controladorProducto")
 @RequestScoped
 public class controladorProducto {
@@ -27,21 +21,12 @@ public class controladorProducto {
     @Inject
     private repoProducto repoProducto;
 
-    // --- INYECCIONES PARA AUDITORÍA ---
-    @Inject
-    private repoUsuario repoUsuario;
-
     private Integer id;
-
     private Producto producto;
-
-    private String proveedorSeleccionado; // ID del proveedor seleccionado en el filtro de búsqueda
-
-    private String nombreBusqueda; // Para busqueda con barra
-
-    private List<Proveedor> listaProveedores; // Lista de proveedores activos
-
-    private List<Producto> listaProductos; // Lista de productos a mostrar en la tabla
+    private String proveedorSeleccionado;
+    private String nombreBusqueda;
+    private List<Proveedor> listaProveedores;
+    private List<Producto> listaProductos;
 
     public controladorProducto() {
     }
@@ -60,28 +45,22 @@ public class controladorProducto {
         return producto;
     }
 
-    //Filtra por nombre de producto, proveedor, ambos o ninguno
     public void buscarProductos() {
         if ((proveedorSeleccionado == null || proveedorSeleccionado.isEmpty())
                 && (nombreBusqueda == null || nombreBusqueda.trim().isEmpty())) {
-            // Sin filtros, mostrar todos
             listaProductos = repoProducto.Listar();
         } else if (proveedorSeleccionado != null && !proveedorSeleccionado.isEmpty()
                 && (nombreBusqueda == null || nombreBusqueda.trim().isEmpty())) {
-            // Solo filtrar por proveedor
             listaProductos = repoProducto.buscarPorProveedor(Integer.valueOf(proveedorSeleccionado));
         } else if ((proveedorSeleccionado == null || proveedorSeleccionado.isEmpty())
                 && nombreBusqueda != null && !nombreBusqueda.trim().isEmpty()) {
-            // Solo filtrar por nombre
             listaProductos = repoProducto.buscarPorNombre(nombreBusqueda);
         } else {
-            // Filtrar por ambos
             listaProductos = repoProducto.buscarPorProveedorYNombre(
                     Integer.valueOf(proveedorSeleccionado), nombreBusqueda);
         }
     }
 
-    //Incializacion de listas para filtrado por proveedor
     @PostConstruct
     public void init() {
         listaProveedores = repoProducto.listarActivos();
@@ -93,8 +72,60 @@ public class controladorProducto {
     }
 
     public String guardar() {
-        repoProducto.Guardar(producto);
-        return "/productos/index.xhtml?faces-redirect=true";
+        try {
+            FacesContext context = FacesContext.getCurrentInstance();
+
+            // Validar código duplicado ANTES de guardar
+            if (repoProducto.existeCodProd(producto.getCodProd(), producto.getIdProducto())) {
+                context.addMessage("formulario:codProd",
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                "Código duplicado",
+                                "El producto '" + producto.getCodProd() + "' ya existe"));
+                return null;
+            }
+
+            // Validación adicional: nombre no puede estar vacío
+            if (producto.getNombre() == null || producto.getNombre().trim().isEmpty()) {
+                context.addMessage("formulario:nombre",
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                "Campo requerido",
+                                "El nombre del producto es obligatorio"));
+                return null;
+            }
+
+            // Si no está duplicado, guardar
+            String resultado = repoProducto.Guardar(producto);
+
+            if ("OK".equals(resultado)) {
+                context.addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_INFO,
+                                "Éxito",
+                                "Producto guardado correctamente"));
+                limpiar();
+                return "/productos/index.xhtml?faces-redirect=true";
+            } else {
+                context.addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                "Error",
+                                "No se pudo guardar el producto"));
+                return null;
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error al guardar producto: " + e.getMessage());
+            e.printStackTrace();
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "Error",
+                            "Ocurrió un error al guardar el producto"));
+            return null;
+        }
+    }
+
+    // AGREGAR ESTE MÉTODO
+    public void limpiar() {
+        producto = new Producto();
+        id = null;
     }
 
     public String eliminar(Integer id) {
@@ -112,7 +143,7 @@ public class controladorProducto {
         return "/productos/index.xhtml?faces-redirect=true";
     }
 
-    // ------------------------------------
+    // GETTERS Y SETTERS...
     public repoProducto getRepoProducto() {
         return repoProducto;
     }
@@ -171,5 +202,4 @@ public class controladorProducto {
     public void setNombreBusqueda(String nombreBusqueda) {
         this.nombreBusqueda = nombreBusqueda;
     }
-
 }
