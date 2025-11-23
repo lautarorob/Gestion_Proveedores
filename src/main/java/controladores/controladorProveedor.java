@@ -27,8 +27,8 @@ public class controladorProveedor {
     private repoProveedor repoProveedor;
 
     // --- INYECCIONES PARA AUDITORÍA ---
-    @Inject
-    private repoUsuario repoUsuario;
+    //@Inject
+   // private repoUsuario repoUsuario;
 
     private Proveedor proveedor;
 
