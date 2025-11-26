@@ -1,27 +1,66 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:ui="jakarta.faces.facelets"
-                template="./../template/layout.xhtml"
-                xmlns:h="jakarta.faces.html"
-                xmlns:f="jakarta.faces.core">
+<!DOCTYPE composition
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="jakarta.faces.facelets"
+    template="./../template/layout.xhtml" xmlns:h="jakarta.faces.html" xmlns:f="jakarta.faces.core">
 
     <ui:define name="contenido">
         <f:view>
 
             <h:form>
-                <h2 class="titulo"><strong>Gestión de Facturas - Impagas</strong></h2>
+                <h2 class="titulo"><strong>Listado de Facturas - Impagas</strong></h2>
                 <div class="linea-titulo"></div>
 
-                <h:commandButton value=" + Registrar Factura" action="/facturas/nuevo.xhtml"
-                                 styleClass="btnAmarillo" />
+                <h:commandButton value=" + Registrar Factura" action="/facturas/nuevo.xhtml" styleClass="btnAmarillo" />
 
-                <h:dataTable value="#{controladorFactura.listarImpagas()}" var="item" styleClass="tablaProveedores" cellpadding="6"
-                             rendered="#{not empty controladorFactura.listarImpagas()}">
+                <h:panelGrid columns="8" cellpadding="5">
+
+
+                    <div class="col-md-3">
+                     <!--   <label class="form-label text-white">Tipo de Factura</label> -->
+                        <h:selectOneMenu value="#{controladorFactura.filtroTipo}" styleClass="form-select"
+                            style="background-color: #020618; color: white; border: 1px solid #444;">
+                            <f:selectItem itemLabel="Tipo de Factura" itemValue="" />
+                            <f:selectItem itemLabel="A" itemValue="A" />
+                            <f:selectItem itemLabel="B" itemValue="B" />
+                            <f:selectItem itemLabel="C" itemValue="C" />
+                        </h:selectOneMenu>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label text-white">Desde:</label>
+                        <h:inputText value="#{controladorFactura.filtroFechaDesde}" styleClass="form-control"
+                            style="background-color: #020618; color: white; border: 1px solid #444;"
+                            xmlns:pt="jakarta.faces.passthrough" pt:type="date">
+                            <f:convertDateTime pattern="yyyy-MM-dd" />
+                        </h:inputText>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label text-white">Hasta:</label>
+                        <h:inputText value="#{controladorFactura.filtroFechaHasta}" styleClass="form-control"
+                            style="background-color: #020618; color: white; border: 1px solid #444;"
+                            xmlns:pt="jakarta.faces.passthrough" pt:type="date">
+                            <f:convertDateTime pattern="yyyy-MM-dd" />
+                        </h:inputText>
+                    </div>
+                </h:panelGrid>
+                <div style="margin-top:15px; display:flex; gap:10px;">
+                    <div class="d-flex gap-2">
+                        <h:commandButton value="Aplicar Filtro" action="#{controladorFactura.filtrar()}"
+                            styleClass="btnAmarillo" style="height: 38px; padding-top: 5px;" />
+                        <h:commandButton value="Limpiar" action="#{controladorFactura.limpiarFiltros()}"
+                            styleClass="btnGris" style="height: 38px; padding-top: 5px;" />
+                    </div>
+                </div>
+
+
+                <h:dataTable value="#{controladorFactura.listaFacturas}" var="item" styleClass="tablaProveedores"
+                    cellpadding="6" rendered="#{not empty controladorFactura.listaFacturas}">
 
                     <h:column>
                         <f:facet name="header">
-                            <h:outputText value="Fecha de Registro" style="margin-right: 50px"/>
+                            <h:outputText value="Fecha de Registro" style="margin-right: 50px" />
                         </f:facet>
                         <h:outputText value="#{item.fechaRegistro}" style="margin-right: 50px">
                             <f:convertDateTime pattern="MM/dd/yyyy" />
@@ -30,7 +69,7 @@
 
                     <h:column>
                         <f:facet name="header">
-                            <h:outputText value="Fecha de Comprobante" style="margin-right: 50px"/>
+                            <h:outputText value="Fecha de Comprobante" style="margin-right: 50px" />
                         </f:facet>
                         <h:outputText value="#{item.fechaComprobante}" style="margin-right: 50px">
                             <f:convertDateTime pattern="MM/dd/yyyy" />
@@ -39,58 +78,56 @@
 
                     <h:column>
                         <f:facet name="header">
-                            <h:outputText value="Tipo" style="margin-right: 50px"/>
+                            <h:outputText value="Tipo" style="margin-right: 50px" />
                         </f:facet>
-                        <h:outputText value="#{item.tipo}" style="margin-right: 50px"/>
+                        <h:outputText value="#{item.tipo}" style="margin-right: 50px" />
                     </h:column>
 
                     <h:column>
                         <f:facet name="header">
-                            <h:outputText value="N° Comprobante" style="margin-right: 50px"/>
+                            <h:outputText value="N° Comprobante" style="margin-right: 50px" />
                         </f:facet>
-                        <h:outputText value="#{item.nroComprobante}" style="margin-right: 50px"/>
+                        <h:outputText value="#{item.nroComprobante}" style="margin-right: 50px" />
                     </h:column>
 
                     <h:column>
                         <f:facet name="header">
-                            <h:outputText value="Subtotal" style="margin-right: 50px"/>
+                            <h:outputText value="Subtotal" style="margin-right: 50px" />
                         </f:facet>
-                        <h:outputText value="#{item.subtotal}" style="margin-right: 50px"/>
+                        <h:outputText value="#{item.subtotal}" style="margin-right: 50px" />
                     </h:column>
 
                     <h:column>
                         <f:facet name="header">
-                            <h:outputText value="Iva" style="margin-right: 50px"/>
+                            <h:outputText value="Iva" style="margin-right: 50px" />
                         </f:facet>
-                        <h:outputText value="#{item.iva}" style="margin-right: 50px"/>
+                        <h:outputText value="#{item.iva}" style="margin-right: 50px" />
                     </h:column>
 
                     <h:column>
                         <f:facet name="header">
-                            <h:outputText value="Total" style="margin-right: 50px"/>
+                            <h:outputText value="Total" style="margin-right: 50px" />
                         </f:facet>
-                        <h:outputText value="#{item.total}" style="margin-right: 50px"/>
+                        <h:outputText value="#{item.total}" style="margin-right: 50px" />
                     </h:column>
 
                     <h:column>
                         <f:facet name="header">
-                            <h:outputText value="Forma de Pago" style="margin-right: 50px"/>
+                            <h:outputText value="Forma de Pago" style="margin-right: 50px" />
                         </f:facet>
-                        <h:outputText value="#{item.formaPago}" style="margin-right: 50px"/>
+                        <h:outputText value="#{item.formaPago}" style="margin-right: 50px" />
                     </h:column>
 
                     <h:column>
                         <f:facet name="header">
-                            <h:outputText value="Estado" style="margin-right: 50px"/>
+                            <h:outputText value="Estado" style="margin-right: 50px" />
                         </f:facet>
-                        <h:outputText value="#{item.estado}" style="margin-right: 50px"/>
+                        <h:outputText value="#{item.estado}" style="margin-right: 50px" />
                     </h:column>
-
-
 
                     <h:column>
                         <f:facet name="header">
-                            <h:outputText value="Acciones" style="margin-right: 50px"/>
+                            <h:outputText value="Acciones" style="margin-right: 50px" />
                         </f:facet>
 
                         <h:panelGroup rendered="#{item.estado == 'Impaga'}">
@@ -100,17 +137,19 @@
                             </h:link>
                         </h:panelGroup>
 
-                        <h:outputText value="-" style="margin-right: 50px" rendered="#{item.estado != 'Impaga'}"/>
+                        <h:outputText value="-" style="margin-right: 50px" rendered="#{item.estado != 'Impaga'}" />
 
                     </h:column>
 
                 </h:dataTable>
-                <h:commandButton value=" + Crear orden de pago" action="/pagos/nuevo.xhtml"
-                                 styleClass="btnAmarillo"
-                                 rendered="#{not empty controladorFactura.listarImpagas()}"/>
+
+                <h:commandButton value=" + Crear orden de pago" action="/pagos/nuevo.xhtml" styleClass="btnAmarillo"
+                    rendered="#{not empty controladorFactura.listarImpagas()}" />
 
                 <h:panelGroup rendered="#{empty controladorFactura.listarImpagas()}">
-                    <h1 style="color: grey; font-style: italic"><strong>NO EXISTEN FACTURAS IMPAGAS</strong></h1>
+                    <h:panelGroup rendered="#{empty controladorFactura.listaFacturas}">
+                        <h1 style="color: grey; font-style: italic"><strong>NO EXISTEN FACTURAS IMPAGAS</strong></h1>
+                    </h:panelGroup>
                 </h:panelGroup>
 
             </h:form>
