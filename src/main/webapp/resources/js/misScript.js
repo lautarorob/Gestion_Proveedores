@@ -84,7 +84,7 @@ function validarProveedor() {
 }
 
 function validarProducto() {
-
+    // Limpiar todos los mensajes de error previos
     const errorCod = document.getElementById("formulario:errorCodProd");
     const errorDesc = document.getElementById("formulario:errorDesc");
     const errorNombre = document.getElementById("formulario:errorNombre");
@@ -92,7 +92,21 @@ function validarProducto() {
     const errorUnidadM = document.getElementById("formulario:errorUnidad");
     const errorProv = document.getElementById("formulario:errorProveedor");
 
-    //objetos
+    // Limpiar mensajes previos
+    if (errorCod)
+        errorCod.textContent = "";
+    if (errorDesc)
+        errorDesc.textContent = "";
+    if (errorNombre)
+        errorNombre.textContent = "";
+    if (errorPrecio)
+        errorPrecio.textContent = "";
+    if (errorUnidadM)
+        errorUnidadM.textContent = "";
+    if (errorProv)
+        errorProv.textContent = "";
+
+    // Obtener objetos del DOM
     const codProdObj = document.getElementById("formulario:codProd");
     const descripcionObj = document.getElementById("formulario:descripcion");
     const nombreObj = document.getElementById("formulario:nombre");
@@ -100,53 +114,71 @@ function validarProducto() {
     const unidadMedidaObj = document.getElementById("formulario:unidadMedida");
     const idProveedorObj = document.getElementById("formulario:idProveedor");
 
-    const codProd = codProdObj.value.trim();
-    const descripcion = descripcionObj.value.trim();
-    const nombre = nombreObj.value.trim();
-    const precioReferencia = precioReferenciaObj.value.trim();
-    const unidadMedida = unidadMedidaObj.value.trim();
-    const idProveedor = idProveedorObj.value.trim();
+    // Obtener valores
+    const codProd = codProdObj ? codProdObj.value.trim() : "";
+    const descripcion = descripcionObj ? descripcionObj.value.trim() : "";
+    const nombre = nombreObj ? nombreObj.value.trim() : "";
+    const precioReferencia = precioReferenciaObj ? precioReferenciaObj.value.trim() : "";
+    const unidadMedida = unidadMedidaObj ? unidadMedidaObj.value.trim() : "";
+    const idProveedor = idProveedorObj ? idProveedorObj.value.trim() : "";
 
     let isValid = true;
 
+    // Validar Código de Producto (FORMATO SOLAMENTE)
     const regex = /^[A-Z]{3}-\d{4}$/;
-
     if (codProd === "") {
-        errorCod.textContent = "Campo Obligatorio";
+        if (errorCod)
+            errorCod.textContent = "Campo Obligatorio";
         isValid = false;
     } else if (!regex.test(codProd)) {
-        errorCod.textContent = "Formato Invalido";
+        if (errorCod)
+            errorCod.textContent = "Formato Inválido (Ejemplo: ABC-1234)";
         isValid = false;
     }
+    // NO validamos duplicidad aquí - eso lo hace el servidor
 
+    // Validar Descripción
     if (descripcion === "") {
-        errorDesc.textContent = "Campo Obligatorio";
+        if (errorDesc)
+            errorDesc.textContent = "Campo Obligatorio";
         isValid = false;
     }
 
+    // Validar Nombre
     if (nombre === "") {
-        errorNombre.textContent = "Campo Obligatorio";
+        if (errorNombre)
+            errorNombre.textContent = "Campo Obligatorio";
         isValid = false;
     }
 
+    // Validar Precio de Referencia
     if (precioReferencia === "") {
-        errorPrecio.textContent = "Campo Obligatorio";
+        if (errorPrecio)
+            errorPrecio.textContent = "Campo Obligatorio";
+        isValid = false;
+    } else if (precioReferencia <= 0) {
+        if (errorPrecio)
+            errorPrecio.textContent = "Debe ser un número válido mayor a 0";
         isValid = false;
     }
 
+    // Validar Unidad de Medida
     if (unidadMedida === "") {
-        errorUnidadM.textContent = "Campo Obligatorio";
+        if (errorUnidadM)
+            errorUnidadM.textContent = "Campo Obligatorio";
         isValid = false;
     }
 
+    // Validar Proveedor
     if (idProveedor === "") {
-        errorProv.textContent = "Campo Obligatorio";
+        if (errorProv)
+            errorProv.textContent = "Campo Obligatorio";
         isValid = false;
     }
 
+    // Si pasa las validaciones de formato, permitir que se envíe al servidor
+    // El servidor validará la duplicidad y mostrará el mensaje JSF
     return isValid;
-
-
 }
 
 // facturaProducto.js
@@ -306,11 +338,11 @@ function toggleCollapse() {
     const sidebar = document.getElementById('sidebar');
     const mainContent = document.getElementById('mainContent');
     const collapseIcon = document.getElementById('collapseIcon');
-    
+
     // 1. Alternar clases
     sidebar.classList.toggle('collapsed');
     mainContent.classList.toggle('expanded');
-    
+
     // 2. Gestionar Icono y LocalStorage
     if (sidebar.classList.contains('collapsed')) {
         collapseIcon.classList.remove('bi-chevron-left');
@@ -324,9 +356,15 @@ function toggleCollapse() {
 
     // 3. FORZAR REDIBUJADO DE GRÁFICOS
     // Disparamos el evento resize 3 veces: al inicio, mitad y final de la transición (300ms)
-    setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 50);
-    setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 150);
-    setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 310);
+    setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+    }, 50);
+    setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+    }, 150);
+    setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+    }, 310);
 }
 
 // Restaurar el estado del sidebar al cargar la página

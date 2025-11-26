@@ -2,8 +2,8 @@
 <!DOCTYPE composition
     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="jakarta.faces.facelets"
-    template="./../template/layout.xhtml" xmlns:h="jakarta.faces.html" xmlns:f="jakarta.faces.core"
-    xmlns:pt="jakarta.faces.passthrough">
+                template="./../template/layout.xhtml" xmlns:h="jakarta.faces.html" xmlns:f="jakarta.faces.core"
+                xmlns:pt="jakarta.faces.passthrough">
 
     <ui:define name="contenido">
 
@@ -11,80 +11,88 @@
 
             <h:form id="formulario">
                 <h2>Nuevo Producto</h2>
-                <p style="font-size: 12px;
-                   color: #808080;">Rellene los siguientes campos para registrar un nuevo producto</p>
+                <p style="font-size: 12px; color: #808080;">Rellene los siguientes campos para registrar un nuevo producto</p>
                 <div class="row">
 
                     <div class="col-md-6 mb-3">
                         <label>Cod.Producto</label>
-                        <h:inputText id="codProd" value="#{controladorProducto.producto.codProd}" required="true"
-                            pt:placeholder="ABC-1234" styleClass="form-control" style="background-color: #020618" />
+                        <h:inputText id="codProd" value="#{controladorProducto.producto.codProd}" 
+                                     pt:placeholder="ABC-1234" styleClass="form-control" 
+                                     style="background-color: #020618"/>
+
+                        <!-- Mensaje de JSF (del servidor - para duplicidad) -->
                         <h:message for="codProd"
-                            style="color: #dc3545; font-size: 12px; display: block; margin-top: 5px;" />
+                                   style="color: #dc3545; font-size: 12px; display: block; margin-top: 5px;" />
+
+                        <!-- Mensaje de JavaScript (validación de formato en cliente) -->
+                        <span id="formulario:errorCodProd" class="error" 
+                              style="color: #dc3545; font-size: 12px; display: block; margin-top: 5px;"></span>
                     </div>
 
                     <div class="col-md-12 mb-3">
                         <label>Descripcion</label>
                         <h:inputTextarea id="descripcion" value="#{controladorProducto.producto.descripcion}"
-                            pt:placeholder="Ingrese la descripcion" styleClass="form-control"
-                            style="background-color: #020618" />
-                        <span id="formulario:errorDesc" class="error"></span>
+                                         pt:placeholder="Ingrese la descripcion" styleClass="form-control"
+                                         style="background-color: #020618" />
+                        <span id="formulario:errorDesc" class="error" 
+                              style="color: #dc3545; font-size: 12px; display: block; margin-top: 5px;"></span>
                     </div>
 
                     <div class="col-md-6 mb-3">
                         <label>Nombre</label>
-                        <h:inputText id="nombre" value="#{controladorProducto.producto.nombre}" required="true"
-                            pt:placeholder=" Ingrese el nombre comercial" styleClass="form-control"
-                            style="background-color: #020618" />
-                        <span id="formulario:errorNombre" class="error"></span>
+                        <h:inputText id="nombre" value="#{controladorProducto.producto.nombre}"
+                                     pt:placeholder=" Ingrese el nombre comercial" styleClass="form-control"
+                                     style="background-color: #020618" />
+                        <span id="formulario:errorNombre" class="error" 
+                              style="color: #dc3545; font-size: 12px; display: block; margin-top: 5px;"></span>
                     </div>
 
                     <div class="col-md-6 mb-3">
                         <label>PrecioReferencia</label>
                         <h:inputText id="precioReferencia" value="#{controladorProducto.producto.precioReferencia}"
-                            pt:placeholder=" Ingrese el precio de referencia" styleClass="form-control"
-                            style="background-color: #020618">
+                                     pt:placeholder=" Ingrese el precio de referencia" styleClass="form-control"
+                                     style="background-color: #020618">
                             <f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
                         </h:inputText>
-                        <span id="formulario:errorPrecRef" class="error"></span>
+                        <span id="formulario:errorPrecRef" class="error" 
+                              style="color: #dc3545; font-size: 12px; display: block; margin-top: 5px;"></span>
                     </div>
 
                     <div class="col-md-6 mb-3">
                         <label>Unidad de medida</label>
                         <h:selectOneMenu id="unidadMedida" value="#{controladorProducto.producto.unidadMedida}"
-                            styleClass="form-select" style="background-color: #020618">
+                                         styleClass="form-select" style="background-color: #020618">
                             <f:selectItem itemLabel="Unidad de medida" itemValue="" noSelectionOption="true" />
                             <f:selectItem itemLabel="MiliLitro" itemValue="MiliLitro" />
                             <f:selectItem itemLabel="Litro" itemValue="Litro" />
                             <f:selectItem itemLabel="Gramo" itemValue="Gramo" />
                             <f:selectItem itemLabel="Kilo" itemValue="Kilo" />
                         </h:selectOneMenu>
-                        <span id="formulario:errorUnidad" class="error"></span>
+                        <span id="formulario:errorUnidad" class="error" 
+                              style="color: #dc3545; font-size: 12px; display: block; margin-top: 5px;"></span>
                     </div>
-
-
 
                     <div class="col-md-6 mb-3">
                         <label>Proveedor Habitual</label>
                         <h:selectOneMenu id="idProveedor" value="#{controladorProducto.producto.idProveedor}"
-                            converter="proveedorConverter" styleClass="form-select" style="background-color: #020618">
+                                         converter="proveedorConverter" styleClass="form-select" style="background-color: #020618">
                             <f:selectItem itemLabel="Proveedor Habitual" itemValue="#{null}" />
                             <f:selectItems value="#{controladorProducto.listaProveedores}" var="prov"
-                                itemLabel="#{prov.razonSocial}" itemValue="#{prov}" />
+                                           itemLabel="#{prov.razonSocial}" itemValue="#{prov}" />
                         </h:selectOneMenu>
-                        <span id="formulario:errorProveedor" class="error"></span>
+                        <span id="formulario:errorProveedor" class="error" 
+                              style="color: #dc3545; font-size: 12px; display: block; margin-top: 5px;"></span>
                     </div>
-
 
                     <div class="col-md-6 mb-3">
                         <h:inputHidden id="estado" value="#{controladorProducto.producto.estado}"
-                            pt:placeholder="Estado" />
+                                       pt:placeholder="Estado" />
                     </div>
                 </div>
                 <h:commandButton value="Cancelar" action="/productos/index.xhtml?faces-redirect=true"
-                    styleClass="btnGris" immediate="true" />
+                                 styleClass="btnGris" immediate="true" />
                 <h:commandButton value="Guardar Producto" action="#{controladorProducto.guardar}"
-                    styleClass="btnAmarillo" onclick="return validarProducto()" />
+                                 styleClass="btnAmarillo" onclick="return validarProducto()" />
             </h:form>
 
         </f:view>
