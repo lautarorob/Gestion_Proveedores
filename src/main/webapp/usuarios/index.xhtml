@@ -1,10 +1,8 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:ui="jakarta.faces.facelets"
-                template="./../template/layout.xhtml"
-                xmlns:h="jakarta.faces.html"
-                xmlns:f="jakarta.faces.core">
+<!DOCTYPE composition
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="jakarta.faces.facelets"
+    template="./../template/layout.xhtml" xmlns:h="jakarta.faces.html" xmlns:f="jakarta.faces.core">
 
     <ui:define name="contenido">
         <f:view>
@@ -13,34 +11,35 @@
 
                 <h2><strong>Listado de usuarios</strong></h2>
                 <div class="linea-titulo"></div>
-                <h:commandButton value=" + Dar de alta usuario" action="/usuarios/nuevo.xhtml"
-                                 styleClass="btnAmarillo" />
-                <h:dataTable value="#{controladorUsuario.listar()}" var="item" styleClass="tablaProveedores" cellpadding="6">
+                <h:commandButton value=" + Dar de alta usuario" action="/usuarios/nuevo.xhtml?faces-redirect=true"
+                    styleClass="btnAmarillo" />
+                <h:dataTable value="#{controladorUsuario.listar()}" var="item" styleClass="tablaProveedores"
+                    cellpadding="6">
                     <h:column>
                         <f:facet name="header">
-                            <h:outputText value="Username"/>
+                            <h:outputText value="Username" />
                         </f:facet>
-                        <h:outputText value="#{item.username}"/>
+                        <h:outputText value="#{item.username}" />
                     </h:column>
 
                     <h:column>
                         <f:facet name="header">
-                            <h:outputText value="Nombre Completo"/>
+                            <h:outputText value="Nombre Completo" />
                         </f:facet>
-                        <h:outputText value="#{item.nombreCompleto}"/>
+                        <h:outputText value="#{item.nombreCompleto}" />
                     </h:column>
 
                     <h:column>
                         <f:facet name="header">
-                            <h:outputText value="Rol"/>
+                            <h:outputText value="Rol" />
                         </f:facet>
-                        <h:outputText value="#{item.rol}"/>
+                        <h:outputText value="#{item.rol}" />
                     </h:column>
                     <h:column>
                         <f:facet name="header">
-                            <h:outputText value="Estado"/>
+                            <h:outputText value="Estado" />
                         </f:facet>
-                        <h:outputText value="#{item.estado ? 'Activo' : 'Inactivo'}"/>
+                        <h:outputText value="#{item.estado ? 'Activo' : 'Inactivo'}" />
                     </h:column>
 
 
@@ -50,27 +49,23 @@
                         </f:facet>
                         <div class="botonesAcciones">
 
-                            <h:link class="editarAcciones" 
-                                    outcome="/usuarios/editar.xhtml" 
-                                    style="margin-right: 10px"
-                                    rendered="#{item.estado}">
+                            <h:link class="editarAcciones" outcome="/usuarios/editar.xhtml" style="margin-right: 10px"
+                                rendered="#{item.estado}">
                                 <f:param name="id" value="#{item.idUsuario}" />
                                 <i class="bi bi-pencil"></i>
                             </h:link>
 
                             <!-- Mostrar ícono de baja solo si está activo -->
                             <h:commandLink class="eliminarAcciones"
-                                           action="#{controladorUsuario.bajaLogica(item.idUsuario)}"
-                                           onclick="return confirm('¿Confirma la baja?')"
-                                           rendered="#{item.estado}">
+                                action="#{controladorUsuario.bajaLogica(item.idUsuario)}"
+                                onclick="return confirm('¿Confirma la baja?')" rendered="#{item.estado}">
                                 <i class="bi bi-trash3"></i>
                             </h:commandLink>
 
                             <!-- Mostrar ícono de activar solo si está inactivo -->
                             <h:commandLink class="activarAcciones"
-                                           action="#{controladorUsuario.activarLogica(item.idUsuario)}"
-                                           onclick="return confirm('¿Confirma activar este usuario?')"
-                                           rendered="#{!item.estado}">
+                                action="#{controladorUsuario.activarLogica(item.idUsuario)}"
+                                onclick="return confirm('¿Confirma activar este usuario?')" rendered="#{!item.estado}">
                                 <i class="bi bi-check-circle"></i>
                             </h:commandLink>
 

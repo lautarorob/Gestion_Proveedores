@@ -1,14 +1,12 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:ui="jakarta.faces.facelets"
-                template="./../template/layout.xhtml"
-                xmlns:h="jakarta.faces.html"
-                xmlns:pt="jakarta.faces.passthrough"
-                xmlns:f="jakarta.faces.core">
+<!DOCTYPE composition
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="jakarta.faces.facelets"
+    template="./../template/layout.xhtml" xmlns:h="jakarta.faces.html" xmlns:pt="jakarta.faces.passthrough"
+    xmlns:f="jakarta.faces.core">
 
     <f:metadata>
-        <f:viewParam name="id" value="#{controladorUsuario.id}"/>
+        <f:viewParam name="id" value="#{controladorUsuario.id}" />
     </f:metadata>
 
     <ui:define name="contenido">
@@ -20,45 +18,41 @@
                 <div class="row">
 
                     <div>
-                        <h:inputHidden value="#{controladorUsuario.usuario.idUsuario}"/>
+                        <h:inputHidden value="#{controladorUsuario.usuario.idUsuario}" />
                     </div>
 
                     <div class="col-md-6 mb-3">
                         <label>Nombre de Usuario</label>
-                        <h:inputText id="userName" 
-                                     value="#{controladorUsuario.usuario.username}" 
-                                     required="true"
-                                     pt:placeholder="Nombre de Usuario" 
-                                     styleClass="form-control" style="background-color: #020618"/>
+                        <h:inputText id="userName" value="#{controladorUsuario.usuario.username}" required="true"
+                            pt:placeholder="Nombre de Usuario" styleClass="form-control"
+                            style="background-color: #020618" />
                     </div>
 
                     <div class="col-md-6 mb-3">
                         <label>Nombre Completo</label>
-                        <h:inputText id="nombreCompleto" 
-                                     value="#{controladorUsuario.usuario.nombreCompleto}" 
-                                     required="true" 
-                                     pt:placeholder="Nombre Completo"
-                                     styleClass="form-control" style="background-color: #020618"/>
+                        <h:inputText id="nombreCompleto" value="#{controladorUsuario.usuario.nombreCompleto}"
+                            required="true" pt:placeholder="Nombre Completo" styleClass="form-control"
+                            style="background-color: #020618" />
                     </div>
 
                     <div class="col-md-6 mb-3">
                         <label>Rol</label>
-                        <h:selectOneMenu id="rol" value="#{controladorUsuario.usuario.rol}" styleClass="form-control" style="background-color: #020618">
-                            <f:selectItem itemLabel="--ROL--" itemValue="" noSelectionOption="true"/>
-                            <f:selectItem itemLabel="Admin" itemValue="admin"/>
-                            <f:selectItem itemLabel="Gerente" itemValue="gerente"/>
-                            <f:selectItem itemLabel="Supervisor" itemValue="supervisor"/>
-                            <f:selectItem itemLabel="Operador" itemValue="operador"/>
+                        <h:selectOneMenu id="rol" value="#{controladorUsuario.usuario.rol}" styleClass="form-select"
+                            style="background-color: #020618">
+                            <f:selectItem itemLabel="--ROL--" itemValue="" noSelectionOption="true" />
+                            <f:selectItem itemLabel="Admin" itemValue="admin" />
+                            <f:selectItem itemLabel="Gerente" itemValue="gerente" />
+                            <f:selectItem itemLabel="Supervisor" itemValue="supervisor" />
+                            <f:selectItem itemLabel="Operador" itemValue="operador" />
                         </h:selectOneMenu>
                     </div>
 
                 </div>
 
-                <h:commandButton value="Cancelar" action="/usuarios/index.xhtml" styleClass="btnGris"/>
-                <h:commandButton value="Guardar Usuario" 
-                                 action="#{controladorUsuario.guardar}" 
-                                 styleClass="btnAmarillo" 
-                                 />
+                <h:commandButton value="Cancelar" action="/usuarios/index.xhtml?faces-redirect=true"
+                    styleClass="btnGris" immediate="true" />
+                <h:commandButton value="Guardar Usuario" action="#{controladorUsuario.guardar}"
+                    styleClass="btnAmarillo" />
             </h:form>
         </f:view>
     </ui:define>

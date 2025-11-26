@@ -1,11 +1,9 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:ui="jakarta.faces.facelets"
-                template="./../template/layout.xhtml"
-                xmlns:h="jakarta.faces.html"
-                xmlns:f="jakarta.faces.core"
-                xmlns:pt="jakarta.faces.passthrough">
+<!DOCTYPE composition
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="jakarta.faces.facelets"
+    template="./../template/layout.xhtml" xmlns:h="jakarta.faces.html" xmlns:f="jakarta.faces.core"
+    xmlns:pt="jakarta.faces.passthrough">
 
     <f:metadata>
         <!-- Limpiar el estado al cargar la página -->
@@ -16,55 +14,41 @@
         <f:view>
             <h:form id="formulario" pt:autocomplete="off">
                 <h2>Nuevo Usuario</h2>
-                <p style="font-size: 12px; color: #808080;">Rellene los siguientes campos para registrar un nuevo usuario</p>
+                <p style="font-size: 12px; color: #808080;">Rellene los siguientes campos para registrar un nuevo
+                    usuario</p>
                 <div class="row">
 
                     <div class="col-md-6 mb-3">
                         <label>Nombre de usuario(*)</label>
-                        <h:inputText id="username" 
-                                     value="#{controladorUsuario.usuario.username}" 
-                                     styleClass="form-control" 
-                                     style="background-color: #020618"
-                                     pt:autocomplete="off"/>
+                        <h:inputText id="username" value="#{controladorUsuario.usuario.username}"
+                            styleClass="form-control" style="background-color: #020618" pt:autocomplete="off" />
                         <h:message for="username" style="color: #dc3545; font-size: 12px;" />
                     </div>
 
                     <div class="col-md-6 mb-3">
                         <label>Rol(*)</label>
-                        <h:selectOneMenu id="rol" 
-                                         value="#{controladorUsuario.usuario.rol}" 
-                                         styleClass="form-select" 
-                                         style="background-color: #020618"
-                                         pt:autocomplete="off">
-                            <f:selectItem itemLabel="Rol del usuario" itemValue="" noSelectionOption="true"/>
-                            <f:selectItem itemLabel="Gerente" itemValue="gerente"/>
-                            <f:selectItem itemLabel="Supervisor" itemValue="supervisor"/>
-                            <f:selectItem itemLabel="Operador" itemValue="operador"/>
+                        <h:selectOneMenu id="rol" value="#{controladorUsuario.usuario.rol}" styleClass="form-select"
+                            style="background-color: #020618" pt:autocomplete="off">
+                            <f:selectItem itemLabel="Rol del usuario" itemValue="" noSelectionOption="true" />
+                            <f:selectItem itemLabel="Gerente" itemValue="gerente" />
+                            <f:selectItem itemLabel="Supervisor" itemValue="supervisor" />
+                            <f:selectItem itemLabel="Operador" itemValue="operador" />
                         </h:selectOneMenu>
                         <h:message for="rol" style="color: #dc3545; font-size: 12px;" />
                     </div>
 
                     <div class="col-md-12 mb-3">
                         <label>Nombre Completo(*)</label>
-                        <h:inputText id="nombreCompleto" 
-                                     value="#{controladorUsuario.usuario.nombreCompleto}" 
-                                     styleClass="form-control" 
-                                     style="background-color: #020618"
-                                     pt:autocomplete="off"/>
+                        <h:inputText id="nombreCompleto" value="#{controladorUsuario.usuario.nombreCompleto}"
+                            styleClass="form-control" style="background-color: #020618" pt:autocomplete="off" />
                         <h:message for="nombreCompleto" style="color: #dc3545; font-size: 12px;" />
                     </div>
 
                     <div class="col-md-6 mb-3">
                         <label>Contraseña(*)</label>
-                        <h:inputSecret id="password" 
-                                       value="#{controladorUsuario.usuario.password}" 
-                                       styleClass="form-control" 
-                                       style="background-color: #020618"
-                                       binding="#{controladorUsuario.passwordComponent}"
-                                       pt:autocomplete="new-password"
-                                       redisplay="false"
-                                       required="true"
-                                       requiredMessage="La contraseña es obligatoria">
+                        <h:inputSecret id="password" value="#{controladorUsuario.usuario.password}"
+                            styleClass="form-control" style="background-color: #020618" pt:autocomplete="new-password"
+                            redisplay="false" required="true" requiredMessage="La contraseña es obligatoria">
                             <!-- Se ejecuta al escribir -->
                             <f:ajax event="keyup" render="msgConfirmPassword" execute="@this" delay="500" />
                         </h:inputSecret>
@@ -73,33 +57,24 @@
 
                     <div class="col-md-6 mb-3">
                         <label>Repetir Contraseña(*)</label>
-                        <h:inputSecret id="confirmPassword" 
-                                       value="#{controladorUsuario.confirmPassword}" 
-                                       styleClass="form-control" 
-                                       style="background-color: #020618"
-                                       validator="#{controladorUsuario.validatePasswordConfirm}"
-                                       pt:autocomplete="new-password"
-                                       redisplay="false"
-                                       required="true"
-                                       requiredMessage="Debe repetir la contraseña">
+                        <h:inputSecret id="confirmPassword" value="#{controladorUsuario.confirmPassword}"
+                            styleClass="form-control" style="background-color: #020618"
+                            validator="#{controladorUsuario.validatePasswordConfirm}" pt:autocomplete="new-password"
+                            redisplay="false" required="true" requiredMessage="Debe repetir la contraseña">
                             <!-- Se ejecuta al escribir, procesando AMBOS campos -->
-                            <f:ajax event="keyup" 
-                                    render="msgConfirmPassword" 
-                                    execute="password confirmPassword" 
-                                    delay="500" />
+                            <f:ajax event="keyup" render="msgConfirmPassword" execute="password confirmPassword"
+                                delay="500" />
                         </h:inputSecret>
 
-                        <h:message id="msgConfirmPassword" for="confirmPassword" style="color: #dc3545; font-size: 12px;" />
+                        <h:message id="msgConfirmPassword" for="confirmPassword"
+                            style="color: #dc3545; font-size: 12px;" />
                     </div>
                 </div>
 
-                <h:commandButton value="Cancelar" 
-                                 action="/usuarios/index.xhtml?faces-redirect=true"
-                                 styleClass="btnGris"
-                                 immediate="true"/>
-                <h:commandButton value="Guardar Usuario" 
-                                 action="#{controladorUsuario.guardar()}" 
-                                 styleClass="btnAmarillo"/>
+                <h:commandButton value="Cancelar" action="/usuarios/index.xhtml?faces-redirect=true"
+                    styleClass="btnGris" immediate="true" />
+                <h:commandButton value="Guardar Usuario" action="#{controladorUsuario.guardar()}"
+                    styleClass="btnAmarillo" />
             </h:form>
         </f:view>
     </ui:define>

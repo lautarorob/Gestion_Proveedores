@@ -81,7 +81,29 @@ public class controladorUsuario implements Serializable {
         }
 
         String confirmPasswordValue = (String) value;
-        String passwordValue = (String) passwordComponent.getValue();
+
+        // Buscar el componente "password" en el formulario
+        // Asumimos que el ID del formulario es "formulario" y el del input es
+        // "password"
+        UIInput passwordInput = (UIInput) component.findComponent("password");
+
+        if (passwordInput == null) {
+            // Si no lo encuentra relativo, intentar búsqueda absoluta o por ID directo si
+            // están en el mismo naming container
+            // En este caso, como están en el mismo form, findComponent("password") debería
+            // bastar si 'component' es hermano o está cerca.
+            // Pero 'component' es el campo confirmPassword.
+            // Una forma segura es buscar desde la raíz o usar binding temporal (pero
+            // queremos evitar binding).
+            // O simplemente buscar por ID relativo al NamingContainer padre.
+            passwordInput = (UIInput) context.getViewRoot().findComponent("formulario:password");
+        }
+
+        if (passwordInput == null) {
+            return; // No se pudo validar
+        }
+
+        String passwordValue = (String) passwordInput.getValue();
 
         if (passwordValue == null) {
             passwordValue = "";
@@ -107,8 +129,7 @@ public class controladorUsuario implements Serializable {
                 FacesContext.getCurrentInstance().addMessage("formulario:username",
                         new FacesMessage(FacesMessage.SEVERITY_ERROR,
                                 "El nombre de usuario (login) '" + usuario.getUsername() + "' ya está en uso.",
-                                "Login duplicado")
-                );
+                                "Login duplicado"));
                 return null;
             }
         }
@@ -116,8 +137,7 @@ public class controladorUsuario implements Serializable {
         // --- 2: Validar NOMBRE + ROL ---
         Optional<Usuario> userByNombreRol = repoUsuario.findByNombreAndRol(
                 usuario.getNombreCompleto(),
-                usuario.getRol()
-        );
+                usuario.getRol());
 
         if (userByNombreRol.isPresent()) {
             boolean esNuevo = (usuario.getIdUsuario() == null);
@@ -126,9 +146,9 @@ public class controladorUsuario implements Serializable {
             if (esNuevo || esOtroUsuario) {
                 FacesContext.getCurrentInstance().addMessage("formulario:nombreCompleto",
                         new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                "Ya existe un usuario con el nombre '" + usuario.getNombreCompleto() + "' y el rol '" + usuario.getRol() + "'.",
-                                "Duplicado por Nombre y Rol")
-                );
+                                "Ya existe un usuario con el nombre '" + usuario.getNombreCompleto() + "' y el rol '"
+                                        + usuario.getRol() + "'.",
+                                "Duplicado por Nombre y Rol"));
                 return null;
             }
         }
@@ -162,8 +182,7 @@ public class controladorUsuario implements Serializable {
                 context.addMessage(null, new FacesMessage(
                         FacesMessage.SEVERITY_ERROR,
                         "Usuario inactivo",
-                        "Tu cuenta ha sido desactivada. Contacta al administrador."
-                ));
+                        "Tu cuenta ha sido desactivada. Contacta al administrador."));
                 return null;
             }
 
@@ -172,8 +191,7 @@ public class controladorUsuario implements Serializable {
                 context.addMessage(null, new FacesMessage(
                         FacesMessage.SEVERITY_ERROR,
                         "Contraseña incorrecta",
-                        "La contraseña ingresada no es correcta."
-                ));
+                        "La contraseña ingresada no es correcta."));
                 return null;
             }
 
@@ -187,8 +205,7 @@ public class controladorUsuario implements Serializable {
             context.addMessage(null, new FacesMessage(
                     FacesMessage.SEVERITY_INFO,
                     "Bienvenido",
-                    "Bienvenido " + encontrado.getUsername()
-            ));
+                    "Bienvenido " + encontrado.getUsername()));
 
             return "/index.xhtml?faces-redirect=true";
 
@@ -197,8 +214,7 @@ public class controladorUsuario implements Serializable {
             context.addMessage(null, new FacesMessage(
                     FacesMessage.SEVERITY_ERROR,
                     "Usuario no encontrado",
-                    "El usuario ingresado no existe."
-            ));
+                    "El usuario ingresado no existe."));
             return null;
         }
     }
@@ -230,8 +246,7 @@ public class controladorUsuario implements Serializable {
         context.addMessage(null, new FacesMessage(
                 FacesMessage.SEVERITY_INFO,
                 "Sesión cerrada",
-                "Has cerrado sesión exitosamente"
-        ));
+                "Has cerrado sesión exitosamente"));
 
         // Redirigir al login
         return "/login.xhtml?faces-redirect=true";
@@ -270,14 +285,6 @@ public class controladorUsuario implements Serializable {
 
     public void setConfirmPassword(String confirmPassword) {
         this.confirmPassword = confirmPassword;
-    }
-
-    public UIInput getPasswordComponent() {
-        return passwordComponent;
-    }
-
-    public void setPasswordComponent(UIInput passwordComponent) {
-        this.passwordComponent = passwordComponent;
     }
 
     public repoUsuario getRepoUsuario() {
