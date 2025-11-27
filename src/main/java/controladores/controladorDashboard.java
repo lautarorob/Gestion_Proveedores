@@ -229,7 +229,8 @@ public class controladorDashboard implements Serializable {
                                 bgColors.add("rgba(2, 6, 24, 0.9)"); // Azul oscuro
                                 break;
                             case "cheque":
-                                bgColors.add("rgba(194, 145, 0, 0.9)"); // Amarillo más oscuro
+                                bgColors.add("rgba(110, 70, 20, 0.9)"); // Bronce profundo
+
                                 break;
                             case "cuenta corriente":
                                 bgColors.add("rgba(28, 37, 51, 0.9)"); // #1C2533 - Azul oscuro

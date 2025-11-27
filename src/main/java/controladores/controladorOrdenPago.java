@@ -44,7 +44,6 @@ public class controladorOrdenPago implements Serializable {
     // --- INYECCIONES PARA AUDITORÍA ---
     //@Inject
     //private repoUsuario repoUsuario;
-
     private List<Proveedor> listaProveedores;
     private Proveedor proveedorSeleccionado;
 
@@ -270,20 +269,28 @@ public class controladorOrdenPago implements Serializable {
 
     public void generarListadoPagos() {
         try {
-            if (fechaInicio != null && fechaFin != null) {
+            Date fechaFinAjustada = fechaFin;
+            if (fechaFin != null) {
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(fechaFin);
-                cal.add(Calendar.DAY_OF_MONTH, 1);
-                fechaFin = cal.getTime();
+
+                // Ajustar al final del día (23:59:59.999)
+                cal.set(Calendar.HOUR_OF_DAY, 23);
+                cal.set(Calendar.MINUTE, 59);
+                cal.set(Calendar.SECOND, 59);
+                cal.set(Calendar.MILLISECOND, 999);
+
+                fechaFinAjustada = cal.getTime();
             }
 
+            System.out.println("Buscando desde: " + fechaInicio);
+            System.out.println("Buscando hasta: " + fechaFinAjustada);
             List<OrdenPago> ordenes = repoOrdenPago.buscarConFiltros(
                     proveedorSeleccionadoId,
                     formaPago,
                     fechaInicio,
-                    fechaFin
+                    fechaFinAjustada // <-- Usamos la fecha fin+1 día
             );
-
             // Aplicar filtros adicionales
             listadoPagos = ordenes.stream()
                     .filter(op -> proveedorFiltroId == null
@@ -296,17 +303,12 @@ public class controladorOrdenPago implements Serializable {
 
             // Ordenamiento
             listadoPagos.sort(
-                    Comparator.comparing(
-                            (OrdenPago op)
-                            -> op.getIdProveedor() != null ? op.getIdProveedor().getRazonSocial() : "SIN PROVEEDOR",
-                            Comparator.nullsLast(String::compareTo)
-                    )
+                    Comparator.comparing(OrdenPago::getFechaPago, Comparator.nullsLast(Date::compareTo))
                             .thenComparing(
-                                    op -> op.getFormaPago() != null ? op.getFormaPago() : "SIN FORMA",
+                                    op -> op.getIdProveedor() != null ? op.getIdProveedor().getRazonSocial() : "SIN PROVEEDOR",
                                     Comparator.nullsLast(String::compareTo)
                             )
-                            .thenComparing(OrdenPago::getFechaPago, Comparator.nullsLast(Date::compareTo))
-                            .thenComparing(OrdenPago::getNroOrden, Comparator.nullsLast(String::compareTo)) // opcional
+                            .thenComparing(OrdenPago::getNroOrden, Comparator.nullsLast(String::compareTo))
             );
 
         } catch (Exception e) {
@@ -316,6 +318,7 @@ public class controladorOrdenPago implements Serializable {
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
                             "Error interno al generar el listado: " + e.getMessage(), null)
             );
+
         }
     }
 

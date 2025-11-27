@@ -22,7 +22,8 @@
                     <h:panelGroup>
                         <h:outputLabel for="inicio" value="Fecha inicio:" styleClass="label-filtro" />
                         <h:inputText id="inicio" value="#{controladorOrdenPago.fechaInicio}" type="date"   styleClass="form-control" style="background-color: #020618" >
-                            <f:convertDateTime pattern="yyyy-MM-dd" />
+                            <f:convertDateTime pattern="yyyy-MM-dd" timeZone="America/Argentina/Buenos_Aires" />
+
                         </h:inputText>
                     </h:panelGroup>
 
@@ -30,7 +31,8 @@
                     <h:panelGroup>
                         <h:outputLabel for="fin" value="Fecha fin:" styleClass="label-filtro" />
                         <h:inputText id="fin" value="#{controladorOrdenPago.fechaFin}" type="date"   styleClass="form-control" style="background-color: #020618" >
-                            <f:convertDateTime pattern="yyyy-MM-dd" />
+                            <f:convertDateTime pattern="yyyy-MM-dd" timeZone="America/Argentina/Buenos_Aires" />
+
                         </h:inputText>
                     </h:panelGroup>
 
@@ -85,7 +87,7 @@
                     <h:column>
                         <f:facet name="header">Fecha de pago</f:facet>
                         <h:outputText value="#{item.fechaPago}">
-                            <f:convertDateTime pattern="yyyy-MM-dd"/>
+                            <f:convertDateTime pattern="yyyy-MM-dd"    timeZone="America/Argentina/Buenos_Aires"/>
                         </h:outputText>
                     </h:column>
                     <h:column>

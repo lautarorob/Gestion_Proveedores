@@ -78,7 +78,7 @@ public class repoOrdenPago {
             Integer proveedorId,
             String formaPago,
             Date fechaInicio,
-            Date fechaFin) {
+            Date fechaFinAjustada) {
 
         String jpql = "SELECT o FROM OrdenPago o WHERE 1=1";
 
@@ -91,9 +91,10 @@ public class repoOrdenPago {
         if (fechaInicio != null) {
             jpql += " AND o.fechaPago >= :fechaInicio";
         }
-        if (fechaFin != null) {
-            jpql += " AND o.fechaPago <= :fechaFin";
+        if (fechaFinAjustada != null) {
+            jpql += " AND o.fechaPago <=:fechaFin";  // Usamos SOLO fechaFinAjustada
         }
+        jpql += " ORDER BY FUNCTION('DATE', o.fechaPago) DESC";
 
         TypedQuery<OrdenPago> query = em.createQuery(jpql, OrdenPago.class);
 
@@ -106,8 +107,8 @@ public class repoOrdenPago {
         if (fechaInicio != null) {
             query.setParameter("fechaInicio", fechaInicio);
         }
-        if (fechaFin != null) {
-            query.setParameter("fechaFin", fechaFin);
+        if (fechaFinAjustada != null) {
+            query.setParameter("fechaFin", fechaFinAjustada);
         }
 
         return query.getResultList();

@@ -61,12 +61,19 @@
                                 <span class="sidebar-text">Productos</span>
                             </h:link>
                         </li>
-                        <li class="nav-item">
-                            <h:link outcome="/facturas/index.xhtml" class="nav-link #{view.viewId == '/facturas/index.xhtml' ? 'active' : ''}" >
-                                <i class="bi bi-receipt-cutoff"></i>
-                                <span class="sidebar-text">Facturas</span>
-                            </h:link>
-                        </li>
+                   <li class="nav-item dropdown">
+
+    <!-- Este link lleva directamente a Facturas Impagas -->
+    <h:link outcome="/facturas/index.xhtml" 
+            class="nav-link #{view.viewId == '/facturas/index.xhtml' ? 'active' : ''}">
+        <i class="bi bi-receipt-cutoff"></i>
+        <span class="sidebar-text">Facturas</span>
+    </h:link>
+
+
+</li>
+
+
                         <li class="nav-item">
                             <h:link outcome="/pagos/index.xhtml" class="nav-link #{view.viewId == '/pagos/index.xhtml' ? 'active' : ''}" >
                                 <i class="bi bi-credit-card"></i>

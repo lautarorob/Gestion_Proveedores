@@ -8,10 +8,11 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Model;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
-import jakarta.faces.application.FacesMessage;
-import jakarta.faces.context.FacesContext;
+import jakarta.faces.application.FacesMessage;  // <--- AGREGAR
+import jakarta.faces.context.FacesContext;      // <--- AGREGAR
 import java.util.List;
 import repositorios.repoProducto;
+import repositorios.repoUsuario;
 
 @Named(value = "controladorProducto")
 @RequestScoped
@@ -76,12 +77,22 @@ public class controladorProducto {
 
             // Validar código duplicado ANTES de guardar
             if (repoProducto.existeCodProd(producto.getCodProd(), producto.getIdProducto())) {
-                context.addMessage("formulario:codProd", // ← IMPORTANTE: este ID debe coincidir
+                context.addMessage("formulario:codProd",
                         new FacesMessage(FacesMessage.SEVERITY_ERROR,
                                 "Código duplicado",
-                                "El código '" + producto.getCodProd() + "' ya está registrado"));
-                return null; // No redirige, se queda en la página mostrando el error
+                                "El producto '" + producto.getCodProd() + "' ya existe"));
+                return null;
             }
+
+            // Validación adicional: nombre no puede estar vacío
+            if (producto.getNombre() == null || producto.getNombre().trim().isEmpty()) {
+                context.addMessage("formulario:errorNombre",
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                "Campo requerido",
+                                "El nombre del producto es obligatorio"));
+                return null;
+            }
+      
 
             // Si no está duplicado, guardar
             String resultado = repoProducto.Guardar(producto);

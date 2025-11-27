@@ -180,7 +180,6 @@ function validarProducto() {
     // El servidor validará la duplicidad y mostrará el mensaje JSF
     return isValid;
 }
-
 // facturaProducto.js
 
 // Mapa para almacenar los productos
@@ -338,11 +337,11 @@ function toggleCollapse() {
     const sidebar = document.getElementById('sidebar');
     const mainContent = document.getElementById('mainContent');
     const collapseIcon = document.getElementById('collapseIcon');
-
+    
     // 1. Alternar clases
     sidebar.classList.toggle('collapsed');
     mainContent.classList.toggle('expanded');
-
+    
     // 2. Gestionar Icono y LocalStorage
     if (sidebar.classList.contains('collapsed')) {
         collapseIcon.classList.remove('bi-chevron-left');
@@ -356,15 +355,9 @@ function toggleCollapse() {
 
     // 3. FORZAR REDIBUJADO DE GRÁFICOS
     // Disparamos el evento resize 3 veces: al inicio, mitad y final de la transición (300ms)
-    setTimeout(() => {
-        window.dispatchEvent(new Event('resize'));
-    }, 50);
-    setTimeout(() => {
-        window.dispatchEvent(new Event('resize'));
-    }, 150);
-    setTimeout(() => {
-        window.dispatchEvent(new Event('resize'));
-    }, 310);
+    setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 50);
+    setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 150);
+    setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 310);
 }
 
 // Restaurar el estado del sidebar al cargar la página

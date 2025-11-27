@@ -38,9 +38,10 @@ public class controladorFactura implements Serializable {
     private repoProducto repoProducto;
 
     // --- NUEVA INYECCIÓN NECESARIA PARA LA AUDITORÍA ---
-    // @Inject
-    // private repoUsuario repoUsuario;
+   // @Inject
+    //private repoUsuario repoUsuario;
     // ---------------------------------------------------
+
     private List<Producto> listaProductos;
     private List<Producto> listaProductosPorProveedor;
     private Integer id;
@@ -55,6 +56,64 @@ public class controladorFactura implements Serializable {
     // Constante para IVA (21% típico en Argentina)
     private static final BigDecimal IVA_PORCENTAJE = new BigDecimal("0.21");
 
+    // --- FILTROS ---
+    private String filtroTipo;
+    private Date filtroFechaDesde;
+    private Date filtroFechaHasta;
+    private List<Factura> listaFacturas;
+
+    public void filtrar() {
+        Date fechaHastaAjustada = null;
+
+        if (filtroFechaHasta != null) {
+            // Sumar 1 día menos 1 milisegundo para abarcar todo el día
+            fechaHastaAjustada = new Date(filtroFechaHasta.getTime() + (24 * 60 * 60 * 1000) - 1);
+        }
+
+        listaFacturas = repoFactura.filtrar(filtroTipo, filtroFechaDesde, fechaHastaAjustada);
+    }
+
+    public void limpiarFiltros() {
+        filtroTipo = null;
+        filtroFechaDesde = null;
+        filtroFechaHasta = null;
+        listaFacturas = repoFactura.listarImpagas();
+    }
+
+    public List<Factura> getListaFacturas() {
+        if (listaFacturas == null) {
+            listaFacturas = repoFactura.listarImpagas();
+        }
+        return listaFacturas;
+    }
+
+    public void setListaFacturas(List<Factura> listaFacturas) {
+        this.listaFacturas = listaFacturas;
+    }
+
+    public String getFiltroTipo() {
+        return filtroTipo;
+    }
+
+    public void setFiltroTipo(String filtroTipo) {
+        this.filtroTipo = filtroTipo;
+    }
+
+    public Date getFiltroFechaDesde() {
+        return filtroFechaDesde;
+    }
+
+    public void setFiltroFechaDesde(Date filtroFechaDesde) {
+        this.filtroFechaDesde = filtroFechaDesde;
+    }
+
+    public Date getFiltroFechaHasta() {
+        return filtroFechaHasta;
+    }
+
+    public void setFiltroFechaHasta(Date filtroFechaHasta) {
+        this.filtroFechaHasta = filtroFechaHasta;
+    }
     public controladorFactura() {
     }
 
@@ -82,21 +141,20 @@ public class controladorFactura implements Serializable {
         facturaProducto = new FacturaProducto();
     }
 
-    // Método que se llamará cuando el usuario seleccione un proveedor
-    public void cargarProductosPorProveedor() {
-        if (factura != null && factura.getIdProveedor() != null) {
-            Integer idProveedor = factura.getIdProveedor().getIdProveedor();
-            if (idProveedor != null) {
-                // Este método ahora solo trae productos ACTIVOS
-                listaProductosPorProveedor = repoProducto.buscarPorProveedor(idProveedor);
-                System.out.println("Productos ACTIVOS cargados para proveedor ID: " + idProveedor
-                        + " - Total: " + listaProductosPorProveedor.size());
-            }
-        } else {
-            listaProductosPorProveedor = new ArrayList<>();
+// Método que se llamará cuando el usuario seleccione un proveedor
+   public void cargarProductosPorProveedor() {
+    if (factura != null && factura.getIdProveedor() != null) {
+        Integer idProveedor = factura.getIdProveedor().getIdProveedor();
+        if (idProveedor != null) {
+            // Este método ahora solo trae productos ACTIVOS
+            listaProductosPorProveedor = repoProducto.buscarPorProveedor(idProveedor);
+            System.out.println("Productos ACTIVOS cargados para proveedor ID: " + idProveedor
+                    + " - Total: " + listaProductosPorProveedor.size());
         }
+    } else {
+        listaProductosPorProveedor = new ArrayList<>();
     }
-
+}
     // --- LÓGICA DE PRODUCTOS ---
     private FacturaProducto facturaProducto = new FacturaProducto();
 
@@ -106,7 +164,8 @@ public class controladorFactura implements Serializable {
             FacesContext.getCurrentInstance().addMessage("formulario:producto",
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
                             "Producto requerido",
-                            "Debe seleccionar un producto."));
+                            "Debe seleccionar un producto.")
+            );
             return;
         }
 
@@ -115,7 +174,8 @@ public class controladorFactura implements Serializable {
             FacesContext.getCurrentInstance().addMessage("formulario:cantidad",
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
                             "Cantidad inválida",
-                            "La cantidad debe ser mayor a 0."));
+                            "La cantidad debe ser mayor a 0.")
+            );
             return;
         }
 
@@ -229,7 +289,8 @@ public class controladorFactura implements Serializable {
             if (fp.getFacturaProductoPK() == null) {
                 FacturaProductoPK pk = new FacturaProductoPK(
                         factura.getIdFactura(),
-                        fp.getProducto().getIdProducto());
+                        fp.getProducto().getIdProducto()
+                );
                 fp.setFacturaProductoPK(pk);
             }
             fp.setFactura(factura);
@@ -303,6 +364,10 @@ public class controladorFactura implements Serializable {
             factura.setFechaComprobante(new Date());
         }
     }
+
+    public List<Factura> listarPagadas() {
+    return repoFactura.listarPagas();
+}
 
     public List<Factura> listarImpagas() {
         return repoFactura.listarImpagas();
@@ -382,64 +447,5 @@ public class controladorFactura implements Serializable {
 
     public void setListaProductosPorProveedor(List<Producto> listaProductosPorProveedor) {
         this.listaProductosPorProveedor = listaProductosPorProveedor;
-    }
-
-    // --- FILTROS ---
-    private String filtroTipo;
-    private Date filtroFechaDesde;
-    private Date filtroFechaHasta;
-    private List<Factura> listaFacturas;
-
-    public void filtrar() {
-        Date fechaHastaAjustada = null;
-
-        if (filtroFechaHasta != null) {
-            // Sumar 1 día menos 1 milisegundo para abarcar todo el día
-            fechaHastaAjustada = new Date(filtroFechaHasta.getTime() + (24 * 60 * 60 * 1000) - 1);
-        }
-
-        listaFacturas = repoFactura.filtrar(filtroTipo, filtroFechaDesde, fechaHastaAjustada);
-    }
-
-    public void limpiarFiltros() {
-        filtroTipo = null;
-        filtroFechaDesde = null;
-        filtroFechaHasta = null;
-        listaFacturas = repoFactura.listarImpagas();
-    }
-
-    public List<Factura> getListaFacturas() {
-        if (listaFacturas == null) {
-            listaFacturas = repoFactura.listarImpagas();
-        }
-        return listaFacturas;
-    }
-
-    public void setListaFacturas(List<Factura> listaFacturas) {
-        this.listaFacturas = listaFacturas;
-    }
-
-    public String getFiltroTipo() {
-        return filtroTipo;
-    }
-
-    public void setFiltroTipo(String filtroTipo) {
-        this.filtroTipo = filtroTipo;
-    }
-
-    public Date getFiltroFechaDesde() {
-        return filtroFechaDesde;
-    }
-
-    public void setFiltroFechaDesde(Date filtroFechaDesde) {
-        this.filtroFechaDesde = filtroFechaDesde;
-    }
-
-    public Date getFiltroFechaHasta() {
-        return filtroFechaHasta;
-    }
-
-    public void setFiltroFechaHasta(Date filtroFechaHasta) {
-        this.filtroFechaHasta = filtroFechaHasta;
     }
 }

@@ -109,7 +109,7 @@ public class repoProducto {
                 .getResultList();
     }
 
-  
+    // En repoProducto.java - Agregar este método:
     public boolean existeCodProd(String codProd, Integer idProductoActual) {
         try {
             String jpql = "SELECT COUNT(p) FROM Producto p WHERE p.codProd = :codigo";

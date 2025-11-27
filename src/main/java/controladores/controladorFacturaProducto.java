@@ -1,15 +1,18 @@
 package controladores;
 
+import entidades.Factura;
 import entidades.FacturaProducto;
 import entidades.FacturaProductoPK;
 import entidades.Producto;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import java.io.Serializable;
 import java.util.List;
+import repositorios.repoFactura;
 import repositorios.repoFacturaProducto;
 
 @Named(value = "controladorFacturaProducto")
@@ -17,14 +20,26 @@ import repositorios.repoFacturaProducto;
 public class controladorFacturaProducto implements Serializable {
     
     private static final long serialVersionUID = 1L;
-    
+    @Inject
+private repoFactura repoFactura;
     @Inject
     private repoFacturaProducto repoFacturaProducto;
     
     private FacturaProducto facturaProducto;
     private FacturaProductoPK idCompuesta;
    // private List<Producto> listaProductos;
+private Long idFactura;
+private List<FacturaProducto> productosDeFactura;
+private Factura factura;
 
+public Factura getFactura() {
+    if (factura == null) {
+        Integer idFactura = Integer.valueOf(FacesContext.getCurrentInstance().getExternalContext()
+                .getRequestParameterMap().get("id"));
+        factura = repoFactura.porId(idFactura).orElse(null);
+    }
+    return factura;
+}
     public controladorFacturaProducto() {
     }
     /*
@@ -173,4 +188,22 @@ public class controladorFacturaProducto implements Serializable {
     public void setIdCompuesta(FacturaProductoPK idCompuesta) {
         this.idCompuesta = idCompuesta;
     }
+    public List<FacturaProducto> getProductosDeFactura() {
+    return productosDeFactura;
+}
+
+public Long getIdFactura() {
+    return idFactura;
+}
+
+    public String verDetalle(Long idFactura) {
+    this.idFactura = idFactura;
+    this.productosDeFactura = repoFacturaProducto.obtenerProductosPorFactura(idFactura);
+    return "/facturas/detalleFactura.xhtml?faces-redirect=true&id=" + idFactura;
+}
+    public List<FacturaProducto> obtenerDetalleFactura(Long idFactura) {
+    return repoFacturaProducto.obtenerProductosPorFactura(idFactura);
+}
+
+
 }

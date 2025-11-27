@@ -64,4 +64,12 @@ public class repoFacturaProducto {
                 .getResultList();
     }
 
+public List<FacturaProducto> obtenerProductosPorFactura(Long idFactura) {
+    String jpql = "SELECT fp FROM FacturaProducto fp WHERE fp.factura.idFactura = :idFactura";
+    
+    return em.createQuery(jpql, FacturaProducto.class)
+            .setParameter("idFactura", idFactura)
+            .getResultList();
+}
+
 }

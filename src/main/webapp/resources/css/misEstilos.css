@@ -614,3 +614,19 @@ body .ui-card .ui-card-content {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
+.nav-item.dropdown {
+    position: relative;
+}
+
+.submenu-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #bbb;
+}
+
+.submenu-toggle:hover {
+    color: #fff;
+}
