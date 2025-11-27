@@ -24,7 +24,7 @@
                             <f:selectItem itemLabel="Seleccione un proveedor" itemValue="#{null}" />
                             <f:selectItems value="#{controladorProducto.listaProveedores}" var="prov"
                                 itemLabel="#{prov.razonSocial}" itemValue="#{prov}" />
-                            <!-- AGREGAR ESTE AJAX -->
+                           
                             <f:ajax event="change" listener="#{controladorFactura.cargarProductosPorProveedor}"
                                 render="producto" />
                         </h:selectOneMenu>
