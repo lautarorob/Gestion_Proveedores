@@ -12,6 +12,7 @@ import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -233,5 +234,50 @@ public class repoFactura {
             return new ArrayList<>();
         }
     }
+    public List<Factura> listarPagas() {
+        try {
+            List<Factura> lista = em.createQuery(
+                    "SELECT f FROM Factura f WHERE f.formaPago 'cuenta corriente'",
+                    Factura.class)
+                    .getResultList();
+            return lista;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+    public List<Factura> filtrar(String tipo, Date fechaDesde, Date fechaHasta) {
+        // 1. Definimos la consulta base (manteniendo tu filtro de estado)
+        String jpql = "SELECT f FROM Factura f WHERE f.estado <> 'Pagada'";
 
+        // 2. Concatenamos las condiciones dinámicamente
+        if (tipo != null && !tipo.isEmpty()) {
+            jpql += " AND f.tipo = :tipo";
+        }
+        if (fechaDesde != null) {
+            jpql += " AND f.fechaRegistro >= :fechaDesde";
+        }
+        if (fechaHasta != null) {
+            jpql += " AND f.fechaRegistro <= :fechaHasta";
+        }
+
+        // Opcional: Ordenar por fecha como en el ejemplo de Auditoria
+        jpql += " ORDER BY f.fechaRegistro DESC";
+
+        // 3. Creamos la query UNA VEZ que el String está completo
+        var query = em.createQuery(jpql, Factura.class);
+
+        // 4. Asignamos los valores a los parámetros si corresponde
+        if (tipo != null && !tipo.isEmpty()) {
+            query.setParameter("tipo", tipo);
+        }
+        if (fechaDesde != null) {
+            query.setParameter("fechaDesde", fechaDesde);
+        }
+        if (fechaHasta != null) {
+            query.setParameter("fechaHasta", fechaHasta);
+        }
+
+        return query.getResultList();
+    }
 }
