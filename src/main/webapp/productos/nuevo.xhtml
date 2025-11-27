@@ -22,11 +22,10 @@
 
                         <!-- Mensaje de JSF (del servidor - para duplicidad) -->
                         <h:message for="codProd"
-                                   style="color: #dc3545; font-size: 12px; display: block; margin-top: 5px;" />
+                                   class="error" />
 
                         <!-- Mensaje de JavaScript (validación de formato en cliente) -->
-                        <span id="formulario:errorCodProd" class="error" 
-                              style="color: #dc3545; font-size: 12px; display: block; margin-top: 5px;"></span>
+                        <span id="formulario:errorCodProd" class="error"></span>
                     </div>
 
                     <div class="col-md-12 mb-3">
@@ -34,8 +33,7 @@
                         <h:inputTextarea id="descripcion" value="#{controladorProducto.producto.descripcion}"
                                          pt:placeholder="Ingrese la descripcion" styleClass="form-control"
                                          style="background-color: #020618" />
-                        <span id="formulario:errorDesc" class="error" 
-                              style="color: #dc3545; font-size: 12px; display: block; margin-top: 5px;"></span>
+                        <span id="formulario:errorDesc" class="error"></span>
                     </div>
 
                     <div class="col-md-6 mb-3">
@@ -43,8 +41,7 @@
                         <h:inputText id="nombre" value="#{controladorProducto.producto.nombre}"
                                      pt:placeholder=" Ingrese el nombre comercial" styleClass="form-control"
                                      style="background-color: #020618" />
-                        <span id="formulario:errorNombre" class="error" 
-                              style="color: #dc3545; font-size: 12px; display: block; margin-top: 5px;"></span>
+                        <span id="formulario:errorNombre" class="error"></span>
                     </div>
 
                     <div class="col-md-6 mb-3">
@@ -54,8 +51,7 @@
                                      style="background-color: #020618">
                             <f:convertNumber minFractionDigits="2" maxFractionDigits="2" />
                         </h:inputText>
-                        <span id="formulario:errorPrecRef" class="error" 
-                              style="color: #dc3545; font-size: 12px; display: block; margin-top: 5px;"></span>
+                        <span id="formulario:errorPrecRef" class="error"></span>
                     </div>
 
                     <div class="col-md-6 mb-3">
@@ -68,8 +64,7 @@
                             <f:selectItem itemLabel="Gramo" itemValue="Gramo" />
                             <f:selectItem itemLabel="Kilo" itemValue="Kilo" />
                         </h:selectOneMenu>
-                        <span id="formulario:errorUnidad" class="error" 
-                              style="color: #dc3545; font-size: 12px; display: block; margin-top: 5px;"></span>
+                        <span id="formulario:errorUnidad" class="error"></span>
                     </div>
 
                     <div class="col-md-6 mb-3">
@@ -80,8 +75,7 @@
                             <f:selectItems value="#{controladorProducto.listaProveedores}" var="prov"
                                            itemLabel="#{prov.razonSocial}" itemValue="#{prov}" />
                         </h:selectOneMenu>
-                        <span id="formulario:errorProveedor" class="error" 
-                              style="color: #dc3545; font-size: 12px; display: block; margin-top: 5px;"></span>
+                        <span id="formulario:errorProveedor" class="error"></span>
                     </div>
 
                     <div class="col-md-6 mb-3">
