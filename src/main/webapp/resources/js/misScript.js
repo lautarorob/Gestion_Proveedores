@@ -307,8 +307,11 @@ function validarComprobante(input) {
     mensaje.textContent = "";
 
     const patron = /^\d{4}-\d{8}$/;
-
-    if (!patron.test(valor)) {
+    
+    if (valor === "") {
+        mensaje.textContent = "Campo Obligatorio";
+        return false;
+    }else if (!patron.test(valor)) {
         mensaje.textContent = "Formato incorrecto: debe ser ####-########";
         return false;
     }
